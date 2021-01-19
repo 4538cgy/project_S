@@ -59,6 +59,9 @@ dependencies {
     //firebaseAuth
     implementation 'com.google.firebase:firebase-auth'
 
+    //googlelogin
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
     //viewpager2
     implementation 'com.google.firebase:firebase-database:19.3.1'
 
