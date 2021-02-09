@@ -42,6 +42,16 @@ class LoginActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this,gso)
 
+        //폰번호 로그인
+        binding.activityLoginButtonLoginWithPhonenumber.setOnClickListener {
+            signinPhone()
+        }
+
+        //구글 로그인
+        binding.activityLoginButtonGoogle.setOnClickListener {
+            googleLogin()
+        }
+
     }
 
 
