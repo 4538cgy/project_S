@@ -15,23 +15,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
+import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.ActivityLoginBinding
+import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
+import com.uos.smsmsm.util.shareddate.SharedData
 import java.util.concurrent.TimeUnit
 
 class LoginActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityLoginBinding
-    val model : LoginViewModel by viewModels()
     var auth = FirebaseAuth.getInstance()
     var googleSignInClient : GoogleSignInClient? = null
     var GOOGLE_LOGIN_CODE = 9001
+    var progressDialogPhoneAuth : ProgressDialogPhoneAuthLoading ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        binding.lifecycleOwner = this
-        binding.activitylogin = model
+        binding.activitylogin = this@LoginActivity
 
         //구글 로그인 옵션 활성화
         var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -108,36 +110,16 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(binding.root.context,
                         "핸드폰 인증에 성공했습니다.",
                         Toast.LENGTH_LONG).show()
-                    progressDialog?.dismiss()
+                    progressDialogPhoneAuth?.dismiss()
 
                     FirebaseAuth.getInstance().signInWithCredential(p0).addOnFailureListener {
 
-                        var log = PhoneAuthLog()
-                        log.log = p0.toString()
-                        log.serverTimestamp = System.currentTimeMillis()
-                        log.uid = binding.emailEdittext.text.toString()
-                        log.timestamp = TimeUtil().getTime()
-                        FirebaseFirestore.getInstance().collection("Log").document("FailLog").collection("LoginLog").document().set(log)
-                            .addOnFailureListener {
-                                println("로그 저장 실패"+ it.toString())
-                            }.addOnCompleteListener {
-                                println("로그 저장 성공"+ it.toString())
-                            }
-                    }.addOnCompleteListener {
-                        startActivity(Intent(binding.root.context,LobbyActivity::class.java))
-                        finish()
 
-                        var log = PhoneAuthLog()
-                        log.log = p0.toString()
-                        log.serverTimestamp = System.currentTimeMillis()
-                        log.uid = binding.emailEdittext.text.toString()
-                        log.timestamp = TimeUtil().getTime()
-                        FirebaseFirestore.getInstance().collection("Log").document("SuccessLog").collection("LoginLog").document().set(log)
-                            .addOnFailureListener {
-                                println("로그 저장 실패"+ it.toString())
-                            }.addOnCompleteListener {
-                                println("로그 저장 성공"+ it.toString())
-                            }
+                    }.addOnCompleteListener {
+                        //startActivity(Intent(binding.root.context,LobbyActivity::class.java))
+                        //finish()
+
+
                     }
 
 
@@ -151,22 +133,11 @@ class LoginActivity : AppCompatActivity() {
                         "핸드폰 인증에 실패했습니다..",
                         Toast.LENGTH_LONG).show()
 
-                    var log = PhoneAuthLog()
-                    log.log = p0.toString()
-                    log.serverTimestamp = System.currentTimeMillis()
-                    log.uid = binding.emailEdittext.text.toString()
-                    log.timestamp = TimeUtil().getTime()
-
-                    FirebaseFirestore.getInstance().collection("Log").document("FailLog").collection("PhoneAuthLog").document().set(log)
-                        .addOnFailureListener {
-                            println("로그 저장 실패"+ it.toString())
-                        }.addOnCompleteListener {
-                            println("로그 저장 성공"+ it.toString())
-                        }
 
 
 
-                    progressDialog?.dismiss()
+
+                    progressDialogPhoneAuth?.dismiss()
                 }
 
                 override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
@@ -176,20 +147,9 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onCodeAutoRetrievalTimeOut(p0: String) {
                     super.onCodeAutoRetrievalTimeOut(p0)
-                    progressDialog?.dismiss()
+                    progressDialogPhoneAuth?.dismiss()
 
-                    var log = PhoneAuthLog()
-                    log.log = p0.toString()
-                    log.serverTimestamp = System.currentTimeMillis()
-                    log.uid = binding.emailEdittext.text.toString()
-                    log.timestamp = TimeUtil().getTime()
 
-                    FirebaseFirestore.getInstance().collection("Log").document("FailLog").collection("PhoneAuthLog").document().set(log)
-                        .addOnFailureListener {
-                            println("로그 저장 실패"+ it.toString())
-                        }.addOnCompleteListener {
-                            println("로그 저장 성공"+ it.toString())
-                        }
 
                 }
 
@@ -216,11 +176,11 @@ class LoginActivity : AppCompatActivity() {
 
                         if (SharedData.prefs.getString("userInfo", "no").equals("yes")) {
                             SharedData.prefs.setString("emailVerify","yes")
-                            startActivity(Intent(this, LobbyActivity::class.java))
+                            //startActivity(Intent(this, LobbyActivity::class.java))
 
                         } else {
                             SharedData.prefs.setString("emailVerify","yes")
-                            startActivity(Intent(this, SignUpActivity::class.java))
+                            //startActivity(Intent(this, SignUpActivity::class.java))
                         }
                         finish()
                     }
