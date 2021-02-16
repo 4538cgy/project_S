@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.policy.PolicyActivity">
+    
+    <data>
+        <variable
+            name="policy"
+            type="com.uos.smsmsm.activity.policy.PolicyActivity" />
+    </data>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <TextView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:id="@+id/activity_policy_textview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="이용약관 입니다."
+                android:background="@drawable/background_edittext_round_black_4dp"
+                app:layout_constraintBottom_toTopOf="@+id/activity_policy_button_accept"
+                android:layout_margin="16dp"
+                android:padding="8dp"
+                />
+
+            <Button
+                android:id="@+id/activity_policy_button_accept"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/activity_policy_button_reject"
+                android:text="동의"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                />
+            <Button
+                app:layout_constraintLeft_toRightOf="@+id/activity_policy_button_accept"
+                android:id="@+id/activity_policy_button_reject"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="거부"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
