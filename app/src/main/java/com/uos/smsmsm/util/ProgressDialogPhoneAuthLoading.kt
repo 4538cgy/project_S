@@ -1,4 +1,4 @@
-package com.uos.smsmsm.util.dialog
+package com.uos.smsmsm.util
 
 import android.app.Dialog
 import android.content.Context

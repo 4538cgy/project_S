@@ -34,8 +34,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/activity_policy_button_reject"
                 android:text="동의"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/background_edittext_round_black_4dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="8dp"
                 />
             <Button
                 app:layout_constraintLeft_toRightOf="@+id/activity_policy_button_accept"
@@ -44,7 +48,11 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/background_edittext_round_black_4dp"
                 android:text="거부"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="8dp"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

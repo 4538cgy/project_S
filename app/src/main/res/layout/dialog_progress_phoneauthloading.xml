@@ -5,7 +5,7 @@
     <data>
         <variable
             name="dialogprogressloading"
-            type="com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading" />
+            type="com.uos.smsmsm.util.ProgressDialogPhoneAuthLoading" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

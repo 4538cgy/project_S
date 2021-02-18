@@ -1,4 +1,4 @@
-package com.uos.smsmsm.util.shareddate
+package com.uos.smsmsm.util
 
 import android.app.Application
 

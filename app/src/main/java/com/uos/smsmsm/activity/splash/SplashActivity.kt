@@ -55,7 +55,6 @@ class SplashActivity : AppCompatActivity() {
         //version from Firebase
         var strLatestVersion = firebaseRemoteConfig.getString("message_version")
         var strMaintenanceCheck = firebaseRemoteConfig.getBoolean("check_maintenance")
-        println("끼에에에에엥에ㅔㄺ" + strLatestVersion.toString())
 
         if (strMaintenanceCheck){
             DialogDisplayDownServer()

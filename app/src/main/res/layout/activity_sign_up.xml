@@ -132,6 +132,7 @@
                         android:layout_marginRight="24dp"
                         >
                         <LinearLayout
+                            android:id="@+id/activity_sign_up_linear_checkbox_use_policy"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -145,6 +146,7 @@
                                 android:textColor="@color/colorBlack"
                                 />
                             <CheckBox
+                                android:id="@+id/activity_sign_up_checkbox_use_policy"
                                 android:text="동의"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -153,6 +155,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/activity_sign_up_linear_checkbox_user_info_use_policy"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -166,6 +169,7 @@
                                 android:textColor="@color/colorBlack"
                                 />
                             <CheckBox
+                                android:id="@+id/activity_sign_up_checkbox_user_info_use_policy"
                                 android:text="동의"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -174,12 +178,14 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/activity_sign_up_linear_all_check"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="right"
                             >
                             <CheckBox
+                                android:id="@+id/activity_sign_up_checkbox_all_check"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 />

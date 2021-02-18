@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -17,9 +15,11 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.lobby.LobbyActivity
+import com.uos.smsmsm.activity.signup.SignUpActivity
 import com.uos.smsmsm.databinding.ActivityLoginBinding
-import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
-import com.uos.smsmsm.util.shareddate.SharedData
+import com.uos.smsmsm.util.ProgressDialogPhoneAuthLoading
+import com.uos.smsmsm.util.SharedData
 import java.util.concurrent.TimeUnit
 
 class LoginActivity : AppCompatActivity() {
@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
     var auth = FirebaseAuth.getInstance()
     var googleSignInClient : GoogleSignInClient? = null
     var GOOGLE_LOGIN_CODE = 9001
-    var progressDialogPhoneAuth : ProgressDialogPhoneAuthLoading ? = null
+    var progressDialogPhoneAuth : ProgressDialogPhoneAuthLoading? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,11 +186,11 @@ class LoginActivity : AppCompatActivity() {
 
                         if (SharedData.prefs.getString("userInfo", "no").equals("yes")) {
                             SharedData.prefs.setString("emailVerify","yes")
-                            //startActivity(Intent(this, LobbyActivity::class.java))
+                            startActivity(Intent(this, LobbyActivity::class.java))
 
                         } else {
                             SharedData.prefs.setString("emailVerify","yes")
-                            //startActivity(Intent(this, SignUpActivity::class.java))
+                            startActivity(Intent(this, SignUpActivity::class.java))
                         }
                         finish()
                     }
