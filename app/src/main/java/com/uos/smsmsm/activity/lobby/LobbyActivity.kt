@@ -13,7 +13,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.ActivityLobbyBinding
-import com.uos.smsmsm.fragment.tabmenu.UserFragment
+import com.uos.smsmsm.fragment.tabmenu.chatroom.ChatRoomFragment
+import com.uos.smsmsm.fragment.tabmenu.friendslist.FriendsListFragment
+import com.uos.smsmsm.fragment.tabmenu.other.OtherMenuFragment
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
+import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
 
 class LobbyActivity : AppCompatActivity(),BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -58,6 +62,30 @@ class LobbyActivity : AppCompatActivity(),BottomNavigationView.OnNavigationItemS
                 var userFragment = UserFragment()
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.activity_lobby_fragmelayout, userFragment).commit()
+                return true
+            }
+            R.id.action_home -> {
+                var timelineFragment = TimeLineFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.activity_lobby_fragmelayout, timelineFragment).commit()
+                return true
+            }
+            R.id.action_search -> {
+                var chatFragment = ChatRoomFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.activity_lobby_fragmelayout, chatFragment).commit()
+                return true
+            }
+            R.id.action_favorite_alarm -> {
+                var friendslistFragment = FriendsListFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.activity_lobby_fragmelayout, friendslistFragment).commit()
+                return true
+            }
+            R.id.action_photo ->{
+                var otherMenuFragment = OtherMenuFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.activity_lobby_fragmelayout, otherMenuFragment).commit()
                 return true
             }
         }

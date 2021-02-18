@@ -2,26 +2,28 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.tabmenu.userfragment.UserFragment">
+    tools:context=".fragment.tabmenu.timeline.TimeLineFragment">
 
-    <data>
-        <variable
-            name="fragmentuser"
-            type="com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment" />
-    </data>
+   <data>
+       <variable
+           name="fragmenttimeline"
+           type="com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment" />
+   </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+
         <TextView
+            android:text="타임라인일거임"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="유저 프로필"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:gravity="center"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

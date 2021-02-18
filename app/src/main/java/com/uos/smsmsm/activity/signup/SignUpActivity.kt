@@ -8,7 +8,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.tasks.Task
@@ -20,24 +19,26 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.policy.PolicyActivity
+import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivitySignUpBinding
-import com.uos.smsmsm.fragment.tabmenu.UserFragment
+import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
 import com.uos.smsmsm.util.ProgressDialogPhoneAuthLoading
-import kotlinx.android.synthetic.main.activity_sign_up.*
+import com.uos.smsmsm.util.TimeUtil
 import java.util.concurrent.TimeUnit
 
 class SignUpActivity : AppCompatActivity() {
 
-    lateinit var binding : ActivitySignUpBinding
-    var mAuth : FirebaseAuth ?= null
-    var imageUri : Uri? = null
-    var progressDialog : ProgressDialogPhoneAuthLoading ? = null
+    lateinit var binding: ActivitySignUpBinding
+    var mAuth: FirebaseAuth? = null
+    var imageUri: Uri? = null
+    var progressDialog: ProgressDialogPhoneAuthLoading? = null
     var phoneVerify = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_sign_up)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up)
         binding.signup = this@SignUpActivity
 
 
@@ -65,23 +66,61 @@ class SignUpActivity : AppCompatActivity() {
         binding.activitySignUpCircleimageviewProfile.setOnClickListener {
             var photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
-            startActivityForResult(photoPickerIntent,UserFragment.PICK_PROFILE_FROM_ALBUM)
+            startActivityForResult(photoPickerIntent, UserFragment.PICK_PROFILE_FROM_ALBUM)
         }
 
         //이용약관 클릭시
         binding.activitySignUpLinearCheckboxUsePolicy.setOnClickListener {
             if (!binding.activitySignUpCheckboxUsePolicy.isChecked)
-            startActivityForResult(Intent(binding.root.context,PolicyActivity::class.java),1001)
+                startActivityForResult(
+                    Intent(binding.root.context, PolicyActivity::class.java),
+                    1001
+                )
         }
 
         //개인정보 클릭시
         binding.activitySignUpLinearCheckboxUserInfoUsePolicy.setOnClickListener {
             if (!binding.activitySignUpCheckboxUserInfoUsePolicy.isChecked)
-            startActivityForResult(Intent(binding.root.context,PolicyActivity::class.java),1002)
+                startActivityForResult(
+                    Intent(binding.root.context, PolicyActivity::class.java),
+                    1002
+                )
         }
 
-        binding.activitySignUpButtonComplete.setOnClickListener {
 
+        //회원 가입 진행
+        binding.activitySignUpButtonComplete.setOnClickListener {
+            if (binding.activitySignUpCheckboxUsePolicy.isChecked && binding.activitySignUpCheckboxUserInfoUsePolicy.isChecked) {
+                if (imageUri != null) {
+
+
+                    if (phoneVerify) {
+                        if (binding.activitySignUpEdittextNickname.length() in 2..7) {
+                            saveData()
+                        } else {
+                            Toast.makeText(
+                                binding.root.context,
+                                "닉네임은 2자 이상 8자 미만으로 설정해주세요.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            binding.root.context,
+                            "핸드폰 번호 인증을 진행해주세요.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }else{
+                    Toast.makeText(binding.root.context,"프로필 사진을 등록해주세요.",Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Toast.makeText(
+                    binding.root.context,
+                    "이용약관과 개인정보처리 방침을 동의하지 않으면 회원가입이 불가능합니다.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
 
 
@@ -111,9 +150,11 @@ class SignUpActivity : AppCompatActivity() {
                     //성공시
                     Log.d("credential", p0.toString())
                     Log.d("성공", "인증에 성공 했습니다.")
-                    Toast.makeText(binding.root.context,
+                    Toast.makeText(
+                        binding.root.context,
                         "핸드폰 인증에 성공했습니다. \n 나머지 정보를 입력해주세요.",
-                        Toast.LENGTH_LONG).show()
+                        Toast.LENGTH_LONG
+                    ).show()
                     progressDialog?.dismiss()
 
 
@@ -124,9 +165,11 @@ class SignUpActivity : AppCompatActivity() {
                     //실패시
                     Log.d("exception", p0.toString())
                     Log.d("실패", "인증에 실패 했습니다.")
-                    Toast.makeText(binding.root.context,
+                    Toast.makeText(
+                        binding.root.context,
                         "핸드폰 인증에 실패했습니다. \n 올바른 번호를 입력해주세요.",
-                        Toast.LENGTH_LONG).show()
+                        Toast.LENGTH_LONG
+                    ).show()
 
 
 
@@ -143,8 +186,9 @@ class SignUpActivity : AppCompatActivity() {
                 override fun onCodeAutoRetrievalTimeOut(p0: String) {
                     super.onCodeAutoRetrievalTimeOut(p0)
                     progressDialog?.dismiss()
-                    Toast.makeText(binding.root.context,"시간 초과 \n 다시 시도해주세요",Toast.LENGTH_LONG).show()
-               
+                    Toast.makeText(binding.root.context, "시간 초과 \n 다시 시도해주세요", Toast.LENGTH_LONG)
+                        .show()
+
                 }
 
             }
@@ -153,8 +197,28 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     //데이터 저장
-    fun saveData(){
+    fun saveData() {
+        var userDTO = UserDTO()
 
+        //유저 닉네임
+        userDTO.userName = binding.activitySignUpEdittextNickname.text.toString()
+        //유저 폰번호
+        userDTO.phoneNumber = binding.activitySignUpEdittextPhone.text.toString()
+        //가입 시간 [핸드폰기준]
+        userDTO.timeStamp = System.currentTimeMillis()
+        //핸드폰 시간
+        userDTO.timeStr = TimeUtil().getTime()
+        //유저 최초 포인트
+        userDTO.point = 100
+        userDTO.uid = mAuth?.currentUser?.uid.toString()
+        userDTO.memberRating = 0
+        userDTO.policyAccept = true
+
+        Toast.makeText(binding.root.context, "회원가입 완료 \n 현재는 정보가 저장되지 않습니다.", Toast.LENGTH_LONG)
+            .show()
+
+        startActivity(Intent(binding.root.context, LobbyActivity::class.java))
+        finish()
     }
 
     //사진 가져오기
@@ -163,7 +227,7 @@ class SignUpActivity : AppCompatActivity() {
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                
+
                 UserFragment.PICK_PROFILE_FROM_ALBUM -> {
 
                     if (mAuth?.currentUser != null) {
@@ -189,12 +253,12 @@ class SignUpActivity : AppCompatActivity() {
 
                 1001 -> {
                     if (resultCode == RESULT_OK)
-                    binding.activitySignUpCheckboxUsePolicy.isChecked = true
+                        binding.activitySignUpCheckboxUsePolicy.isChecked = true
                 }
 
                 1002 -> {
                     if (resultCode == RESULT_OK)
-                    binding.activitySignUpCheckboxUserInfoUsePolicy.isChecked = true
+                        binding.activitySignUpCheckboxUserInfoUsePolicy.isChecked = true
                 }
 
             }
