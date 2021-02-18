@@ -80,6 +80,10 @@ class SignUpActivity : AppCompatActivity() {
             startActivityForResult(Intent(binding.root.context,PolicyActivity::class.java),1002)
         }
 
+        binding.activitySignUpButtonComplete.setOnClickListener {
+
+        }
+
 
     }
 
@@ -145,6 +149,11 @@ class SignUpActivity : AppCompatActivity() {
 
             }
         )
+
+    }
+
+    //데이터 저장
+    fun saveData(){
 
     }
 
