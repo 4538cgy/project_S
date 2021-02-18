@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.signup.SignUpActivity
+import com.uos.smsmsm.activity.signup.SignUpWithPhoneActivity
 import com.uos.smsmsm.databinding.ActivityLoginBinding
 import com.uos.smsmsm.util.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.SharedData
@@ -50,6 +51,11 @@ class LoginActivity : AppCompatActivity() {
         //구글 로그인
         binding.activityLoginButtonGoogle.setOnClickListener {
             googleLogin()
+        }
+
+        //회원 가입으로 이동
+        binding.activityLoginTextviewSignup.setOnClickListener {
+            startActivity(Intent(binding.root.context,SignUpWithPhoneActivity::class.java))
         }
 
     }
@@ -200,6 +206,8 @@ class LoginActivity : AppCompatActivity() {
 
         }
     }
+
+
 
 
 }

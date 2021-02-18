@@ -14,7 +14,8 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.policy.PolicyActivity"></activity>
+        <activity android:name=".activity.signup.SignUpWithPhoneActivity"></activity>
+        <activity android:name=".activity.policy.PolicyActivity" />
         <activity android:name=".activity.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.lobby.LobbyActivity" >
-
-        </activity>
+        <activity android:name=".activity.lobby.LobbyActivity"></activity>
         <activity android:name=".activity.signup.SignUpActivity" />
         <activity android:name=".activity.login.LoginActivity" />
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
     </application>
 
 </manifest>
