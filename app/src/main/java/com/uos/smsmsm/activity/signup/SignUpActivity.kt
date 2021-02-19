@@ -235,11 +235,17 @@ class SignUpActivity : AppCompatActivity() {
         userDTO.memberRating = 0
         userDTO.policyAccept = true
 
-        Toast.makeText(binding.root.context, "회원가입 완료 \n 현재는 정보가 저장되지 않습니다.", Toast.LENGTH_LONG)
-            .show()
 
-        startActivity(Intent(binding.root.context, LobbyActivity::class.java))
-        finish()
+        FirebaseFirestore.getInstance().collection("test").document("testUser").collection("userInfo")
+            .document("userAccount").collection(mAuth?.currentUser?.uid.toString()).document("accountInfo").set(userDTO)
+            .addOnSuccessListener {
+                startActivity(Intent(binding.root.context, LobbyActivity::class.java))
+                finish()
+            }
+
+
+
+
     }
 
     //사진 가져오기

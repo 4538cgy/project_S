@@ -265,21 +265,14 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
         userDTO.policyAccept = true
 
 
-        FirebaseFirestore.getInstance().collection("userInfo").document("userData")
-            .collection(FirebaseAuth.getInstance().currentUser?.uid.toString())
-            .document("accountInfo").set(userDTO)
+        FirebaseFirestore.getInstance().collection("test").document("testUser").collection("userInfo")
+            .document("userAccount").collection(mAuth?.currentUser?.uid.toString()).document("accountInfo").set(userDTO)
             .addOnSuccessListener {
-                System.out.println("유저 정보 저장 성공")
-
-                //회원 정보 저장
-                SharedData.prefs.setString("userInfo", "yes")
-                SharedData.prefs.setString("emailVerify","yes")
-                //메인으로 이동하게 startActivity 작성해주세요.
-                startActivity(Intent(this, LobbyActivity::class.java))
+                startActivity(Intent(binding.root.context, LobbyActivity::class.java))
                 finish()
-            }.addOnFailureListener {
-                System.out.println("유저 정보 저장 실패")
             }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

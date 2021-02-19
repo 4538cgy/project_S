@@ -178,24 +178,13 @@ class LoginActivity : AppCompatActivity() {
     fun moveMainPage(user: FirebaseUser?) {
         if (user != null) {
 
-            FirebaseFirestore.getInstance().collection("userInfo").document("userData").collection(FirebaseAuth.getInstance().currentUser?.uid.toString())
+            FirebaseFirestore.getInstance().collection("test").document("testUser").collection("userInfo").document("userAccount").collection(FirebaseAuth.getInstance().currentUser?.uid.toString())
                 .document("accountInfo")
                 .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-
-
                     if (documentSnapshot!=null) {
                         if (documentSnapshot!!.exists()) {
-                            SharedData.prefs.setString("userInfo", "yes")
-                        } else {
-                            SharedData.prefs.setString("userInfo", "no")
-                        }
-
-                        if (SharedData.prefs.getString("userInfo", "no").equals("yes")) {
-                            SharedData.prefs.setString("emailVerify","yes")
                             startActivity(Intent(this, LobbyActivity::class.java))
-
-                        } else {
-                            SharedData.prefs.setString("emailVerify","yes")
+                        } else{
                             startActivity(Intent(this, SignUpActivity::class.java))
                         }
                         finish()

@@ -15,6 +15,137 @@
         android:layout_height="match_parent"
         >
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fragment_other_menu_const_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorLightGreen"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            >
+
+            <TextView
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textColor="@color/colorWhite"
+                android:text="Option"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <ImageButton
+                android:id="@+id/fragment_other_menu_setting_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_settings_24"
+                android:scaleType="centerInside"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginRight="12dp"
+                />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            app:layout_constraintTop_toBottomOf="@+id/fragment_other_menu_const_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="@color/colorLightGray"
+                    >
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/fragment_other_menu_circle"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@color/colorWhite"
+                        android:layout_marginLeft="20dp"
+                        />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/fragment_other_menu_const_profile_text_bar"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toRightOf="@+id/fragment_other_menu_circle"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginLeft="12dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/fragment_other_menu_textview_profile_id"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            android:text="id 입니다."
+                            android:gravity="left"
+                            android:layout_marginBottom="2dp"
+                            />
+
+                        <TextView
+                            android:layout_marginTop="2dp"
+                            android:id="@+id/fragment_other_menu_textview_profile_nickname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toBottomOf="@+id/fragment_other_menu_textview_profile_id"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:text="닉네임 입니다."
+                            android:gravity="left"
+                            />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <Button
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/background_edittext_round_gray_16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        android:layout_marginRight="12dp"
+                        android:drawableLeft="@drawable/ic_baseline_attach_money_24"
+                        android:text="80"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
