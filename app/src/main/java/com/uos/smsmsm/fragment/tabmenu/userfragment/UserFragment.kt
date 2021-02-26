@@ -26,8 +26,14 @@ class UserFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_user,container,false)
+        binding.fragmentuser = this
 
         return binding.root
+    }
+
+    //프로필 변경 이벤트
+    fun clickProfilePhoto(view : View) {
+        
     }
 
 

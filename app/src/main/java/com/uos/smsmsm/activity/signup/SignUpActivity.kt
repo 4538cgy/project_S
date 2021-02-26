@@ -24,8 +24,8 @@ import com.uos.smsmsm.activity.policy.PolicyActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivitySignUpBinding
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
-import com.uos.smsmsm.util.ProgressDialogPhoneAuthLoading
-import com.uos.smsmsm.util.TimeUtil
+import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
+import com.uos.smsmsm.util.time.TimeUtil
 import java.util.concurrent.TimeUnit
 
 class SignUpActivity : AppCompatActivity() {

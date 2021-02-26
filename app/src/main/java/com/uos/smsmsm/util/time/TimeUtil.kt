@@ -1,4 +1,4 @@
-package com.uos.smsmsm.util
+package com.uos.smsmsm.util.time
 
 import java.text.SimpleDateFormat
 import java.util.*

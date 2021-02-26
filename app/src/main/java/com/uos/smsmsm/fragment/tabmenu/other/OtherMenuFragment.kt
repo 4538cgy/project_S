@@ -21,6 +21,7 @@ class OtherMenuFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_other_menu,container,false)
+        binding.fragmentothermenu = this
 
         //설정
         binding.fragmentOtherMenuSettingButton.setOnClickListener {
@@ -28,6 +29,14 @@ class OtherMenuFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    fun onClickProfilePhoto (view : View) {
+
+    }
+
+    fun onClickSettingButton(view : View) {
+
     }
 
 

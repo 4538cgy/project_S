@@ -15,7 +15,6 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -25,9 +24,8 @@ import com.uos.smsmsm.activity.policy.PolicyActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivitySignUpWithPhoneBinding
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
-import com.uos.smsmsm.util.ProgressDialogPhoneAuthLoading
-import com.uos.smsmsm.util.SharedData
-import com.uos.smsmsm.util.TimeUtil
+import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
+import com.uos.smsmsm.util.time.TimeUtil
 import java.util.concurrent.TimeUnit
 
 class SignUpWithPhoneActivity : AppCompatActivity() {

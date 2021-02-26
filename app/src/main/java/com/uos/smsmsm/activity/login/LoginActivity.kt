@@ -19,8 +19,7 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.signup.SignUpActivity
 import com.uos.smsmsm.activity.signup.SignUpWithPhoneActivity
 import com.uos.smsmsm.databinding.ActivityLoginBinding
-import com.uos.smsmsm.util.ProgressDialogPhoneAuthLoading
-import com.uos.smsmsm.util.SharedData
+import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import java.util.concurrent.TimeUnit
 
 class LoginActivity : AppCompatActivity() {
