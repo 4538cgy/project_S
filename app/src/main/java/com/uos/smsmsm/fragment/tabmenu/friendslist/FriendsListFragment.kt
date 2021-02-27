@@ -28,10 +28,18 @@ class FriendsListFragment : Fragment() {
         binding.fragmentfriendslist = this
 
         val list = arrayListOf<RecyclerDefaultModel>(
+            //순서 type / image string url / image int uri / title / content
+
+            /*
             RecyclerDefaultModel(RecyclerDefaultModel.TEXT_TYPE_2,"으애앸",R.drawable.btn_signin_google,"내용입니다"),
             RecyclerDefaultModel(RecyclerDefaultModel.TEXT_TYPE,"제목만 있습니다.",0,null),
             RecyclerDefaultModel(RecyclerDefaultModel.IMAGE_TYPE,"사진도있습니다..",R.drawable.btn_signin_google,null),
             RecyclerDefaultModel(RecyclerDefaultModel.IMAGE_TYPE_2,"사진 내용 제목 다 있습니다..",R.drawable.btn_signin_google,"으아아아아")
+             */
+
+            RecyclerDefaultModel(RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE,"gs://project-s-8efd0.appspot.com/userProfileImages/750d01b9640c845763f71d322efb8b00.jpg",null,"다홍빛소녀","24세 멜 빻돔"),
+            RecyclerDefaultModel(RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,"gs://project-s-8efd0.appspot.com/userProfileImages/750d01b9640c845763f71d322efb8b00.jpg",null,"다홍빛소녀","24세 멜 빻돔")
+
 
         )
 

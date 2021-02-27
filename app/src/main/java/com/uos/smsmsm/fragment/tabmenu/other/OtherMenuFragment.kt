@@ -35,9 +35,7 @@ class OtherMenuFragment : Fragment() {
 
     }
 
-    fun onClickSettingButton(view : View) {
-
-    }
+    fun onClickSettingButton(view : View) { startActivity(Intent(binding.root.context,SettingActivity::class.java))}
 
 
 }

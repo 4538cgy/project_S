@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="itemmultiviewfriendslisttypetitle"
+            type="com.uos.smsmsm.data.RecyclerDefaultModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        >
+        <ImageView
+            android:id="@+id/item_multi_view_friends_list_type_title_imageview"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="12dp"
+            />
+
+        <TextView
+            app:layout_constraintLeft_toRightOf="@+id/item_multi_view_friends_list_type_title_imageview"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/item_multi_view_friends_list_type_title_textview_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="나는 이런 사람 입니다."
+            android:layout_marginHorizontal="12dp"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
