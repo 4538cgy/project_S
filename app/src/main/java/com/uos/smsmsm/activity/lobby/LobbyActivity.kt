@@ -1,23 +1,32 @@
 package com.uos.smsmsm.activity.lobby
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.uos.smsmsm.R
+import com.uos.smsmsm.data.TestDTO
+import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivityLobbyBinding
 import com.uos.smsmsm.fragment.tabmenu.chatroom.ChatRoomFragment
 import com.uos.smsmsm.fragment.tabmenu.friendslist.FriendsListFragment
 import com.uos.smsmsm.fragment.tabmenu.other.OtherMenuFragment
 import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
+import com.uos.smsmsm.util.time.TimeUtil
 
 class LobbyActivity : AppCompatActivity(),BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -91,6 +100,40 @@ class LobbyActivity : AppCompatActivity(),BottomNavigationView.OnNavigationItemS
         }
         return false
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == 1234){
+            System.out.println("데이터 전달 성공적으로 완수1234")
+        }
+
+        if(resultCode == 1555)
+            System.out.println("데이터 전달 성공적으로 완수1666")
+
+
+        if(requestCode == UserFragment.PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK){
+
+            var timestamp = TimeUtil().getTime()
+            var imageFileName = "TEST_IMAGE_" + timestamp + "_.png"
+
+            var imageUri = data?.data
+            var uid = FirebaseAuth.getInstance().currentUser?.uid
+            var storageRef = FirebaseStorage.getInstance().reference.child("TestImage").child(imageFileName)
+            storageRef.putFile(imageUri!!).continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
+                return@continueWithTask storageRef.downloadUrl
+            }.addOnSuccessListener { uri ->
+
+                var images = TestDTO()
+                images.imageUrl = uri.toString()
+                images.timestamp = System.currentTimeMillis()
+                FirebaseFirestore.getInstance().collection("TextImage").document().set(images)
+
+
+            }
+        }
+    }
+
 
     override fun onBackPressed() {
         //super.onBackPressed()

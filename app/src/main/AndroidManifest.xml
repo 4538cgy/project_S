@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.uos.smsmsm" >
+    package="com.uos.smsmsm">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -13,14 +13,14 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity" >
-        </activity>
+        android:theme="@style/AppTheme">
+        <activity android:name=".testactivity.AddTestUser"></activity>
+        <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity"></activity>
         <activity android:name=".activity.search.SearchFriendActivity" />
         <activity android:name=".activity.setting.SettingActivity" />
         <activity android:name=".activity.signup.SignUpWithPhoneActivity" />
         <activity android:name=".activity.policy.PolicyActivity" />
-        <activity android:name=".activity.splash.SplashActivity" >
+        <activity android:name=".activity.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
