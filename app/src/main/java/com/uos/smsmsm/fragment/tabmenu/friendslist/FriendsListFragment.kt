@@ -7,16 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
-import com.uos.smsmsm.data.TestDTO
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
-import com.uos.smsmsm.fragment.tabmenu.friendslist.adapter.FriendsMultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.recycleradapter.FriendsMultiViewTypeRecyclerAdapter
 
 
 class FriendsListFragment : Fragment() {

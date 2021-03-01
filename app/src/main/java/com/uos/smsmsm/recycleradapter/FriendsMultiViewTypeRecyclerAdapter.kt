@@ -1,13 +1,10 @@
-package com.uos.smsmsm.fragment.tabmenu.friendslist.adapter
+package com.uos.smsmsm.recycleradapter
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.uos.smsmsm.R
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.*
 import java.lang.RuntimeException
@@ -25,6 +22,8 @@ class FriendsMultiViewTypeRecyclerAdapter(private val context: Context,friendsLi
         println("뷰타이이이이이입" + viewType.toString())
 
         return when (viewType){
+
+
             RecyclerDefaultModel.TEXT_TYPE_2 -> {
                 //TextType2ViewHolder(ItemMultiViewTextTypeBinding.inflate(LayoutInflater.from(context),parent,false))
                 val binding = ItemMultiViewTextType2Binding.inflate(LayoutInflater.from(context),parent,false)
