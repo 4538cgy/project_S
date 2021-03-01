@@ -13,7 +13,7 @@ import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
-import com.uos.smsmsm.recycleradapter.FriendsMultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
 
 
 class FriendsListFragment : Fragment() {
@@ -112,7 +112,7 @@ class FriendsListFragment : Fragment() {
 
         //binding.fragmentFriendsListRecycler.addItemDecoration(DividerItemDecoration(binding.root.context,DividerItemDecoration.VERTICAL))
         binding.fragmentFriendsListRecycler.adapter =
-            FriendsMultiViewTypeRecyclerAdapter(binding.root.context, list2)
+            MultiViewTypeRecyclerAdapter(binding.root.context, list2)
         binding.fragmentFriendsListRecycler.layoutManager =
             LinearLayoutManager(binding.root.context, LinearLayoutManager.VERTICAL, false)
 

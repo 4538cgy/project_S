@@ -1,8 +1,6 @@
 package com.uos.smsmsm.data
 
-data class ReportDTO(
-    var title : String?
-){
+class ReportDTO{
     data class POST(
         var postExplain : String?,              //신고당한 게시글의 내용
         var reportUserUid : String?,            //신고한 유저의 uid
@@ -18,5 +16,4 @@ data class ReportDTO(
         var timestamp : Int?,                   //신고 당한 시간
         var reportExplain : String              //신고 당한 사유
     )
-    
 }

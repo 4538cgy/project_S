@@ -9,7 +9,7 @@ import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.*
 import java.lang.RuntimeException
 
-class FriendsMultiViewTypeRecyclerAdapter(private val context: Context,friendsList : ArrayList<RecyclerDefaultModel>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class MultiViewTypeRecyclerAdapter(private val context: Context, friendsList : ArrayList<RecyclerDefaultModel>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     var list : ArrayList<RecyclerDefaultModel> = arrayListOf()
 
