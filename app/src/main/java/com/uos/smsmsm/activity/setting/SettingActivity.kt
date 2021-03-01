@@ -22,7 +22,7 @@ class SettingActivity : AppCompatActivity() {
         binding.setting = this@SettingActivity
 
         list.add(RecyclerDefaultModel(RecyclerDefaultModel.TEXT_TYPE,"null",null,"로그아웃","nope"))
-        list2.add(RecyclerDefaultModel.FirendsRecyclerModel("hello"))
+
 
 
         binding.activitySettingRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context, list)
