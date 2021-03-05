@@ -1,13 +1,11 @@
 package com.uos.smsmsm.activity.setting
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
-import com.uos.smsmsm.activity.chat.ChatRoomActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.*
 import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
@@ -24,6 +22,7 @@ class SettingActivity : AppCompatActivity() {
         binding.setting = this@SettingActivity
 
         list.add(RecyclerDefaultModel(RecyclerDefaultModel.TEXT_TYPE,"null",null,"로그아웃","nope"))
+
 
 
         binding.activitySettingRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context, list)
