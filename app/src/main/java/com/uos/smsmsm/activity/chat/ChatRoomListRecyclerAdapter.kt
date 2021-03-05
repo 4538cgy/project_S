@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.uos.smsmsm.data.ChatDTO
-import com.uos.smsmsm.databinding.ChatRoomListOnetooneBinding
+import com.uos.smsmsm.databinding.ItemChatRoomListGroupBinding
+import com.uos.smsmsm.databinding.ItemChatRoomListOnetooneBinding
 import java.lang.RuntimeException
 import java.util.ArrayList
 
@@ -41,8 +42,12 @@ class ChatRoomListRecyclerAdapter(var context : Context, chatroomlist : ArrayLis
         return when(viewType){
 
             ChatDTO.ONE_TO_ONE -> {
-                val binding = ChatRoomListOnetooneBinding.inflate(LayoutInflater.from(context),parent,false)
+                val binding = ItemChatRoomListOnetooneBinding.inflate(LayoutInflater.from(context),parent,false)
                 return ChatRoomListOneToOneViewHolder(binding)
+            }
+            ChatDTO.GROUP -> {
+                val binding = ItemChatRoomListGroupBinding.inflate(LayoutInflater.from(context),parent,false)
+                return ChatRoomListGroupViewHoler(binding)
             }
             else -> throw RuntimeException("ChatRoomList Recycler Adapter Data ViewType Binding Error")
         }
@@ -55,14 +60,17 @@ class ChatRoomListRecyclerAdapter(var context : Context, chatroomlist : ArrayLis
 
     override fun getItemCount(): Int = chat.size
 
-    class ChatRoomListOneToOneViewHolder(var binding : ChatRoomListOnetooneBinding) : RecyclerView.ViewHolder(binding.root){
+    class ChatRoomListOneToOneViewHolder(var binding : ItemChatRoomListOnetooneBinding) : RecyclerView.ViewHolder(binding.root){
         fun onBind(data : ChatDTO){
-            binding.chatroomlistonetoone = data
+            binding.itemchatroomlistonetoone = data
         }
 
     }
 
-    class ChatRoomListGroupViewHoler(){
+    class ChatRoomListGroupViewHoler(var binding : ItemChatRoomListGroupBinding) : RecyclerView.ViewHolder(binding.root){
+        fun onBind(data: ChatDTO){
+            binding.itemchatroomlistgroup = data
+        }
 
     }
 }
