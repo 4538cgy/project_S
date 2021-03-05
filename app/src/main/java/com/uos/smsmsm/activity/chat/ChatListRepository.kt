@@ -3,14 +3,11 @@ package com.uos.smsmsm.activity.chat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.uos.smsmsm.data.ChatDTO
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -20,6 +17,8 @@ class ChatListRepository {
     private val uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     private val ChatRoomDataBase = FirebaseDatabase.getInstance()
+
+    private val scope = CoroutineScope(Dispatchers.IO)
 
 
     init {
@@ -39,6 +38,38 @@ class ChatListRepository {
     }
 
 
+    //이걸로 수신대기해야합니다...
+    @ExperimentalCoroutinesApi
+    private val flow = callbackFlow<ChatDTO> {
+
+        val databaseReference = ChatRoomDataBase.reference.child("test").child("chatRoomList")
+        val eventListener = databaseReference.addValueEventListener(FirebaseValueEventListener(
+                onDataChange = {it.let {
+
+
+                        var chatDATA = it.getValue(ChatDTO::class.java)
+                        this@callbackFlow.sendBlocking(chatDATA!!)
+                }},
+                onError = {this@callbackFlow.close(it.toException())}
+
+
+        ))
+        awaitClose {
+            databaseReference.removeEventListener(eventListener)
+        }
+    }
+
+    //수신대기 켜는것..
+    fun chatObserver(){
+        scope.launch {
+            flow.collect { chatData ->
+                //process
+                var comment =  chatData.comments
+
+
+            }
+        }
+    }
 
 
     //get data once
@@ -71,6 +102,8 @@ class ChatListRepository {
 
 }
 
+
+
 //ValueEventListener - RDB
 class FirebaseValueEventListener(val onDataChange: (DataSnapshot) -> Unit, val onError: (DatabaseError) -> Unit) : ValueEventListener {
     override fun onDataChange(data: DataSnapshot) = onDataChange.invoke(data)
@@ -94,3 +127,5 @@ sealed class State<T>{
         fun <T> successListening(data : T) = SuccessListening(data)
     }
 }
+
+
