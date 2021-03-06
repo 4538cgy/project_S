@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <data>
+        <variable
+            name="chatroomviewmodel"
+            type="com.uos.smsmsm.activity.chat.ChatRoomViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="테스트임"
+            android:onClick="@{() ->chatroomviewmodel.getTest()}"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

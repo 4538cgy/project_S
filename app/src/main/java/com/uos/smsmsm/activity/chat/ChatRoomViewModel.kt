@@ -1,17 +1,18 @@
 package com.uos.smsmsm.activity.chat
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.uos.smsmsm.data.ChatDTO
 
 
-class ChatRoomViewModel(private val repository: ChatListRepository) : ViewModel() {
+class ChatRoomViewModel( application: Application ) : AndroidViewModel(application) {
+    val repository = ChatListRepository()
 
-    fun getChatRoomList(data : ChatDTO) = repository.getChatRoomListData()
+   fun getTest() {
+       repository.userObserver()
+   }
 
-    fun getChatRoomInfo(){
-
-
-    }
 }
 
 

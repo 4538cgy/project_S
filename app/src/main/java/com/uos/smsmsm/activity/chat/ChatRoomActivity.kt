@@ -1,39 +1,31 @@
 package com.uos.smsmsm.activity.chat
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.safetynet.VerifyAppsConstants
-import com.google.firebase.database.DatabaseReference
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.database.FirebaseDatabase
-import com.uos.smsmsm.data.ChatDTO
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.uos.smsmsm.R
+import com.uos.smsmsm.databinding.ActivityChatroomBinding
 
-class ChatRoomActivity {
+class ChatRoomActivity : AppCompatActivity() {
 
-    val database = FirebaseDatabase.getInstance()
-
-    inner class OneToOneChatRoomActivity : AppCompatActivity(){
-
+    private val model : ChatRoomViewModel by viewModels()
+    private lateinit var binding : ActivityChatroomBinding
 
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+            binding = DataBindingUtil.setContentView(this, R.layout.activity_chatroom)
+            binding.lifecycleOwner = this
+            binding.chatroomviewmodel = model
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    withContext(Dispatchers.IO){
-                    }
-                }
-        }
-    }
 
-    inner class GroupChatRoomActivity : AppCompatActivity(){
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
         }
-    }
+
+
+
 
 }
 

@@ -2,7 +2,9 @@ package com.uos.smsmsm.activity.chat
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.data.ChatDTO
+import com.uos.smsmsm.data.UserDTO
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
@@ -21,6 +23,16 @@ class ChatListRepository {
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
+
+    sealed class Data<UserDTO> {
+        class getUserData<UserDTO> : Data<UserDTO>()
+        companion object{
+            fun <UserDTO> getUserDataBASE(data : UserDTO) = getUserData<UserDTO>()
+        }
+    }
+
+
+
     init {
 
     }
@@ -33,6 +45,27 @@ class ChatListRepository {
                     onDataChange = { continuation.resume(it)},
                     onError = { continuation.resumeWithException(it.toException())}
                 ))
+            }
+        }
+    }
+    @ExperimentalCoroutinesApi
+    private val flow2 = callbackFlow<UserDTO> {
+        val databaseReference = FirebaseFirestore.getInstance().collection("test").document("user")
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            var userData = value?.toObject(UserDTO::class.java)
+            this@callbackFlow.sendBlocking(userData!!)
+        }
+
+        awaitClose {
+            eventListener.remove()
+        }
+    }
+    fun userObserver(){
+        println("유저 데이터 불러오기실해애애애애애앵")
+        scope.launch {
+            flow2.collect { userData ->
+                println("유저 데이터어어어어엌" + userData.toString())
+                Data.getUserDataBASE(userData)
             }
         }
     }

@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.chat.ChatListRepository
+import com.uos.smsmsm.activity.chat.State
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
 
 class TimeLineFragment : Fragment() {
@@ -29,6 +31,9 @@ class TimeLineFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_time_line,container,false)
         binding.fragmenttimeline = this
 
+        var ad : ChatListRepository
+
+
         return binding.root
     }
 
@@ -45,6 +50,7 @@ class TimeLineFragment : Fragment() {
     fun writeContent(view : View) { }
 
     fun clickFab(view:View){
+
         if(!isOpenFAB){
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabGallery,"translationY", -600f).apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabWritePost,"translationY", -400f).apply { start() }
@@ -57,5 +63,7 @@ class TimeLineFragment : Fragment() {
             isOpenFAB = false
         }
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.uos.smsmsm">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".testactivity.AddTestUser"></activity>
+        <activity android:name=".activity.chat.ChatRoomActivity"></activity>
         <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity"></activity>
         <activity android:name=".activity.search.SearchFriendActivity" />
         <activity android:name=".activity.setting.SettingActivity" />
