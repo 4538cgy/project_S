@@ -1,11 +1,14 @@
 package com.uos.smsmsm.activity.chat
 
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.data.UserDTO
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.*
@@ -50,10 +53,15 @@ class ChatListRepository {
     }
     @ExperimentalCoroutinesApi
     private val flow2 = callbackFlow<UserDTO> {
+
+        val channel = Channel<UserDTO>()
         val databaseReference = FirebaseFirestore.getInstance().collection("test").document("user")
         val eventListener = databaseReference.addSnapshotListener { value, error ->
             var userData = value?.toObject(UserDTO::class.java)
             this@callbackFlow.sendBlocking(userData!!)
+            offer(userData!!)
+
+
         }
 
         awaitClose {
@@ -62,13 +70,14 @@ class ChatListRepository {
     }
     fun userObserver(){
         println("유저 데이터 불러오기실해애애애애애앵")
+
         scope.launch {
             flow2.collect { userData ->
-                println("유저 데이터어어어어엌" + userData.toString())
-                Data.getUserDataBASE(userData)
+
             }
         }
     }
+
 
 
     //이걸로 수신대기해야합니다...
@@ -92,17 +101,44 @@ class ChatListRepository {
         }
     }
 
+    fun Observe() = callbackFlow<UserDTO> {
+        val channel = Channel<UserDTO>()
+        val databaseReference = FirebaseFirestore.getInstance().collection("test").document("user")
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            var userData = value?.toObject(UserDTO::class.java)
+            this@callbackFlow.sendBlocking(userData!!)
+
+
+
+        }
+
+        awaitClose {
+            eventListener.remove()
+        }
+    }
+
+
+
     //수신대기 켜는것..
     fun chatObserver(){
+
+
         scope.launch {
             flow.collect { chatData ->
                 //process
                 var comment =  chatData.comments
 
-
             }
         }
     }
+
+    fun testObserber(){
+
+    }
+
+
+
+
 
 
     //get data once
