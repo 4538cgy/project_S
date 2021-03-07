@@ -10,8 +10,9 @@ import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.ChatRoomListOnetooneBinding
 import java.lang.RuntimeException
 import java.util.ArrayList
+import javax.inject.Inject
 
-class ChatRoomListRecyclerAdapter(var context : Context, chatroomlist : ArrayList<ChatDTO>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatRoomListRecyclerAdapter @Inject constructor(var context : Context, chatroomlist : ArrayList<ChatDTO>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var chat : ArrayList<ChatDTO> = arrayListOf()
     var destinationUsers : ArrayList<String> = arrayListOf()                                                        //채팅을 받는 유저의 uid
