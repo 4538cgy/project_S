@@ -1,4 +1,4 @@
-package com.uos.smsmsm.activity.chat
+package com.uos.smsmsm.model
 
 class ChatRoomListRepository {
 
