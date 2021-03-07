@@ -2,11 +2,11 @@ package com.uos.smsmsm.fragment.tabmenu.friendslist
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
@@ -15,19 +15,20 @@ import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
 import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
 
-
 class FriendsListFragment : Fragment() {
 
     lateinit var binding: FragmentFriendsListBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_friends_list, container, false)
         binding.fragmentfriendslist = this
-        var list2 = arrayListOf<RecyclerDefaultModel>(
+        // ArrayList -> List (array -> collection)
+        val list2 = listOf(
             RecyclerDefaultModel(
                 RecyclerDefaultModel.TEXT_TYPE,
                 "",
@@ -106,20 +107,16 @@ class FriendsListFragment : Fragment() {
                 "아 뭐적어야함"
             ),
 
+            )
 
-        )
-
-
-        //binding.fragmentFriendsListRecycler.addItemDecoration(DividerItemDecoration(binding.root.context,DividerItemDecoration.VERTICAL))
+        // binding.fragmentFriendsListRecycler.addItemDecoration(DividerItemDecoration(binding.root.context,DividerItemDecoration.VERTICAL))
         binding.fragmentFriendsListRecycler.adapter =
             MultiViewTypeRecyclerAdapter(binding.root.context, list2)
         binding.fragmentFriendsListRecycler.layoutManager =
             LinearLayoutManager(binding.root.context, LinearLayoutManager.VERTICAL, false)
 
-
         return binding.root
     }
-
 
     fun openSearhActivity(view: View) {
         startActivity(Intent(binding.root.context, SearchFriendActivity::class.java))
@@ -127,11 +124,13 @@ class FriendsListFragment : Fragment() {
 
     fun openFriendListSettingActivity(view: View) {
         startActivityForResult(
-            (Intent(
-                binding.root.context,
-                FriendsListSettingActivity::class.java
-            )), 1
+            (
+                    Intent(
+                        binding.root.context,
+                        FriendsListSettingActivity::class.java
+                    )
+                    ),
+            1
         )
     }
-
 }
