@@ -2,9 +2,9 @@ package com.uos.smsmsm.util.shareddate
 
 import android.app.Application
 
-
+// Apply ktlint
 class SharedData : Application() {
-    companion object{
+    companion object {
         lateinit var prefs: PreferenceUtil
     }
 

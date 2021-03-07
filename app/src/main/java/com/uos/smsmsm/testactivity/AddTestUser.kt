@@ -1,9 +1,10 @@
 package com.uos.smsmsm.testactivity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.uos.smsmsm.R
 
+// Apply ktlint
 class AddTestUser : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
