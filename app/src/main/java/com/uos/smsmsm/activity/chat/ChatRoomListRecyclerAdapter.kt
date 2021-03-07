@@ -5,21 +5,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.ItemChatRoomListGroupBinding
 import com.uos.smsmsm.databinding.ItemChatRoomListOnetooneBinding
-import java.lang.RuntimeException
 import java.util.ArrayList
 
-class ChatRoomListRecyclerAdapter(var context : Context, chatroomlist : ArrayList<ChatDTO>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+// Chat init in constructor
+class ChatRoomListRecyclerAdapter(var context: Context, private val chat: List<ChatDTO>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var chat : ArrayList<ChatDTO> = arrayListOf()
-    var destinationUsers : ArrayList<String> = arrayListOf()                                                        //채팅을 받는 유저의 uid
-    var uid : String ? = null                                                                                       //채팅을 보내는 유저의 uid
+    // var chat: ArrayList<ChatDTO> = arrayListOf()
+    var destinationUsers: ArrayList<String> = arrayListOf() // 채팅을 받는 유저의 uid
+    var uid: String? = null // 채팅을 보내는 유저의 uid
 
     init {
-        chat = chatroomlist
+        // chat = chatroomlist
         /*
         FirebaseDatabase.getInstance().reference.child("chatrooms").orderByChild("users/$uid")
             .equalTo(true).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -39,38 +39,46 @@ class ChatRoomListRecyclerAdapter(var context : Context, chatroomlist : ArrayLis
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         uid = FirebaseAuth.getInstance().uid.toString()
         // 챗룸 데이터 가져오기
-        return when(viewType){
+        // Remove return in return
+        return when (viewType) {
 
             ChatDTO.ONE_TO_ONE -> {
-                val binding = ItemChatRoomListOnetooneBinding.inflate(LayoutInflater.from(context),parent,false)
-                return ChatRoomListOneToOneViewHolder(binding)
+                val binding = ItemChatRoomListOnetooneBinding.inflate(
+                    LayoutInflater.from(context),
+                    parent,
+                    false
+                )
+                ChatRoomListOneToOneViewHolder(binding)
             }
             ChatDTO.GROUP -> {
-                val binding = ItemChatRoomListGroupBinding.inflate(LayoutInflater.from(context),parent,false)
-                return ChatRoomListGroupViewHoler(binding)
+                val binding = ItemChatRoomListGroupBinding.inflate(
+                    LayoutInflater.from(context),
+                    parent,
+                    false
+                )
+                ChatRoomListGroupViewHoler(binding)
             }
             else -> throw RuntimeException("ChatRoomList Recycler Adapter Data ViewType Binding Error")
         }
-
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         TODO("Not yet implemented")
     }
 
-    override fun getItemCount(): Int = chat.size
+    override fun getItemCount() = chat.size
 
-    class ChatRoomListOneToOneViewHolder(var binding : ItemChatRoomListOnetooneBinding) : RecyclerView.ViewHolder(binding.root){
-        fun onBind(data : ChatDTO){
+    class ChatRoomListOneToOneViewHolder(var binding: ItemChatRoomListOnetooneBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun onBind(data: ChatDTO) {
             binding.itemchatroomlistonetoone = data
         }
-
     }
 
-    class ChatRoomListGroupViewHoler(var binding : ItemChatRoomListGroupBinding) : RecyclerView.ViewHolder(binding.root){
-        fun onBind(data: ChatDTO){
+    class ChatRoomListGroupViewHoler(var binding: ItemChatRoomListGroupBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun onBind(data: ChatDTO) {
             binding.itemchatroomlistgroup = data
         }
-
     }
 }
