@@ -6,9 +6,14 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.data.ChatDTO
+import com.uos.smsmsm.data.UserDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -46,6 +51,21 @@ class FirebaseRepository {
         */
 
     private val uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
+
+    // Firebase Firestore get data from snapshot listener
+    @ExperimentalCoroutinesApi // Add
+    // Apply Camelcase
+    fun testFirestoreSnapshotObserve() = callbackFlow { // Remove unnecessary
+        val databaseReference = FirebaseFirestore.getInstance().collection("test").document("user")
+        val eventListener = databaseReference.addSnapshotListener { value, _ -> // remove unused parameter
+            val userData = value?.toObject(UserDTO::class.java) // var -> val
+            this@callbackFlow.sendBlocking(userData!!)
+        }
+
+        awaitClose {
+            eventListener.remove()
+        }
+    }
 
     // Apply Camelcase
     private val chatRoomDataBase = FirebaseDatabase.getInstance()
@@ -122,4 +142,3 @@ class FirebaseValueEventListener( // Change scope
     override fun onDataChange(data: DataSnapshot) = onDataChange.invoke(data)
     override fun onCancelled(error: DatabaseError) = onError.invoke(error)
 }
-
