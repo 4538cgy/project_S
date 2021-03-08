@@ -76,7 +76,7 @@ class FirebaseRepository {
     // listen data everytime
     suspend fun DatabaseReference.getSnapshotValue(): DataSnapshot {
         return withContext(Dispatchers.IO) {
-            suspendCoroutine<DataSnapshot> { continuation ->
+            suspendCoroutine { continuation -> // Remove unnecessary
                 addListenerForSingleValueEvent(
                     FirebaseValueEventListener(
                         onDataChange = { continuation.resume(this) },
