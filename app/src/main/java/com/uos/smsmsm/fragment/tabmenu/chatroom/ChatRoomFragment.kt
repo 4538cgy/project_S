@@ -5,12 +5,22 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.uos.smsmsm.R
+import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentChatRoomBinding
+import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class ChatRoomFragment : Fragment() {
 
     lateinit var binding: FragmentChatRoomBinding
+    val viewmodel = ViewModelProvider(requireActivity()).get(SNSUtilViewModel::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,7 +34,22 @@ class ChatRoomFragment : Fragment() {
         var actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.setDisplayShowTitleEnabled(false)
 
+        viewmodel.initChatRoomList()
+        initRecyclerViewAdapter()
+
         return binding.root
+    }
+
+    fun initRecyclerViewAdapter(){
+
+        val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
+            = Observer { livedata ->
+            livedata as MutableLiveData<ArrayList<RecyclerDefaultModel>>
+            binding.fragmentChatRoomRecyclerview.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,livedata)
+        }
+
+        viewmodel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
