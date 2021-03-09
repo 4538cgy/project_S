@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentChatRoomBinding
@@ -46,6 +47,7 @@ class ChatRoomFragment : Fragment() {
             = Observer { livedata ->
             livedata as MutableLiveData<ArrayList<RecyclerDefaultModel>>
             binding.fragmentChatRoomRecyclerview.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,livedata)
+            binding.fragmentChatRoomRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         }
 
         viewmodel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)

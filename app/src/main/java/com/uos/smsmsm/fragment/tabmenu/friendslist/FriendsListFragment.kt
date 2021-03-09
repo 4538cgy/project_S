@@ -152,6 +152,7 @@ class FriendsListFragment : Fragment() {
                 = Observer { livedata ->
             livedata as MutableLiveData<ArrayList<RecyclerDefaultModel>>
             binding.fragmentFriendsListRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,livedata)
+            binding.fragmentFriendsListRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         }
 
         viewmodel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
