@@ -15,16 +15,39 @@
         android:layout_height="match_parent"
         >
 
-        <TextView
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/fragment_chat_room_appbarlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="아마도 채팅 리스트가 될것"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            >
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/fragment_chat_room_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="채팅"
+                    />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_chat_room_appbarlayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
