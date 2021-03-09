@@ -41,6 +41,7 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
         binding.snsviewmodel = viewmodel
 
 
+
         // 바텀 네비게이션 리스너 초기화
         binding.activityLobbyBottomNavigation.setOnNavigationItemSelectedListener(this)
         // 외부 저장소 권한 읽기

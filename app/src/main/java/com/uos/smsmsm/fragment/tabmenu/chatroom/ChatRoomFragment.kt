@@ -5,6 +5,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ChatRoomFragment : Fragment() {
 
     lateinit var binding: FragmentChatRoomBinding
-    val viewmodel = ViewModelProvider(requireActivity()).get(SNSUtilViewModel::class.java)
+    private val viewmodel: SNSUtilViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,11 +43,12 @@ class ChatRoomFragment : Fragment() {
     }
 
     fun initRecyclerViewAdapter(){
+        var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
 
         val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
             = Observer { livedata ->
-            livedata as MutableLiveData<ArrayList<RecyclerDefaultModel>>
-            binding.fragmentChatRoomRecyclerview.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,livedata)
+            data.value = livedata
+            binding.fragmentChatRoomRecyclerview.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
             binding.fragmentChatRoomRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         }
 

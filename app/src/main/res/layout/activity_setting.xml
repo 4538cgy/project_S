@@ -8,6 +8,9 @@
         <variable
             name="setting"
             type="com.uos.smsmsm.activity.setting.SettingActivity" />
+        <variable
+            name="utilviewmodel"
+            type="com.uos.smsmsm.viewmodel.AppUtilViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
