@@ -1,5 +1,6 @@
 package com.uos.smsmsm.viewmodel
 
+import android.view.View
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +15,18 @@ class SNSUtilViewModel @ViewModelInject constructor( @Assisted private val saved
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
 
     fun initChatRoomList(){
+        var list : ArrayList<RecyclerDefaultModel> = arrayListOf()
+        list.add(RecyclerDefaultModel(
+            RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
+            "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2054%EB%B6%84%2045%EC%B4%88_.png?alt=media&token=b15104e7-ed95-4acd-8f41-c9890af2a5ec",
+            null,
+            "아 적기 힘들다",
+            "아 뭐적어야함"
+        ))
+        recyclerData.postValue(list)
+    }
+
+    fun initChatList(){
         var list : ArrayList<RecyclerDefaultModel> = arrayListOf()
 
         recyclerData.postValue(list)
