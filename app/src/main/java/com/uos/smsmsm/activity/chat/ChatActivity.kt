@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.ActivityChatBinding
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
@@ -46,4 +47,6 @@ class ChatActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 }
