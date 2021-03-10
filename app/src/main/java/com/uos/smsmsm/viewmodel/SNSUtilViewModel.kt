@@ -78,7 +78,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                 repository.createChatRoom(destinationUid,chatDTO).collect {
 
                 }
-            //채팅방이 있다면 그냥 메세지 전달    
+            //채팅방이 있다면 그냥 메세지 전달
             }else{
                 repository.addChat(chatRoomUid.value.toString(),comment).collect {
 
@@ -142,7 +142,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                 "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2054%EB%B6%84%2045%EC%B4%88_.png?alt=media&token=b15104e7-ed95-4acd-8f41-c9890af2a5ec",
                 null,
                 "아 적기 힘들다",
-                "아 뭐적어야함"
+                "아 뭐적어야함."
             )
         )
         list.add(
