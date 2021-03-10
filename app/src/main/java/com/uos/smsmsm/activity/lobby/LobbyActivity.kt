@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -22,15 +23,24 @@ import com.uos.smsmsm.fragment.tabmenu.other.OtherMenuFragment
 import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
 import com.uos.smsmsm.util.time.TimeUtil
+import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     lateinit var binding: ActivityLobbyBinding
 
+    private val viewmodel : SNSUtilViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_lobby)
-        binding.lobby = this@LobbyActivity
+        binding.lifecycleOwner = this
+        binding.snsviewmodel = viewmodel
+
+
 
         // 바텀 네비게이션 리스너 초기화
         binding.activityLobbyBottomNavigation.setOnNavigationItemSelectedListener(this)
