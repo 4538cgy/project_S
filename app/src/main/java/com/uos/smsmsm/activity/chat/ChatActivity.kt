@@ -18,6 +18,8 @@ class ChatActivity : AppCompatActivity() {
     lateinit var binding : ActivityChatBinding
     private val viewmodel : SNSUtilViewModel by viewModels()
 
+    private val destinationUid = "101010101010101001010"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_chat)
@@ -25,10 +27,15 @@ class ChatActivity : AppCompatActivity() {
         binding.viewmodel = viewmodel
 
 
-
+        //액션바 Toolbar에 바인딩
         setSupportActionBar(binding.activityChatToolbar)
-        actionBar?.setDisplayShowTitleEnabled(false)
+        //액션바 제목 지우기
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        viewmodel.checkChatRoom(destinationUid)
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater = menuInflater
