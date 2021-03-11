@@ -14,8 +14,9 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".testactivity.AddTestUser"></activity>
-        <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity"></activity>
+        <activity android:name=".activity.chat.ChatActivity"></activity>
+        <activity android:name=".testactivity.AddTestUser" />
+        <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity" />
         <activity android:name=".activity.search.SearchFriendActivity" />
         <activity android:name=".activity.setting.SettingActivity" />
         <activity android:name=".activity.signup.SignUpWithPhoneActivity" />

@@ -12,8 +12,4 @@ data class ChatDTO(
         var timestamp: Long?
     )
 
-    companion object {
-        const val ONE_TO_ONE = 1 // 1:1대화 리스트
-        const val GROUP = 2 // 그룹채팅 대화 리스트
-    }
 }

@@ -1,11 +1,13 @@
 package com.uos.smsmsm.recycleradapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.ItemMultiViewFriendsListTypeTitleBinding
 import com.uos.smsmsm.databinding.ItemMultiViewFriendsListTypeTitleContentBinding
@@ -109,6 +111,9 @@ class MultiViewTypeRecyclerAdapter(
                 (holder as FriendsListTypeTitleViewHolder).onBind(list.value!![position])
                 holder.binding.itemMultiViewFriendsListTypeTitleTextviewTitle.text =
                     list.value!![position].title
+
+
+
                 Glide.with(holder.itemView.context)
                     .load(list.value!![position].downloadImageUrl)
                     .circleCrop()
@@ -116,6 +121,9 @@ class MultiViewTypeRecyclerAdapter(
             }
             RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT -> {
                 (holder as FriendsListTypeTitleContentViewHolder).onBind(list.value!![position])
+                holder.itemView.setOnClickListener {
+                    holder.binding.root.context.startActivity(Intent(holder.binding.root.context,ChatActivity::class.java))
+                }
                 holder.binding.itemMultiViewFriendsListTypeTitleContentTextviewTitle.text =
                     list.value!![position].title
                 holder.binding.itemMultiViewFriendsListTypeTitleContentTextviewContent.text =

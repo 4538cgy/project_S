@@ -1,53 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".fragment.tabmenu.chatroom.ChatRoomFragment">
 
     <data>
+
         <variable
             name="fragmentchatroom"
             type="com.uos.smsmsm.fragment.tabmenu.chatroom.ChatRoomFragment" />
+        <variable
+            name="viewmodel"
+            type="com.uos.smsmsm.viewmodel.SNSUtilViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/fragment_chat_room_appbarlayout"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/fragment_chat_room_coordinate_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            >
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/fragment_chat_room_toolbar"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/fragment_chat_room_appbarlayout"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="채팅"
-                    />
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.appcompat.widget.Toolbar>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/fragment_chat_room_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
 
-        </com.google.android.material.appbar.AppBarLayout>
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="채팅" />
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fragment_chat_room_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_chat_room_appbarlayout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            />
-
+            app:layout_constraintTop_toBottomOf="@+id/fragment_chat_room_coordinate_layout" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

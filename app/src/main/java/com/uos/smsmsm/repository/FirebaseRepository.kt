@@ -52,6 +52,7 @@ class FirebaseRepository {
 
     private val uid = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
+
     // Firebase Firestore get data from snapshot listener
     @ExperimentalCoroutinesApi // Add
     // Apply Camelcase
@@ -66,6 +67,8 @@ class FirebaseRepository {
             eventListener.remove()
         }
     }
+
+
 
     // Apply Camelcase
     private val chatRoomDataBase = FirebaseDatabase.getInstance()
