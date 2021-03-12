@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.ChatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -25,6 +27,78 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     var edittextText : MutableLiveData<String> = MutableLiveData()
     var chatRoomUid : MutableLiveData<String> = MutableLiveData()
     var chatList : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
+    var searchUserResult : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
+    var searchContentResult : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
+
+    //유저 검색 서치 뷰 리스너
+    fun searchUserQueryTextListener() = object : SearchView.OnQueryTextListener{
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            //검색 버튼 클릭시
+            var emptyList = emptyList<String>()
+            if(emptyList.isEmpty()){
+                println("결과가 없음")
+                return true
+            }else{
+                getSearchUserList(query!!)
+                return false
+            }
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            //검색어 변경 시
+            filteringUserList(newText!!)
+            return true
+        }
+
+    }
+
+    fun filteringUserList(newText: String){
+        //newText 기반으로 유저 데이터 필터링
+    }
+
+    fun getSearchUserList(query: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            /*
+            repository.getUserList().collect{
+            }
+             */
+        }
+    }
+
+    //게시글 검색 서치뷰 리스너
+    fun searchContentQueryTextListener() = object : SearchView.OnQueryTextListener{
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            //검색 버튼 클릭시
+            var emptyList = emptyList<String>()
+            if(emptyList.isEmpty()){
+                println("결과가 없음")
+                return true
+            }else{
+                getSearchUserList(query!!)
+                return false
+            }
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            //검색어 변경 시
+            filteringContentList(newText!!)
+            return true
+        }
+
+    }
+
+    fun filteringContentList(newText: String){
+        //newText 기반으로 유저 데이터 필터링
+    }
+
+    fun getSearchContentList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            /*
+            repository.getContentList().collect{
+            }
+             */
+        }
+    }
 
     //에딧 텍스트 TextWatcher
     fun textWatcher() = object :TextWatcher{
