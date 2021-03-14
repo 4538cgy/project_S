@@ -60,4 +60,7 @@
     <item name="masked" type="id" />
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="image_description_setting_icon">setting-icon</string>
+    <string name="activity_setting_preview_item_name">버전정보</string>
 </resources>
