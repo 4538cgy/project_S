@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="Item"
+            type="com.uos.smsmsm.activity.setting.SettingItem" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/ll_container_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/margin_default"
+        android:paddingTop="@dimen/margin_default"
+        android:paddingEnd="@dimen/margin_default">
+
+        <LinearLayout
+            android:id="@+id/ll_container_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/iv_item_icon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:contentDescription="@string/image_description_setting_icon"
+                app:loadSrc="@{Item.icon}"
+                tools:src="@drawable/ic_outline_info_24"
+                app:tint="@color/colorBlack" />
+
+            <!-- marginStart 쓰고싶은데 minSdk가 16이라...ㅜ -->
+            <TextView
+                android:id="@+id/tv_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_default"
+                android:text="@{Item.name}"
+                android:textColor="@color/colorBlack"
+                tools:text="@string/activity_setting_preview_item_name" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_default" />
+
+        <View
+            android:id="@+id/view_indicate_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorLightGray"
+            android:visibility="@{Item.hideLine ? View.GONE : View.VISIBLE}"
+            tools:layout_height="5dp" />
+
+    </LinearLayout>
+</layout>
