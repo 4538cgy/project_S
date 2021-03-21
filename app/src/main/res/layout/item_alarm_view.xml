@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View"/>
+        <variable
+            name="alarmitem"
+            type="com.uos.smsmsm.activity.alarm.AlarmItem.TextAlarmItem" />
+        <variable
+            name="isEmpty"
+            type="java.lang.Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:elevation="8dp"
+            android:background="@drawable/background_rect_black_radius_16">
+            <TextView
+                android:id="@+id/txt_alarm_item_first"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#8a9092"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@{alarmitem.fristLineString}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/txt_alarm_item_second"
+                tool:text="xx님이 xx 글에 좋아요를 누르셨습니다."/>
+
+            <TextView
+                android:id="@+id/txt_alarm_item_second"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#8a9092"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="@{(isEmpty ?? false)? View.GONE : View.VISIBLE }"
+                android:text="@{alarmitem.secondLineString}"
+                app:layout_constraintTop_toBottomOf="@id/txt_alarm_item_first"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tool:text="아 참 이쁘네오"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
