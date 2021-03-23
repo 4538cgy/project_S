@@ -16,6 +16,7 @@ import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.ChatRepository
+import com.uos.smsmsm.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -30,22 +31,23 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     var searchUserResult : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
     var searchContentResult : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
 
+    val repository = UserRepository()
+
     //유저 검색 서치 뷰 리스너
     fun searchUserQueryTextListener() = object : SearchView.OnQueryTextListener{
         override fun onQueryTextSubmit(query: String?): Boolean {
             //검색 버튼 클릭시
             var emptyList = emptyList<String>()
-            if(emptyList.isEmpty()){
-                println("결과가 없음")
-                return true
-            }else{
-                getSearchUserList(query!!)
-                return false
-            }
+
+            println("으아아아 $query")
+
+            getSearchUserList(query!!)
+            return false
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
             //검색어 변경 시
+            println("으아아아 $newText")
             filteringUserList(newText!!)
             return true
         }
@@ -57,11 +59,13 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     }
 
     fun getSearchUserList(query: String) {
+        println("getSearchUserList 실행 ++++++++++++++++++++++++")
         viewModelScope.launch(Dispatchers.IO) {
-            /*
-            repository.getUserList().collect{
+
+            repository.getUser(query).collect{
+                println(it.toString() + " 유저 검색 결과 입니다. ")
             }
-             */
+
         }
     }
 
