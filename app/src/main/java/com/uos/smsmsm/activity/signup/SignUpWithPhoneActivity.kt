@@ -237,8 +237,7 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
         userDTO.phoneNumber = binding.activitySignUpWithPhoneEdittextPhone.text.toString()
         // 가입 시간 [핸드폰기준]
         userDTO.timeStamp = System.currentTimeMillis()
-        // 핸드폰 시간
-        userDTO.timeStr = TimeUtil().getTime()
+
         // 유저 최초 포인트
         userDTO.point = 100
         userDTO.uid = mAuth.currentUser?.uid.toString()

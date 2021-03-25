@@ -30,6 +30,32 @@ class UserRepository {
     }
 
     @ExperimentalCoroutinesApi
+    fun createTestUser(userData: UserDTO) = callbackFlow<Boolean> {
+        val databaseReference = db.collection("testUser").document()
+        val eventListener = databaseReference.set(userData).addOnCompleteListener {
+            this@callbackFlow.sendBlocking(true)
+        }.addOnFailureListener {
+            this@callbackFlow.sendBlocking(false)
+        }
+
+        awaitClose { eventListener.isComplete }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun getTestUserList() = callbackFlow<ArrayList<UserDTO>> {
+        val databaseReference = db.collection("testUser")
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            var userList = arrayListOf<UserDTO>()
+
+            value?.documents?.forEach {
+                userList.add(it.toObject(UserDTO::class.java)!!)
+            }
+            this@callbackFlow.sendBlocking(userList)
+        }
+
+        awaitClose { eventListener.remove() }
+    }
+    @ExperimentalCoroutinesApi
     fun getUser(uid : String) = callbackFlow<ArrayList<UserDTO>> {
         val databaseReference = db.collection("user").whereEqualTo("uid",uid)
         val eventListener = databaseReference.addSnapshotListener { value, error ->

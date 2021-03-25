@@ -208,7 +208,6 @@ class SignUpActivity : AppCompatActivity() {
             policyAccept = true,
             uid = mAuth?.currentUser?.uid.toString(),
             timeStamp = System.currentTimeMillis(),
-            timeStr = TimeUtil().getTime(),
             memberRating = 0,
             point = 100,
             userName = binding.activitySignUpEdittextNickname.text.toString()
