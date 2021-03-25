@@ -1,15 +1,20 @@
 package com.uos.smsmsm.activity.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.ActivitySearchFriendBinding
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.EntryPoint
@@ -22,7 +27,7 @@ class SearchFriendActivity : AppCompatActivity() {
     lateinit var binding: ActivitySearchFriendBinding
     private val viewmodel : SNSUtilViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(svedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search_friend)
         binding.searchfriend = this
@@ -35,11 +40,13 @@ class SearchFriendActivity : AppCompatActivity() {
         viewmodel.searchUserResult.observe(this, Observer {
             var arrayList = arrayListOf<RecyclerDefaultModel>()
 
+            var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
+
 
             it.forEachIndexed { index, userDTO ->
 
 
-                arrayList.add(
+                data.value?.add(
                     RecyclerDefaultModel(
                         RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE,
                         "", null, it[index].userName!!,null
@@ -47,7 +54,10 @@ class SearchFriendActivity : AppCompatActivity() {
                 )
             }
 
-            binding.activitySearchFriendRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,arrayList)
+            startActivity(Intent(binding.root.context,TimeLineFragment::class.java))
+
+            binding.activitySearchFriendRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
+            binding.activitySearchFriendRecycler.layoutManager = RecyclerView.LayoutManager
         })
 
 
