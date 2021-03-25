@@ -60,14 +60,34 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     }
 
     fun filteringUserList(newText: String){
-        //newText 기반으로 유저 데이터 필터링기
+        //newText 기반으로 유저 데이터 필터링
+        var pathList = arrayListOf<UserDTO>()
         testUserList.value?.forEach {
             if (it.toString().contains(newText))
             {
-                searchUserResult.value?.add(it)
+                pathList.add(it)
+
+
             }
         }
+        searchUserResult.postValue(pathList)
+        searchUserResultDataConvertRecyclerData()
+        println("searchUserResult의 값입니다." +searchUserResult.value.toString())
     }
+
+    fun searchUserResultDataConvertRecyclerData(){
+
+        var list = arrayListOf<RecyclerDefaultModel>()
+
+        searchUserResult.value?.forEachIndexed{ index ,it ->
+            list.add(RecyclerDefaultModel(RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE,"",null,
+                searchUserResult.value!![index].userName!!,""))
+        }
+
+        recyclerData.postValue(list)
+
+    }
+
 
     fun getSearchUserList(query: String) {
         println("getSearchUserList 실행 ++++++++++++++++++++++++")
@@ -83,6 +103,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     fun getTestUserSearchResult(){
         viewModelScope.launch(Dispatchers.IO){
             repository.getTestUserList().collect {
+
                 testUserList.postValue(it)
             }
         }
