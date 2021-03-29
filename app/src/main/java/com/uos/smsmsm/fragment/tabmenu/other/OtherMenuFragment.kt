@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.setting.SettingActivity
 import com.uos.smsmsm.databinding.FragmentOtherMenuBinding
+import com.uos.smsmsm.testactivity.AddTestUser
 
 class OtherMenuFragment : Fragment() {
 
@@ -29,6 +30,10 @@ class OtherMenuFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    fun openManagePage(view: View){
+        startActivity(Intent(binding.root.context,AddTestUser::class.java))
     }
 
     fun onClickProfilePhoto(view: View) {

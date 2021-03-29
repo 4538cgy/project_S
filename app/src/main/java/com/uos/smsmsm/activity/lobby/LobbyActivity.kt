@@ -75,13 +75,7 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
 
     // Change return with When
     override fun onNavigationItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_account -> {
-            // var -> val
-            val userFragment = UserFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.activity_lobby_fragmelayout, userFragment).commit()
-            true
-        }
+
         R.id.action_home -> {
             // var -> val
             val timelineFragment = TimeLineFragment()
@@ -103,7 +97,7 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
                 .replace(R.id.activity_lobby_fragmelayout, friendslistFragment).commit()
             true
         }
-        R.id.action_photo -> {
+        R.id.action_more -> {
             // var -> val
             val otherMenuFragment = OtherMenuFragment()
             supportFragmentManager.beginTransaction()

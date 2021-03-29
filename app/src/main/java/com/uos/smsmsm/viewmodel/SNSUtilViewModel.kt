@@ -31,6 +31,11 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     var searchUserResult : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
     var searchContentResult : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
 
+
+    //테스트 목적
+    var testUserList : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
+
+
     val repository = UserRepository()
 
     //유저 검색 서치 뷰 리스너
@@ -56,7 +61,33 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     fun filteringUserList(newText: String){
         //newText 기반으로 유저 데이터 필터링
+        var pathList = arrayListOf<UserDTO>()
+        testUserList.value?.forEach {
+            if (it.toString().contains(newText))
+            {
+                pathList.add(it)
+
+
+            }
+        }
+        searchUserResult.postValue(pathList)
+        searchUserResultDataConvertRecyclerData()
+        println("searchUserResult의 값입니다." +searchUserResult.value.toString())
     }
+
+    fun searchUserResultDataConvertRecyclerData(){
+
+        var list = arrayListOf<RecyclerDefaultModel>()
+
+        searchUserResult.value?.forEachIndexed{ index ,it ->
+            list.add(RecyclerDefaultModel(RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE,"",null,
+                searchUserResult.value!![index].userName!!,""))
+        }
+
+        recyclerData.postValue(list)
+
+    }
+
 
     fun getSearchUserList(query: String) {
         println("getSearchUserList 실행 ++++++++++++++++++++++++")
@@ -66,6 +97,15 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                 println(it.toString() + " 유저 검색 결과 입니다. ")
             }
 
+        }
+    }
+
+    fun getTestUserSearchResult(){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.getTestUserList().collect {
+
+                testUserList.postValue(it)
+            }
         }
     }
 
