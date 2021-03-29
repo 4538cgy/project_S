@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.ActivitySettingBinding
+import com.uos.smsmsm.util.auth.SignOut
 import com.uos.smsmsm.viewmodel.AppUtilViewModel
 
 class SettingActivity : AppCompatActivity() {
@@ -40,6 +41,12 @@ class SettingActivity : AppCompatActivity() {
             )
         ).setOnSettingItemClickListener {
             Log.i("setting clicked", name.toString())
+
+            when(name.toString()){
+                "로그아웃" -> {
+                    SignOut(binding.root.context)?.signOut()
+                }
+            }
         }
     }
 
