@@ -16,11 +16,13 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         return Intent(Intent.ACTION_PICK).apply {
             type = "image/*"
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-            setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         }
     }
 
-
+    fun openCamera() : Intent{
+        return Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+    }
 
 
 }
