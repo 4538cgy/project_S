@@ -8,13 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.content.AddContentActivity
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
+import com.uos.smsmsm.viewmodel.ContentUtilViewModel
+import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 
 class TimeLineFragment : Fragment() {
 
     lateinit var binding: FragmentTimeLineBinding
     private var isOpenFAB = false
+    private lateinit var viewModel : ContentUtilViewModel
 
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
@@ -27,21 +33,28 @@ class TimeLineFragment : Fragment() {
     ): View { // View? -> View (NonNull)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_time_line, container, false)
         binding.fragmenttimeline = this
+        binding.lifecycleOwner = this
+        viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
         return binding.root
     }
 
     fun uploadPhoto(view: View) {
+        /*
         val photoPickerIntent = Intent(Intent.ACTION_PICK)
         photoPickerIntent.type = "image/*"
         activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
+         */
+         */
+
+        activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)
     }
 
     fun takePhotoCamera(view: View) {}
 
-    fun takePhotoGallery(view: View) {}
+    fun takePhotoGallery(view: View) {activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)}
 
-    fun writeContent(view: View) {}
+    fun writeContent(view: View) { startActivity(Intent(binding.root.context,AddContentActivity::class.java))}
 
     fun clickFab(view: View) {
         isOpenFAB = if (!isOpenFAB) {
