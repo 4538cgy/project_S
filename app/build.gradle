@@ -92,6 +92,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
 
 
+    // DotsIndicators - 인디케이터에서 현재 위치를 길게 표시
+    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
 
 
     //glide
