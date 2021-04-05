@@ -18,7 +18,7 @@ class ChatActivity : AppCompatActivity() {
     lateinit var binding : ActivityChatBinding
     private val viewmodel : SNSUtilViewModel by viewModels()
 
-    private val destinationUid = "101010101010101001010"
+    var destinationUid = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +26,14 @@ class ChatActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewmodel = viewmodel
 
-
+        destinationUid = intent.getStringExtra("destinationUid")
         //액션바 Toolbar에 바인딩
         setSupportActionBar(binding.activityChatToolbar)
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        //채팅 보내기
+        binding.activityChatImagebuttonSendmessage.setOnClickListener { viewmodel.sendMessage(destinationUid) }
 
         viewmodel.checkChatRoom(destinationUid)
     }

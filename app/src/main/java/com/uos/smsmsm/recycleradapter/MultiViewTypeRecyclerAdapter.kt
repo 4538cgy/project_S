@@ -114,7 +114,14 @@ class MultiViewTypeRecyclerAdapter(
                     list.value!![position].title
 
                 //아이템 자체 클릭
-                holder.itemView.setOnClickListener { holder.binding.root.context.startActivity(Intent(holder.binding.root.context,ProfileActivity::class.java)) }
+                holder.itemView.setOnClickListener {
+                    var intent = Intent(holder.binding.root.context,ProfileActivity::class.java)
+                    intent.apply {
+                        putExtra("uid", list.value!![position].uid)
+
+                        holder.binding.root.context.startActivity(intent)
+                    }
+                }
 
                 //프로필 이미지 클릭
                 holder.binding.itemMultiViewFriendsListTypeTitleImageview.setOnClickListener {  }

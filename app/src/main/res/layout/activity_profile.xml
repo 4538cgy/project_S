@@ -9,6 +9,9 @@
         <variable
             name="activityprofile"
             type="com.uos.smsmsm.activity.profile.ProfileActivity" />
+        <variable
+            name="viewmodel"
+            type="com.uos.smsmsm.viewmodel.UserUtilViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,6 +121,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    android:onClick="@{activityprofile::openChat}"
                     />
 
                 <Button

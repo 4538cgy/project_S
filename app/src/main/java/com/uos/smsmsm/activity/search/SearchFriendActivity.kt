@@ -36,13 +36,8 @@ class SearchFriendActivity : AppCompatActivity() {
         binding.viewmodel = viewmodel
 
         //테스트 유저 목록 긁어오기
-        viewmodel.getTestUserSearchResult()
-
+        viewmodel.getAllUserSearchResult()
         initRecyclerView()
-
-
-
-
 
     }
 
