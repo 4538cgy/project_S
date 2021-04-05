@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -146,15 +147,11 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
             phoneNumber,
             code
         )
-
-        // auth.useAppLanguage()
-
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            phoneNumber,
-            120,
-            TimeUnit.SECONDS,
-            this,
-            object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+            .setPhoneNumber(phoneNumber)       // Phone number to verify
+            .setTimeout(120L, TimeUnit.SECONDS) // Timeout and unit
+            .setActivity(this)                 // Activity (for callback binding)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(p0: PhoneAuthCredential) {
                     // 성공시
                     Log.d("credential", p0.toString())
@@ -199,8 +196,10 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
                     super.onCodeAutoRetrievalTimeOut(p0)
                     progressDialogPhoneVerify?.dismiss()
                 }
-            }
-        )
+            })          // OnVerificationStateChangedCallbacks
+            .build()
+        // auth.useAppLanguage()
+        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     fun uploadPhoto() {
