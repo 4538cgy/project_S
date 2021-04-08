@@ -112,26 +112,14 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
-            <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-                android:id="@+id/activity_add_content_dots_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:dotsColor="@android:color/black"
-                app:dotsCornerRadius="8dp"
-                app:dotsSize="16dp"
-                app:dotsSpacing="12dp"
-                app:dotsWidthFactor="1"
-                app:selectedDotColor="@android:color/darker_gray"
-                app:layout_constraintTop_toBottomOf="@id/activity_add_content_add_image_view_pager"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+
             <EditText
                 android:id="@+id/activity_add_content_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
                 android:hint="내용을 입력해 주세요"
-                app:layout_constraintTop_toBottomOf="@id/activity_add_content_dots_indicator"
+                app:layout_constraintTop_toBottomOf="@id/activity_add_content_add_image_view_pager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

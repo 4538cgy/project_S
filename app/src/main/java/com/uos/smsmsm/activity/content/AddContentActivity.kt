@@ -36,7 +36,6 @@ class AddContentActivity : AppCompatActivity() {
         binding.activityAddContentGalleryRecyclerView.layoutManager = GridLayoutManager(applicationContext ,3 )
 
         binding.activityAddContentAddImageViewPager.adapter = UploadImageSlidePagerAdapter(this, uploadImageList)
-        binding.activityAddContentDotsIndicator.setViewPager2(binding.activityAddContentAddImageViewPager)
     }
 
     fun openGallery(view :View) {
@@ -74,11 +73,7 @@ class AddContentActivity : AppCompatActivity() {
             imageBtn.isSelected = !imageBtn.isSelected
             if(!imageBtn.isSelected){
                 isSelectImgCount--
-                uploadImageList.remove(clickViewHolder.getMediaItem())
-                (binding.activityAddContentAddImageViewPager.adapter as UploadImageSlidePagerAdapter).update()
-                if(uploadImageList.size <= 0 ){
-                    binding.activityAddContentAddImageViewPager.visibility = View.GONE
-                }
+                removeImage(clickViewHolder)
             }else{
                 isSelectImgCount++
                 uploadImageList.add(clickViewHolder.getMediaItem())
@@ -90,10 +85,19 @@ class AddContentActivity : AppCompatActivity() {
             if(imageBtn.isSelected){
                 imageBtn.isSelected = !imageBtn.isSelected
                 isSelectImgCount--
+
+                removeImage(clickViewHolder)
             }else {
                 Toast.makeText(applicationContext, "최대 선택할 수 있는 이미지 수는  3장 입니다.", Toast.LENGTH_LONG)
                     .show()
             }
+        }
+    }
+    fun removeImage(holder : GalleryHolder){
+        uploadImageList.remove(holder.getMediaItem())
+        (binding.activityAddContentAddImageViewPager.adapter as UploadImageSlidePagerAdapter).update()
+        if(uploadImageList.size <= 0 ){
+            binding.activityAddContentAddImageViewPager.visibility = View.GONE
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
