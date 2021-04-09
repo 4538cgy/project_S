@@ -8,14 +8,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="200dp"
-        android:layout_height="300dp">
+        android:layout_height="300dp"
+        android:layout_marginEnd="10dp">
 
         <ImageView
             android:id="@+id/item_upload_image_view_img"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@drawable/background_rect_black_radius_16"
+            android:padding="1dp"/>
 
         <ImageButton
+            android:id="@+id/item_upload_image_view_close_btn"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/circle_bg_gray"

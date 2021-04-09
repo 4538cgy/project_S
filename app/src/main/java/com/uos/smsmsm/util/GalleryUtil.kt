@@ -10,9 +10,9 @@ import java.util.*
 
 class GalleryUtil(val context: Context) {
     data class MediaItem(
-        val id: Long,
-        val displayName: String,
-        val dateTaken: Date,
+        val id: Long?,
+        val displayName: String?,
+        val dateTaken: Date?,
         val contentUri: Uri
     )
 
