@@ -34,6 +34,7 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
 
     private val viewmodel : SNSUtilViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_lobby)

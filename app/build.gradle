@@ -91,11 +91,7 @@ dependencies {
     //firebaseMessage
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
 
-
-
-
     //glide
-
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
