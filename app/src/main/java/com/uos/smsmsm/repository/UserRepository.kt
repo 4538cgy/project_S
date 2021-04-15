@@ -55,17 +55,41 @@ class UserRepository {
 
         awaitClose { eventListener.remove() }
     }
+
+
+
     @ExperimentalCoroutinesApi
-    fun getUser(uid : String) = callbackFlow<ArrayList<UserDTO>> {
-        val databaseReference = db.collection("user").whereEqualTo("uid",uid)
+    fun getAllUser() = callbackFlow<ArrayList<UserDTO>> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo")
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            if (value!!.isEmpty) return@addSnapshotListener
+            if (!value!!.isEmpty){
+                var user = arrayListOf<UserDTO>()
+
+                user.addAll(value.toObjects(UserDTO::class.java))
+
+
+                this@callbackFlow.sendBlocking(user)
+            }
+        }
+
+        awaitClose { eventListener }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun getUser(uid : String) = callbackFlow<UserDTO> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid",uid)
         val eventListener = databaseReference.addSnapshotListener { value, error ->
             if (value != null){
                 if (value.isEmpty)return@addSnapshotListener
                 if(!value.isEmpty)
                 {
-                    var user = arrayListOf<UserDTO>()
+                    var user = UserDTO()
                     value.documents.forEach {
-                        user.add(it.toObject(UserDTO::class.java)!!)
+                        if (it["uid"]!! == uid)
+                        {
+                            user = it.toObject(UserDTO::class.java)!!
+                        }
                     }
                     this@callbackFlow.sendBlocking(user)
                 }

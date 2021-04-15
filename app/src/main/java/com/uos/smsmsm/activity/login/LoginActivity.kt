@@ -177,13 +177,11 @@ class LoginActivity : AppCompatActivity() {
     private fun moveMainPage(user: FirebaseUser?) {
         if (user != null) {
 
-            FirebaseFirestore.getInstance().collection("test").document("testUser")
-                .collection("userInfo").document("userAccount")
-                .collection(FirebaseAuth.getInstance().currentUser?.uid.toString())
-                .document("accountInfo")
+            FirebaseFirestore.getInstance().collection("User").document("UserData")
+                .collection("userInfo").whereEqualTo("uid",auth.currentUser?.uid.toString())
                 .addSnapshotListener { documentSnapshot, _ -> // Remove useless parameter
                     if (documentSnapshot != null) {
-                        if (documentSnapshot.exists()) { // Remove NonNull
+                        if (!documentSnapshot.isEmpty) { // Remove NonNull
                             startActivity(Intent(this, LobbyActivity::class.java))
                         } else {
                             startActivity(Intent(this, SignUpActivity::class.java))

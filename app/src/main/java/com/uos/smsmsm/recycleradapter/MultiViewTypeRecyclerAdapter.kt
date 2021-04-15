@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.uos.smsmsm.activity.chat.ChatActivity
+import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.ItemMultiViewFriendsListTypeTitleBinding
 import com.uos.smsmsm.databinding.ItemMultiViewFriendsListTypeTitleContentBinding
@@ -112,7 +113,18 @@ class MultiViewTypeRecyclerAdapter(
                 holder.binding.itemMultiViewFriendsListTypeTitleTextviewTitle.text =
                     list.value!![position].title
 
+                //아이템 자체 클릭
+                holder.itemView.setOnClickListener {
+                    var intent = Intent(holder.binding.root.context,ProfileActivity::class.java)
+                    intent.apply {
+                        putExtra("uid", list.value!![position].uid)
 
+                        holder.binding.root.context.startActivity(intent)
+                    }
+                }
+
+                //프로필 이미지 클릭
+                holder.binding.itemMultiViewFriendsListTypeTitleImageview.setOnClickListener {  }
 
                 Glide.with(holder.itemView.context)
                     .load(list.value!![position].downloadImageUrl)
@@ -128,6 +140,14 @@ class MultiViewTypeRecyclerAdapter(
                     list.value!![position].title
                 holder.binding.itemMultiViewFriendsListTypeTitleContentTextviewContent.text =
                     list.value!![position].content
+
+                //아이템 자체 클릭
+                holder.itemView.setOnClickListener { holder.binding.root.context.startActivity(Intent(holder.binding.root.context,ProfileActivity::class.java)) }
+
+
+                //프로필 이미지 클릭
+                holder.binding.itemMultiViewFriendsListTypeTitleContentImageview.setOnClickListener {  }
+
                 Glide.with(holder.itemView.context)
                     .load(list.value!![position].downloadImageUrl)
                     .circleCrop()

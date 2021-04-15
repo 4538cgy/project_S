@@ -243,10 +243,8 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
         userDTO.memberRating = 0
         userDTO.policyAccept = true
 
-        FirebaseFirestore.getInstance().collection("test").document("testUser")
-            .collection("userInfo")
-            .document("userAccount").collection(mAuth.currentUser?.uid.toString())
-            .document("accountInfo").set(userDTO)
+        FirebaseFirestore.getInstance().collection("User").document("UserData")
+            .collection("userInfo").document().set(userDTO)
             .addOnSuccessListener {
                 startActivity(Intent(binding.root.context, LobbyActivity::class.java))
                 finish()

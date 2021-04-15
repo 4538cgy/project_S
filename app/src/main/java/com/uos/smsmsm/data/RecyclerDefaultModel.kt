@@ -3,7 +3,8 @@ package com.uos.smsmsm.data
 // Apply ktlint
 data class RecyclerDefaultModel(
     val type: Int, // type
-    val downloadImageUrl: String,
+    val downloadImageUrl: String?,
+    val uid: String?,
     val imageUrl: Int?, // image
     val title: String, // title
     val content: String? // content
