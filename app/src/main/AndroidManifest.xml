@@ -14,8 +14,10 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".testactivity.AddTestUser"></activity>
-        <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity"></activity>
+        <activity android:name=".activity.content.AddContentActivity"/>
+        <activity android:name=".activity.chat.ChatActivity" />
+        <activity android:name=".testactivity.AddTestUser" />
+        <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity" />
         <activity android:name=".activity.search.SearchFriendActivity" />
         <activity android:name=".activity.setting.SettingActivity" />
         <activity android:name=".activity.signup.SignUpWithPhoneActivity" />
@@ -27,6 +29,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--
+<activity android:name=".activity.permission.PermissionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        -->
+        <activity android:name=".activity.permission.PermissionActivity" />
         <activity android:name=".activity.lobby.LobbyActivity" />
         <activity android:name=".activity.signup.SignUpActivity" />
         <activity android:name=".activity.login.LoginActivity" />

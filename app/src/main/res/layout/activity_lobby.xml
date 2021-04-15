@@ -8,6 +8,9 @@
         <variable
             name="lobby"
             type="com.uos.smsmsm.activity.lobby.LobbyActivity" />
+        <variable
+            name="snsviewmodel"
+            type="com.uos.smsmsm.viewmodel.SNSUtilViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

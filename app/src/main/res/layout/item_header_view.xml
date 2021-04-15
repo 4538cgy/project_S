@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="headerItem"
+            type="com.uos.smsmsm.activity.alarm.AlarmItem.HeaderItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#8a9092"
+            android:layout_margin="16dp"
+            app:headerText="@{headerItem.date}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tool:text="오늘"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
