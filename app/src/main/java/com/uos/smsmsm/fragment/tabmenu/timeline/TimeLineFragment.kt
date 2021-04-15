@@ -34,7 +34,7 @@ class TimeLineFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_time_line, container, false)
         binding.fragmenttimeline = this
         binding.lifecycleOwner = this
-        viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
+        //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
         return binding.root
     }
