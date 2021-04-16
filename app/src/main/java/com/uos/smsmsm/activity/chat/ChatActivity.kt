@@ -23,7 +23,10 @@ class ChatActivity : AppCompatActivity() {
     lateinit var binding : ActivityChatBinding
     private val viewmodel : SNSUtilViewModel by viewModels()
 
+    var recyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
+
     var destinationUid = ""
+    var chatRecyclerAdapterInitChecker = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,22 +48,41 @@ class ChatActivity : AppCompatActivity() {
 
 
 
-
         viewmodel.checkChatRoom(destinationUid)
 
         viewmodel.chatRoomUid.observe(this, Observer {
-            var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
+            println("chatroom uid에서 변화가 일어났습니다. $it")
+            //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
+            println("message를 가져옵니다.")
+            viewmodel.getMessageList()
+
+
             viewmodel.chatList.observe(this, Observer {
                     livedata ->
-                data.value = livedata
+                println("chatlist 에서 변화가 일어났습니다 ${livedata.toString()}")
+                recyclerData.value = livedata
+                /*
                 binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
                 binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
                     LinearLayoutManager.VERTICAL,false)
+
+                 */
+                if (!chatRecyclerAdapterInitChecker){
+                    initRecyclerAdapter()
+                }else {
+                    binding.activityChatRecyclerview.adapter?.notifyDataSetChanged()
+                    binding.activityChatRecyclerview.scrollToPosition(livedata.size - 1)
+                }
             })
         })
+    }
 
-
-
+    fun initRecyclerAdapter(){
+        chatRecyclerAdapterInitChecker = true
+        binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,recyclerData,destinationUid)
+        binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
+            LinearLayoutManager.VERTICAL,false)
+        binding.activityChatRecyclerview.scrollToPosition(recyclerData.value!!.size - 1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

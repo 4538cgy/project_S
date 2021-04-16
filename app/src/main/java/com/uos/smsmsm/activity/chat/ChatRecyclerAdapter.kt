@@ -26,6 +26,8 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
     val userRepository = UserRepository()
     val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemChatBubbleBinding.inflate(LayoutInflater.from(context),parent,false)
 
@@ -45,6 +47,7 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
         }else{
             //프로필 이미지 가져오고
             //유저 닉네임 가져오고
+            /*
             runBlocking {
                 launch {
                     userRepository.getUserProfileImage(destinationUid).collect{
@@ -55,6 +58,8 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
                     }
                 }
             }
+
+             */
             holder.binding.messageItemLinearlayoutDestination.visibility = View.VISIBLE
             holder.binding.messageItemTextViewMessage.setBackgroundResource(R.drawable.background_round_gray)
             holder.binding.messageItemTextViewMessage.text = list.value!![position].message

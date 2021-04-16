@@ -195,9 +195,11 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     //메세지 가져오기
     fun getMessageList(){
+        println("메세지 가져오기")
         val repository = ChatRepository()
         viewModelScope.launch(Dispatchers.IO) {
             repository.getChat(chatRoomUid.value.toString()).collect {
+                println("가져온 메세지 ${it.toString()}")
                 chatList.postValue(it)
             }
         }

@@ -77,5 +77,7 @@ class ChatRepository {
                 TODO("Not yet implemented")
             }
         })
+        
+        awaitClose {  }
     }
 }
