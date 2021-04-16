@@ -231,7 +231,9 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     fun sendMessage(destinationUid: String){
         val repository = ChatRepository()
 
-        chatList.value!!.clear()
+        if (chatList.value!!.isNotEmpty()){
+            chatList.value!!.clear()
+        }
 
         var chatDTOs = ChatDTO()
         chatDTOs.users[auth.currentUser?.uid!!] = true;

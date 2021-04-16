@@ -16,6 +16,7 @@ import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.ItemChatBubbleBinding
 import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.util.time.TimeUtil
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -25,7 +26,7 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
 
     val userRepository = UserRepository()
     val uid = FirebaseAuth.getInstance().currentUser!!.uid
-
+    val ioScope = CoroutineScope(Dispatchers.Main)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -63,6 +64,20 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
             }
 
              */
+            ioScope.launch {
+                userRepository.getUserProfileImage(destinationUid).collect{
+                    println("유저의 프로필 이미지 $it")
+                    Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.messageItemImageviewProfile)
+                }
+            }
+            ioScope.launch {
+                userRepository.getUserNickName(destinationUid).collect {
+                    println("유저의 닉네임 $it")
+                    holder.binding.messageItemTextviewName.text = it
+                }
+            }
+
+
             holder.binding.messageItemLinearlayoutDestination.visibility = View.VISIBLE
             holder.binding.messageItemTextViewMessage.setBackgroundResource(R.drawable.background_round_gray)
             holder.binding.messageItemTextViewMessage.text = list.value!![position].message
