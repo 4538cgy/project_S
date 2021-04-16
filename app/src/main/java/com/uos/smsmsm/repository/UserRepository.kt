@@ -1,5 +1,6 @@
 package com.uos.smsmsm.repository
 
+import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -70,6 +71,41 @@ class UserRepository {
 
 
                 this@callbackFlow.sendBlocking(user)
+            }
+        }
+
+        awaitClose { eventListener }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun getUserProfileImage(uid : String) = callbackFlow<String> {
+        val databaseReference = db.collection("profileImages").document(uid)
+        val eventListener = databaseReference.get()
+        eventListener.addOnCompleteListener {
+            task ->
+            if (task.isSuccessful){
+                var url : String = task.result!!["image"].toString()
+                this@callbackFlow.sendBlocking(url)
+            }
+        }
+        awaitClose { eventListener }
+
+    }
+
+    @ExperimentalCoroutinesApi
+    fun getUserNickName(uid : String) = callbackFlow<String> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid",uid)
+        val eventListener = databaseReference.get()
+        eventListener.addOnCompleteListener {
+            if (it.isSuccessful){
+                var nickName : String = "미확인 사용자"
+                println("유저 닉네임 가져오기 repo 엌 ${it.toString()}")
+                it.result.documents.forEach {
+                    if (it["uid"]!! == uid){
+                        nickName = it["userName"].toString()
+                    }
+                }
+                this@callbackFlow.sendBlocking(nickName)
             }
         }
 

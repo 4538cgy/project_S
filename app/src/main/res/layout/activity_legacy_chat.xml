@@ -6,8 +6,8 @@
 
     <data>
         <variable
-            name="chat"
-            type="com.uos.smsmsm.activity.chat.ChatActivity" />
+            name="legacychat"
+            type="com.uos.smsmsm.activity.chat.LegacyChatActivity" />
         <variable
             name="viewmodel"
             type="com.uos.smsmsm.viewmodel.SNSUtilViewModel" />
@@ -39,14 +39,15 @@
                     android:layout_height="?attr/actionBarSize"
                     >
                     <ImageButton
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/ic_baseline_close_24"
+                        android:id="@+id/activity_legacy_chat_imagebutton_close"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:background="@android:color/transparent"
+                        android:src="@drawable/ic_baseline_close_24"
                         android:layout_marginRight="12dp"
-                        android:onClick="@{chat.backPressed}"
                         />
                     <TextView
+                        android:id="@+id/activity_legacy_chat_textview_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="채팅"
@@ -79,12 +80,13 @@
             app:layout_constraintRight_toRightOf="parent"
             >
             <EditText
+                android:id="@+id/activity_legacy_chat_edittext_explain"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:addTextChangedListener="@{viewmodel.textWatcher()}"
+
                 android:hint="채팅 내용"
                 android:background="@android:color/transparent"
-                android:text="@{viewmodel.edittextText}"
+
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

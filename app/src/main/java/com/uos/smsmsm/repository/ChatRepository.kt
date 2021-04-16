@@ -28,6 +28,8 @@ class ChatRepository {
                         this@callbackFlow.sendBlocking(it.key!!)
                     }
                 }
+
+                println("checkChatRoom 실행완료")
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -43,6 +45,7 @@ class ChatRepository {
     fun createChatRoom(destinationUid: String, chatData: ChatDTO) = callbackFlow<Boolean> {
         val databaseReference = rdb.reference.child("chatrooms")
         val eventListener = databaseReference.push().setValue(chatData).addOnSuccessListener {
+            println("Createchatroom 실행 완료오오오오오옼")
             checkChatRoom(destinationUid)
             this@callbackFlow.sendBlocking(true)
         }
@@ -74,5 +77,7 @@ class ChatRepository {
                 TODO("Not yet implemented")
             }
         })
+        
+        awaitClose {  }
     }
 }
