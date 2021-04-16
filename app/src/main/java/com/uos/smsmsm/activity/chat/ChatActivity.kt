@@ -40,22 +40,38 @@ class ChatActivity : AppCompatActivity() {
         //채팅 보내기
         binding.activityChatImagebuttonSendmessage.setOnClickListener { viewmodel.sendMessage(destinationUid) }
 
-        initRecyclerView()
+        var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
+        viewmodel.chatRecyclerData.observe(this, Observer {
+                livedata ->
+            data.value = livedata
+
+        })
+
+        binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
+        binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
+            LinearLayoutManager.VERTICAL,false)
+
+
 
         viewmodel.checkChatRoom(destinationUid)
     }
 
-    fun initRecyclerView(){
-        //챗리스트 리사이클러뷰 연동
+
+    fun initRecyclerViewAdapter(){
         var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
-        viewmodel.chatRecyclerData.observe(this, Observer {
-            livedata ->
+
+        val recyclerObserver : Observer<ArrayList<ChatDTO.Comment>>
+                = Observer { livedata ->
             data.value = livedata
             binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
-            binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
-                LinearLayoutManager.VERTICAL,false)
-        })
+            binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
+        }
+
+        //viewmodel.recyclerData.observe(this, recyclerObserver)
+        viewmodel.recyclerData.observe(this,recyclerObserver)
+
     }
+
 
 
 

@@ -35,6 +35,7 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
     override fun getItemCount(): Int = list.value!!.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        println("chat리사이클러뷰의 아이템 ${list.value.toString()}")
         (holder as MessageViewHolder).onBind(list.value!![position])
         if (list.value!![position].uid.equals(uid)){
             holder.binding.messageItemTextViewMessage.text = list.value!![position].message
