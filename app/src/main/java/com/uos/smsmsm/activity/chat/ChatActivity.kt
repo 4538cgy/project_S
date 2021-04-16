@@ -48,15 +48,19 @@ class ChatActivity : AppCompatActivity() {
 
         viewmodel.checkChatRoom(destinationUid)
 
-
-        var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
-        viewmodel.chatList.observe(this, Observer {
-                livedata ->
-            data.value = livedata
-            binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
-            binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
-                LinearLayoutManager.VERTICAL,false)
+        viewmodel.chatRoomUid.observe(this, Observer {
+            println("chat Activity 에서의 chatroom uid 으아아아 $it")
+            var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
+            viewmodel.chatList.observe(this, Observer {
+                    livedata ->
+                data.value = livedata
+                binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
+                binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
+                    LinearLayoutManager.VERTICAL,false)
+            })
         })
+
+
 
     }
 
