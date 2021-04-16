@@ -62,6 +62,8 @@ class ProfileActivity : AppCompatActivity() {
         viewModel.initDestinationUser(destinationUid.toString())
     }
 
+    fun addFriend(view : View){ viewModel.addFriend(destinationUid.toString())}
+
     fun isFriend(boolean: Boolean){
 
         if (boolean) {

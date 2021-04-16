@@ -149,6 +149,7 @@
                     android:background="@android:color/transparent"
                     android:drawableTop="@drawable/ic_baseline_person_add_alt_1_24"
                     android:text="추가"
+                    android:onClick="@{activityprofile::addFriend}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

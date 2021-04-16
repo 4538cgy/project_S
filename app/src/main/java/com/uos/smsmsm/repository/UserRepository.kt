@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.data.ChatDTO
+import com.uos.smsmsm.data.FriendsDTO
 import com.uos.smsmsm.data.UserDTO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -163,15 +164,72 @@ class UserRepository {
         val eventListener = databaseReference.get().addOnCompleteListener {
             if (it.isSuccessful){
                 if(it.result.data != null){
-
                     this@callbackFlow.sendBlocking(true)
                 }else{
-
                     this@callbackFlow.sendBlocking(false)
                 }
             }
         }
 
+        awaitClose { eventListener }
+    }
+
+    //친구 추가
+    @ExperimentalCoroutinesApi
+    fun addFriend(uid: String, destinationUid: String, friendsDTO: FriendsDTO ) = callbackFlow<Boolean> {
+
+        val databaseReference = db.collection("User")
+            .document("UserData")
+            .collection("userInfo")
+            .whereEqualTo("uid", uid)
+        val eventListener = databaseReference.get().addOnCompleteListener {
+            if(it.isSuccessful){
+                if (it.result != null){
+                    it.result.documents.forEach {
+                        if (it["uid"]!!.equals(uid)){
+                            val databaseReference2 = db.collection("User").document("UserData")
+                                .collection("userInfo")
+                                .document(it.id)
+                                .collection("FriendsList")
+                                .document(uid)
+                            println("key 값이요! ${it.id}")
+
+                            val eventListener2 = databaseReference2.set(friendsDTO).addOnCompleteListener {
+                                if (it.isSuccessful){
+                                    this@callbackFlow.sendBlocking(true)
+                                }else{
+                                    this@callbackFlow.sendBlocking(false)
+                                }
+                            }.addOnFailureListener {
+                                this@callbackFlow.sendBlocking(false)
+                                println("친구 추가 실패 ${it.toString()}")
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+        val databaseReference = db.collection("User")
+            .document("UserData")
+            .collection("userInfo")
+            .document(uid)
+            .collection("FriendsList")
+            .document(destinationUid)
+        val eventListener = databaseReference.set(friendsDTO).addOnCompleteListener { 
+            if (it.isSuccessful){
+                this@callbackFlow.sendBlocking(true)
+            }else{
+                this@callbackFlow.sendBlocking(false)
+            }
+        }.addOnFailureListener { 
+            this@callbackFlow.sendBlocking(false)
+            println("친구 추가 실패 ${it.toString()}")
+        }
+
+         */
         awaitClose { eventListener }
     }
 

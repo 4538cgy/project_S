@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.uos.smsmsm.data.FriendsDTO
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,20 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
             userRepository.isFriend(auth.currentUser!!.uid, destinationUid).collect{
 
                 checkFriends.postValue(it)
+            }
+        }
+    }
+
+    fun addFriend(destinationUid: String){
+        viewModelScope.launch(Dispatchers.IO){
+
+            val friendsDTO = FriendsDTO(destinationUid,System.currentTimeMillis())
+
+            userRepository.addFriend(auth.currentUser!!.uid,destinationUid,friendsDTO).collect{
+                
+                //친구 추가에 성공했으면 친구인지 아닌지 판별
+                checkFriend(destinationUid)
+                if (it) println("친구 추가 성공") else println("친구 추가 실패")
             }
         }
     }
