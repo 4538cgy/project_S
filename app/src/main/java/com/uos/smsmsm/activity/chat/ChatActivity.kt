@@ -6,9 +6,14 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
+import com.uos.smsmsm.data.ChatDTO
+import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.ActivityChatBinding
+import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,7 +40,21 @@ class ChatActivity : AppCompatActivity() {
         //채팅 보내기
         binding.activityChatImagebuttonSendmessage.setOnClickListener { viewmodel.sendMessage(destinationUid) }
 
+        initRecyclerView()
+
         viewmodel.checkChatRoom(destinationUid)
+    }
+
+    fun initRecyclerView(){
+        //챗리스트 리사이클러뷰 연동
+        var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
+        viewmodel.chatRecyclerData.observe(this, Observer {
+            livedata ->
+            data.value = livedata
+            binding.activityChatRecyclerview.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
+            binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
+                LinearLayoutManager.VERTICAL,false)
+        })
     }
 
 

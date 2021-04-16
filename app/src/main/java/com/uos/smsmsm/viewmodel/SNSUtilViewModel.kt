@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 // 채팅 / Timeline / 친구 찾기등 소셜 네트워크 기능 viewmodel
 class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(){
 
+    var chatRecyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var edittextText : MutableLiveData<String> = MutableLiveData()
     var chatRoomUid : MutableLiveData<String> = MutableLiveData()
