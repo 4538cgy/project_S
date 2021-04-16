@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
@@ -33,6 +34,7 @@ class ChatActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_chat)
         binding.lifecycleOwner = this
         binding.viewmodel = viewmodel
+        binding.chat = this@ChatActivity
 
         destinationUid = intent.getStringExtra("destinationUid")
         //액션바 Toolbar에 바인딩
@@ -76,6 +78,8 @@ class ChatActivity : AppCompatActivity() {
             })
         })
     }
+
+    fun backPressed(view : View){ finish() }
 
     fun initRecyclerAdapter(){
         chatRecyclerAdapterInitChecker = true
