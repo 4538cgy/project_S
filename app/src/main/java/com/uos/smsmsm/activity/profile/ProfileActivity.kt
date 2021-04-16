@@ -32,7 +32,14 @@ class ProfileActivity : AppCompatActivity() {
 
         destinationUid = intent.getStringExtra("uid")
 
-        println("데스티네이션 유아이디" + destinationUid)
+
+        //친구인지 아닌지 구분
+        viewModel.checkFriend(destinationUid.toString())
+        viewModel.checkFriends.observe(this, Observer {
+
+            isFriend(it)
+        })
+
         initDestinationUserData()
 
         viewModel.currentDestinationUser.observe(
@@ -53,6 +60,17 @@ class ProfileActivity : AppCompatActivity() {
 
     fun initDestinationUserData(){
         viewModel.initDestinationUser(destinationUid.toString())
+    }
+
+    fun isFriend(boolean: Boolean){
+
+        if (boolean) {
+            binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.VISIBLE
+            binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+        }else {
+            binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
+            binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.VISIBLE
+        }
     }
 
     fun openChat(view: View){

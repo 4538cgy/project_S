@@ -151,5 +151,29 @@ class UserRepository {
         }
     }
 
+    //uid 의 친구 목록에 destinationUid 가 있는지 확인
+    @ExperimentalCoroutinesApi
+    fun isFriend(uid : String, destinationUid :String) = callbackFlow<Boolean> {
+        val databaseReference = db.collection("User")
+            .document("UserData")
+            .collection("userInfo")
+            .document(uid)
+            .collection("FriendsList")
+            .document(destinationUid)
+        val eventListener = databaseReference.get().addOnCompleteListener {
+            if (it.isSuccessful){
+                if(it.result.data != null){
+
+                    this@callbackFlow.sendBlocking(true)
+                }else{
+
+                    this@callbackFlow.sendBlocking(false)
+                }
+            }
+        }
+
+        awaitClose { eventListener }
+    }
+
 
 }

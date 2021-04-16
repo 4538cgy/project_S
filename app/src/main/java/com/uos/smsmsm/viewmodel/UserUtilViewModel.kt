@@ -4,6 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,20 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     var currentUser : MutableLiveData<UserDTO> = MutableLiveData()
     var currentDestinationUser : MutableLiveData<UserDTO> = MutableLiveData()
 
+    var checkFriends = MutableLiveData<Boolean>()
+
     val userRepository  = UserRepository()
+
+    val auth = FirebaseAuth.getInstance()
+
+    fun checkFriend(destinationUid: String){
+        viewModelScope.launch(Dispatchers.IO){
+            userRepository.isFriend(auth.currentUser!!.uid, destinationUid).collect{
+
+                checkFriends.postValue(it)
+            }
+        }
+    }
 
     fun initUser(){
 
