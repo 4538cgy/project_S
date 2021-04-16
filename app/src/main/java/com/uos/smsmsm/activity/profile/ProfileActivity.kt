@@ -38,6 +38,15 @@ class ProfileActivity : AppCompatActivity() {
             binding.activityProfileTextviewNickname.text = it
         })
 
+        //유저 프로필 사진 가져오기
+        viewModel.getUserProfile(destinationUid.toString())
+        viewModel.profileImage.observe(this, Observer {
+            Glide.with(binding.root.context)
+                .load(it.toString())
+                .circleCrop()
+                .into(binding.activityProfileImageviewProfile)
+        })
+
         //친구인지 아닌지 구분
         viewModel.checkFriend(destinationUid.toString())
         viewModel.checkFriends.observe(this, Observer {

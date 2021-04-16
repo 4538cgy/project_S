@@ -20,6 +20,9 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
 
     //ProfileActivity - 닉네임
     var userName : MutableLiveData<String> = MutableLiveData()
+    //ProfileActivity - 유저 사진
+    var profileImage : MutableLiveData<String> = MutableLiveData()
+
 
     var checkFriends = MutableLiveData<Boolean>()
 
@@ -51,18 +54,21 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     }
 
     fun getUserName(destinationUid: String){
-        println("닉네임 가져오기 시도")
         viewModelScope.launch(Dispatchers.IO){
             userRepository.getUserNickName(destinationUid).collect{
-                println("가져온 닉네임 $it")
                 userName.postValue(it)
             }
         }
     }
 
-    fun initUser(){
-
+    fun getUserProfile(destinationUid: String){
+        viewModelScope.launch(Dispatchers.IO){
+            userRepository.getUserProfileImage(destinationUid).collect {
+                    profileImage.postValue(it)
+            }
+        }
     }
+
 
     fun initDestinationUser(destinationUid : String){
         viewModelScope.launch(Dispatchers.IO){
