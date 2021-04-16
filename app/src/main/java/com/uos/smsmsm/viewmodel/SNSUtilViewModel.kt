@@ -234,7 +234,6 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         chatDTOs.users[auth.currentUser?.uid!!] = true;
         chatDTOs.commentTimestamp = System.currentTimeMillis()
         chatDTOs.users[destinationUid!!] = true
-        println("채팅방 유아이디이이이이이 ${chatRoomUid.value}")
         viewModelScope.launch(Dispatchers.IO) {
             //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
             if (chatRoomUid.value == null) {
@@ -243,14 +242,11 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                     if (it) println("채팅방 생성 성공") else println("채팅방 생성 실패")
 
                     //채팅방 생성하고 채팅방 uid 가져오기
-                    println("채팅방 uid 체크")
                     checkChatRoom(destinationUid)
 
                     repository.checkChatRoom(destinationUid).collect{
-                        println("채팅방의 uid = $it")
                         //채팅방을 생성하고도 에딧텍스트에 값이 남아있다면 메세지 전달
                         if (edittextText.value!!.isNotEmpty()){
-                            println("edittext에 값이 남아있어 채팅을 한번 더 보내야합니다.")
                             var comment = ChatDTO.Comment()
                             comment.uid = destinationUid
                             comment.message = edittextText.value.toString()

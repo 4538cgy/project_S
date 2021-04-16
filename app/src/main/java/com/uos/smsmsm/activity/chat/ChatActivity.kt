@@ -49,7 +49,6 @@ class ChatActivity : AppCompatActivity() {
         viewmodel.checkChatRoom(destinationUid)
 
         viewmodel.chatRoomUid.observe(this, Observer {
-            println("chat Activity 에서의 chatroom uid 으아아아 $it")
             var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
             viewmodel.chatList.observe(this, Observer {
                     livedata ->
@@ -63,27 +62,6 @@ class ChatActivity : AppCompatActivity() {
 
 
     }
-
-/*
-    fun initRecyclerViewAdapter(){
-        var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
-
-        val recyclerObserver : Observer<ArrayList<ChatDTO.Comment>>
-                = Observer { livedata ->
-            data.value = livedata
-            binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
-            binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
-        }
-
-        //viewmodel.recyclerData.observe(this, recyclerObserver)
-        viewmodel.recyclerData.observe(this,recyclerObserver)
-
-    }
-
- */
-
-
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater = menuInflater
