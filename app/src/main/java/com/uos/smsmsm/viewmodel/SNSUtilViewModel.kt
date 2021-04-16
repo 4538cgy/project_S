@@ -231,6 +231,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     fun sendMessage(destinationUid: String){
         val repository = ChatRepository()
 
+        chatList.value!!.clear()
 
         var chatDTOs = ChatDTO()
         chatDTOs.users[auth.currentUser?.uid!!] = true;
@@ -247,14 +248,15 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                     checkChatRoom(destinationUid)
 
                     repository.checkChatRoom(destinationUid).collect{
+
                         //채팅방을 생성하고도 에딧텍스트에 값이 남아있다면 메세지 전달
                         if (edittextText.value!!.isNotEmpty()){
                             var comment = ChatDTO.Comment()
-                            comment.uid = destinationUid
+                            comment.uid = auth.currentUser!!.uid
                             comment.message = edittextText.value.toString()
                             comment.timestamp = System.currentTimeMillis()
 
-                            repository.addChat(chatRoomUid.value.toString(),comment).collect {
+                            repository.addChat(it.toString(),comment).collect {
                                 if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                                 //채팅 다 보낸뒤 edittextText 교체해주기
                                 edittextText.postValue(null)
@@ -269,7 +271,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             }else{
 
                 var comment = ChatDTO.Comment()
-                comment.uid = destinationUid
+                comment.uid = auth.currentUser!!.uid
                 comment.message = edittextText.value.toString()
                 comment.timestamp = System.currentTimeMillis()
 

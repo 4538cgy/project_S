@@ -39,12 +39,15 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         println("chat리사이클러뷰의 아이템 ${list.value.toString()}")
         (holder as MessageViewHolder).onBind(list.value!![position])
+        
+        //내가 보낸 메세지
         if (list.value!![position].uid.equals(uid)){
             holder.binding.messageItemTextViewMessage.text = list.value!![position].message
             holder.binding.messageItemTextViewMessage.setBackgroundResource(R.drawable.background_round_white)
             holder.binding.messageItemLinearlayoutDestination.visibility = View.INVISIBLE
+            holder.binding.messageItemTextViewMessage.textSize = 18F
             holder.binding.messageItemLinearlayoutMain.gravity = Gravity.RIGHT
-        }else{
+        }else{//상대방이 보낸 메세지
             //프로필 이미지 가져오고
             //유저 닉네임 가져오고
             /*
