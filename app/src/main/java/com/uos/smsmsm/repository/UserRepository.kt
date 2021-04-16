@@ -155,22 +155,37 @@ class UserRepository {
     //uid 의 친구 목록에 destinationUid 가 있는지 확인
     @ExperimentalCoroutinesApi
     fun isFriend(uid : String, destinationUid :String) = callbackFlow<Boolean> {
+
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
-            .document(uid)
-            .collection("FriendsList")
-            .document(destinationUid)
+            .whereEqualTo("uid", uid)
+
         val eventListener = databaseReference.get().addOnCompleteListener {
-            if (it.isSuccessful){
-                if(it.result.data != null){
-                    this@callbackFlow.sendBlocking(true)
-                }else{
-                    this@callbackFlow.sendBlocking(false)
+            if (it.isSuccessful) {
+                if (it.result != null) {
+                    it.result.documents.forEach {
+                        if (it["uid"]!!.equals(uid)){
+                            val databaseReference2 = db.collection("User").document("UserData")
+                                .collection("userInfo")
+                                .document(it.id)
+                                .collection("FriendsList")
+                                .whereEqualTo("uid",destinationUid)
+
+                            val eventListener2 = databaseReference2.get().addOnCompleteListener {
+                                if (it.isSuccessful){
+                                    if (it.result.documents != null){
+                                        this@callbackFlow.sendBlocking(true)
+                                    }else{
+                                        this@callbackFlow.sendBlocking(false)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-
         awaitClose { eventListener }
     }
 
@@ -192,7 +207,6 @@ class UserRepository {
                                 .document(it.id)
                                 .collection("FriendsList")
                                 .document(uid)
-                            println("key 값이요! ${it.id}")
 
                             val eventListener2 = databaseReference2.set(friendsDTO).addOnCompleteListener {
                                 if (it.isSuccessful){
@@ -204,32 +218,11 @@ class UserRepository {
                                 this@callbackFlow.sendBlocking(false)
                                 println("친구 추가 실패 ${it.toString()}")
                             }
-
                         }
                     }
                 }
             }
         }
-
-        /*
-        val databaseReference = db.collection("User")
-            .document("UserData")
-            .collection("userInfo")
-            .document(uid)
-            .collection("FriendsList")
-            .document(destinationUid)
-        val eventListener = databaseReference.set(friendsDTO).addOnCompleteListener { 
-            if (it.isSuccessful){
-                this@callbackFlow.sendBlocking(true)
-            }else{
-                this@callbackFlow.sendBlocking(false)
-            }
-        }.addOnFailureListener { 
-            this@callbackFlow.sendBlocking(false)
-            println("친구 추가 실패 ${it.toString()}")
-        }
-
-         */
         awaitClose { eventListener }
     }
 
