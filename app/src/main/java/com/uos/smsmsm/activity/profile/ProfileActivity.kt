@@ -32,6 +32,11 @@ class ProfileActivity : AppCompatActivity() {
 
         destinationUid = intent.getStringExtra("uid")
 
+        //유저 닉네임 가져오기
+        viewModel.getUserName(destinationUid.toString())
+        viewModel.userName.observe(this, Observer {
+            binding.activityProfileTextviewNickname.text = it
+        })
 
         //친구인지 아닌지 구분
         viewModel.checkFriend(destinationUid.toString())
@@ -62,6 +67,7 @@ class ProfileActivity : AppCompatActivity() {
         viewModel.initDestinationUser(destinationUid.toString())
     }
 
+    //친구 추가 버튼
     fun addFriend(view : View){ viewModel.addFriend(destinationUid.toString())}
 
     fun isFriend(boolean: Boolean){

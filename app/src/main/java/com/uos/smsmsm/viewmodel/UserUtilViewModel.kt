@@ -18,6 +18,9 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     var currentUser : MutableLiveData<UserDTO> = MutableLiveData()
     var currentDestinationUser : MutableLiveData<UserDTO> = MutableLiveData()
 
+    //ProfileActivity - 닉네임
+    var userName : MutableLiveData<String> = MutableLiveData()
+
     var checkFriends = MutableLiveData<Boolean>()
 
     val userRepository  = UserRepository()
@@ -43,6 +46,16 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
                 //친구 추가에 성공했으면 친구인지 아닌지 판별
                 checkFriend(destinationUid)
                 if (it) println("친구 추가 성공") else println("친구 추가 실패")
+            }
+        }
+    }
+
+    fun getUserName(destinationUid: String){
+        println("닉네임 가져오기 시도")
+        viewModelScope.launch(Dispatchers.IO){
+            userRepository.getUserNickName(destinationUid).collect{
+                println("가져온 닉네임 $it")
+                userName.postValue(it)
             }
         }
     }
