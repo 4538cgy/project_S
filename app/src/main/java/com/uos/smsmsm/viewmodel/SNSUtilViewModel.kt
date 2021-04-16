@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 // 채팅 / Timeline / 친구 찾기등 소셜 네트워크 기능 viewmodel
 class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(){
 
-    var chatRecyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var edittextText : MutableLiveData<String> = MutableLiveData()
     var chatRoomUid : MutableLiveData<String> = MutableLiveData()
@@ -180,9 +179,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         viewModelScope.launch(Dispatchers.IO) {
             repository.checkChatRoom(destinationUid).collect {
                 chatRoomUid.postValue(it)
-                println("으아아 채팅방 확인중")
-
-                println("끄아아아아아아아ㅏ아아아아아앜")
+                println("채팅방 확인중~~~~~~ ${chatRoomUid.value}")
             }
         }
         println("으아아아아 chatroom 의 uid ${chatRoomUid.value}")

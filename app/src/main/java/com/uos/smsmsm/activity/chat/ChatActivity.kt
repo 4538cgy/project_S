@@ -40,23 +40,27 @@ class ChatActivity : AppCompatActivity() {
         //채팅 보내기
         binding.activityChatImagebuttonSendmessage.setOnClickListener { viewmodel.sendMessage(destinationUid) }
 
-        var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
-        viewmodel.chatRecyclerData.observe(this, Observer {
-                livedata ->
-            data.value = livedata
 
-        })
 
-        binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
-        binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
-            LinearLayoutManager.VERTICAL,false)
+
 
 
 
         viewmodel.checkChatRoom(destinationUid)
+
+
+        var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
+        viewmodel.chatList.observe(this, Observer {
+                livedata ->
+            data.value = livedata
+            binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
+            binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
+                LinearLayoutManager.VERTICAL,false)
+        })
+
     }
 
-
+/*
     fun initRecyclerViewAdapter(){
         var data = MutableLiveData<ArrayList<ChatDTO.Comment>>()
 
@@ -71,6 +75,8 @@ class ChatActivity : AppCompatActivity() {
         viewmodel.recyclerData.observe(this,recyclerObserver)
 
     }
+
+ */
 
 
 
