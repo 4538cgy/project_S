@@ -51,7 +51,7 @@ class ChatActivity : AppCompatActivity() {
         viewmodel.chatRecyclerData.observe(this, Observer {
             livedata ->
             data.value = livedata
-            binding.activityChatRecyclerview.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
+            binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data)
             binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
                 LinearLayoutManager.VERTICAL,false)
         })
