@@ -234,7 +234,7 @@ class UserRepository {
     }
 
     //친구 목록 가져오기
-    fun getFriendsList(uid : String) = callbackFlow<FriendsDTO> {
+    fun getFriendsList(uid : String) = callbackFlow<ArrayList<FriendsDTO>> {
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -249,12 +249,16 @@ class UserRepository {
                                 .collection("userInfo")
                                 .document(it.id)
                                 .collection("FriendsList")
-                                .document(uid)
+
 
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if (value != null){
-                                    if(value.exists()){
-                                        this@callbackFlow.sendBlocking(value.toObject(FriendsDTO::class.java)!!)
+                                    if (value.documents.isNotEmpty()){
+
+                                        var arrayList = arrayListOf<FriendsDTO>()
+                                        arrayList.addAll(value.toObjects(FriendsDTO::class.java))
+
+                                        this@callbackFlow.sendBlocking(arrayList)
                                     }
                                 }
                             }

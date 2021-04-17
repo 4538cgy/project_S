@@ -325,7 +325,9 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         viewModelScope.launch(Dispatchers.IO){
             repository.getFriendsList(uid).collect{
                 println("가져온 친구 목록 = ${it.toString()}")
-
+                it.forEach {
+                    getUserData(it.uid.toString())
+                }
             }
         }
     }
@@ -333,8 +335,41 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     //유저 정보 가져오기
     fun getUserData(uid : String){
         viewModelScope.launch(Dispatchers.IO){
-            repository.getUser(uid).collect {
-                
+            repository.getUser(uid).collect {userData ->
+                println("가져온 유저 정보 = ${userData}")
+
+                repository.getUserProfileImage(uid).collect{userProfileImageUrl ->
+                    println("가져온 유저 프로필 이미지 정보 = ${userProfileImageUrl}")
+
+                    var arrayList = arrayListOf<RecyclerDefaultModel>()
+
+                    if (userProfileImageUrl != null){
+                        arrayList.add(
+                            RecyclerDefaultModel(
+                                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
+                                userProfileImageUrl,
+                                userData.uid.toString(),
+                                null,
+                                userData.userName.toString(),
+                                "임시 프로필 설명"
+                            )
+                        )
+                    }else{
+                        arrayList.add(
+                            RecyclerDefaultModel(
+                                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
+                                "",
+                                userData.uid.toString(),
+                                null,
+                                userData.userName.toString(),
+                                "임시 프로필 설명"
+                            )
+                        )
+                    }
+
+
+                    recyclerData.postValue(arrayList)
+                }
             }
         }
     }
