@@ -57,9 +57,6 @@ class FriendsListFragment : Fragment() {
     fun initRecyclerViewAdapter(){
         var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
 
-        //친구 목록이 비어 있으면 친구 추가 안내 메세지를 출력
-        if (data.value == null){ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE }
-
         val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
                 = Observer { livedata ->
             data.value = livedata
@@ -72,6 +69,9 @@ class FriendsListFragment : Fragment() {
         }
 
         viewmodel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
+
+        //친구 목록이 비어 있으면 친구 추가 안내 메세지를 출력
+        if (data.value == null){ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE }
 
     }
     fun openSearhActivity(view: View) {
