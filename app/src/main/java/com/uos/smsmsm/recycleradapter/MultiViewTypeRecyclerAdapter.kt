@@ -19,6 +19,7 @@ import com.uos.smsmsm.databinding.ItemMultiViewImageTypeBinding
 import com.uos.smsmsm.databinding.ItemMultiViewTextType2Binding
 import com.uos.smsmsm.databinding.ItemMultiViewTextTypeBinding
 import com.uos.smsmsm.repository.UserRepository
+import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -28,15 +29,16 @@ import kotlinx.coroutines.launch
 class MultiViewTypeRecyclerAdapter(
     private val context: Context,
     private val list : LiveData<ArrayList<RecyclerDefaultModel>>
+
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
 
     val userRepository = UserRepository()
     val ioScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        // apply template string
-        println("뷰타이이이이이입 $viewType")
+
 
         // Remove return in return
         return when (viewType) {
@@ -124,7 +126,6 @@ class MultiViewTypeRecyclerAdapter(
                     list.value!![position].title
 
 
-                println("MultiView어댑터의 list11 ${list.value.toString()}")
                 //아이템 자체 클릭
                 holder.itemView.setOnClickListener {
                     var intent = Intent(holder.binding.root.context,ProfileActivity::class.java)
@@ -136,7 +137,18 @@ class MultiViewTypeRecyclerAdapter(
                 }
 
                 //프로필 이미지 클릭
-                holder.binding.itemMultiViewFriendsListTypeTitleImageview.setOnClickListener {  }
+                holder.binding.itemMultiViewFriendsListTypeTitleImageview.setOnClickListener {
+                    ioScope.launch {
+                        userRepository.getUserProfileImage(list.value!![position].uid!!).collect{
+
+                            var intent = Intent(holder.binding.root.context,PhotoViewActivity::class.java)
+                            intent.apply {
+                                putExtra("imageUrl",it)
+                                holder.binding.root.context.startActivity(intent)
+                            }            }
+                    }
+
+                }
 
                 //프로필 이미지 출력
                 ioScope.launch {
@@ -156,18 +168,26 @@ class MultiViewTypeRecyclerAdapter(
                 holder.binding.itemMultiViewFriendsListTypeTitleContentTextviewContent.text =
                     list.value!![position].content
 
-                println("MultiView어댑터의 list22 ${list.value.toString()}")
                 //아이템 자체 클릭
                 holder.itemView.setOnClickListener { holder.binding.root.context.startActivity(Intent(holder.binding.root.context,ProfileActivity::class.java)) }
 
 
                 //프로필 이미지 클릭
-                holder.binding.itemMultiViewFriendsListTypeTitleContentImageview.setOnClickListener {  }
+                holder.binding.itemMultiViewFriendsListTypeTitleContentImageview.setOnClickListener {
+                    ioScope.launch {
+                        userRepository.getUserProfileImage(list.value!![position].uid!!).collect{
+
+                            var intent = Intent(holder.binding.root.context,PhotoViewActivity::class.java)
+                            intent.apply {
+                                putExtra("imageUrl",it)
+                                holder.binding.root.context.startActivity(intent)
+                            }            }
+                    }
+                }
 
                 //프로필 이미지 출력
                 ioScope.launch {
                     userRepository.getUserProfileImage(list.value!![position].uid!!).collect{
-
                         Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemMultiViewFriendsListTypeTitleContentImageview)
                     }
                 }
