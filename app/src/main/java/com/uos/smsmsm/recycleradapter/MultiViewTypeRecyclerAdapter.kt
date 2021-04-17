@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
@@ -16,12 +18,20 @@ import com.uos.smsmsm.databinding.ItemMultiViewImageType2Binding
 import com.uos.smsmsm.databinding.ItemMultiViewImageTypeBinding
 import com.uos.smsmsm.databinding.ItemMultiViewTextType2Binding
 import com.uos.smsmsm.databinding.ItemMultiViewTextTypeBinding
+import com.uos.smsmsm.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 // (friendslist) list init in constructor, ArrayList -> List (array -> collection)
 class MultiViewTypeRecyclerAdapter(
     private val context: Context,
     private val list : LiveData<ArrayList<RecyclerDefaultModel>>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    val userRepository = UserRepository()
+    val ioScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -113,6 +123,8 @@ class MultiViewTypeRecyclerAdapter(
                 holder.binding.itemMultiViewFriendsListTypeTitleTextviewTitle.text =
                     list.value!![position].title
 
+
+                println("MultiView어댑터의 list11 ${list.value.toString()}")
                 //아이템 자체 클릭
                 holder.itemView.setOnClickListener {
                     var intent = Intent(holder.binding.root.context,ProfileActivity::class.java)
@@ -126,10 +138,13 @@ class MultiViewTypeRecyclerAdapter(
                 //프로필 이미지 클릭
                 holder.binding.itemMultiViewFriendsListTypeTitleImageview.setOnClickListener {  }
 
-                Glide.with(holder.itemView.context)
-                    .load(list.value!![position].downloadImageUrl)
-                    .circleCrop()
-                    .into(holder.binding.itemMultiViewFriendsListTypeTitleImageview)
+                //프로필 이미지 출력
+                ioScope.launch {
+                    userRepository.getUserProfileImage(list.value!![position].uid!!).collect{
+
+                        Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemMultiViewFriendsListTypeTitleImageview)
+                    }
+                }
             }
             RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT -> {
                 (holder as FriendsListTypeTitleContentViewHolder).onBind(list.value!![position])
@@ -141,6 +156,7 @@ class MultiViewTypeRecyclerAdapter(
                 holder.binding.itemMultiViewFriendsListTypeTitleContentTextviewContent.text =
                     list.value!![position].content
 
+                println("MultiView어댑터의 list22 ${list.value.toString()}")
                 //아이템 자체 클릭
                 holder.itemView.setOnClickListener { holder.binding.root.context.startActivity(Intent(holder.binding.root.context,ProfileActivity::class.java)) }
 
@@ -148,10 +164,15 @@ class MultiViewTypeRecyclerAdapter(
                 //프로필 이미지 클릭
                 holder.binding.itemMultiViewFriendsListTypeTitleContentImageview.setOnClickListener {  }
 
-                Glide.with(holder.itemView.context)
-                    .load(list.value!![position].downloadImageUrl)
-                    .circleCrop()
-                    .into(holder.binding.itemMultiViewFriendsListTypeTitleContentImageview)
+                //프로필 이미지 출력
+                ioScope.launch {
+                    userRepository.getUserProfileImage(list.value!![position].uid!!).collect{
+
+                        Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemMultiViewFriendsListTypeTitleContentImageview)
+                    }
+                }
+
+
             }
         }
     }
