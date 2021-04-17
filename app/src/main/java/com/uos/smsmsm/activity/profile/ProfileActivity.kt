@@ -32,7 +32,28 @@ class ProfileActivity : AppCompatActivity() {
 
         destinationUid = intent.getStringExtra("uid")
 
-        println("데스티네이션 유아이디" + destinationUid)
+        //유저 닉네임 가져오기
+        viewModel.getUserName(destinationUid.toString())
+        viewModel.userName.observe(this, Observer {
+            binding.activityProfileTextviewNickname.text = it
+        })
+
+        //유저 프로필 사진 가져오기
+        viewModel.getUserProfile(destinationUid.toString())
+        viewModel.profileImage.observe(this, Observer {
+            Glide.with(binding.root.context)
+                .load(it.toString())
+                .circleCrop()
+                .into(binding.activityProfileImageviewProfile)
+        })
+
+        //친구인지 아닌지 구분
+        viewModel.checkFriend(destinationUid.toString())
+        viewModel.checkFriends.observe(this, Observer {
+
+            isFriend(it)
+        })
+
         initDestinationUserData()
 
         viewModel.currentDestinationUser.observe(
@@ -53,6 +74,20 @@ class ProfileActivity : AppCompatActivity() {
 
     fun initDestinationUserData(){
         viewModel.initDestinationUser(destinationUid.toString())
+    }
+
+    //친구 추가 버튼
+    fun addFriend(view : View){ viewModel.addFriend(destinationUid.toString())}
+
+    fun isFriend(boolean: Boolean){
+
+        if (boolean) {
+            binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.VISIBLE
+            binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+        }else {
+            binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
+            binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.VISIBLE
+        }
     }
 
     fun openChat(view: View){
