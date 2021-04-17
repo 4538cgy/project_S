@@ -50,6 +50,26 @@ class FriendsListFragment : Fragment() {
          */
         viewmodel.initUserFriendsList(auth.currentUser!!.uid)
 
+
+        //friends List의 상태 확인
+
+        viewmodel.friendsListState.observe(viewLifecycleOwner, Observer {
+            when(it){
+                //데이터가 읽히는 중이면 실행
+                "getting" ->{ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
+                binding.fragmentFriendsListTextviewNotice.text = "데이터 불러오는 중" }
+
+                //데이터 읽은 후에 데이터 내용에 따라 내용 출력  #dialog와 같은것으로 표시를 바꿔주면 더욱 이뻐질듯함
+                "complete" -> {
+                    if (viewmodel.recyclerData.value!!.isEmpty()){ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
+                    binding.fragmentFriendsListTextviewNotice.setText(R.string.notice_no_friends)
+                    }else{
+                        binding.fragmentFriendsListTextviewNotice.visibility = View.GONE
+                    }
+                }
+            }
+        })
+
         initRecyclerViewAdapter()
 
         return binding.root
@@ -61,17 +81,11 @@ class FriendsListFragment : Fragment() {
                 = Observer { livedata ->
             data.value = livedata
 
-            //친구 목록이 비어 있지않으면 친구 추가 안내 메세지 없애기
-            if (data.value != null){ binding.fragmentFriendsListTextviewNotice.visibility = View.GONE }
-
             binding.fragmentFriendsListRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
             binding.fragmentFriendsListRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         }
 
         viewmodel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
-
-        //친구 목록이 비어 있으면 친구 추가 안내 메세지를 출력
-        if (data.value == null){ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE }
 
     }
     fun openSearhActivity(view: View) {

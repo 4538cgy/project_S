@@ -38,6 +38,9 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     //본목적
     var userList : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
 
+    //친구 목록 리스트의 상태
+    var friendsListState : MutableLiveData<String> = MutableLiveData()
+
     val repository = UserRepository()
 
     val auth = FirebaseAuth.getInstance()
@@ -334,6 +337,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     //유저 정보 가져오기
     fun getUserData(uid : String){
+        friendsListState.postValue("getting")
         viewModelScope.launch(Dispatchers.IO){
             repository.getUser(uid).collect {userData ->
                 println("가져온 유저 정보 = ${userData}")
@@ -368,7 +372,10 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                     }
 
 
+
+
                     recyclerData.postValue(arrayList)
+                    friendsListState.postValue("complete")
                 }
             }
         }
