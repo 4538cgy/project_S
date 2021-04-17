@@ -21,6 +21,7 @@
     <string name="favorite">채팅</string>
     <string name="account">사용자</string>
     <string name="more">더보기</string>
+    <string name="friendsList">친구 목록</string>
 
     <!-- Account -->
     <string name="post">Post</string>
