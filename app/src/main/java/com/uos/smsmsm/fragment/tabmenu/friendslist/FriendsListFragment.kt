@@ -48,9 +48,8 @@ class FriendsListFragment : Fragment() {
         - 친구목록 내부데이터가 비어있을시에만 친구 목록을 가져올것 [ 최초 1회 실행 ]
         - 해당 activity가 실행되면 친구 목록 데이터가 갱신된 시간을 체크하여 내부데이터를 업데이트 해줄것
          */
-        viewmodel.initUserFriendsList(auth.currentUser!!.uid)
+        //viewmodel.initUserFriendsList(auth.currentUser!!.uid)
 
-        //viewmodel.initFriendsList()
         initRecyclerViewAdapter()
 
         return binding.root
@@ -58,9 +57,16 @@ class FriendsListFragment : Fragment() {
     fun initRecyclerViewAdapter(){
         var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
 
+        //친구 목록이 비어 있으면 친구 추가 안내 메세지를 출력
+        if (data.value == null){ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE }
+
         val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
                 = Observer { livedata ->
             data.value = livedata
+
+            //친구 목록이 비어 있지않으면 친구 추가 안내 메세지 없애기
+            if (data.value != null){ binding.fragmentFriendsListTextviewNotice.visibility = View.GONE }
+
             binding.fragmentFriendsListRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
             binding.fragmentFriendsListRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         }
