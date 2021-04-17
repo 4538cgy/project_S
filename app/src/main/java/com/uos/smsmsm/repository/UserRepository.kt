@@ -21,6 +21,8 @@ class UserRepository {
     private val rdb = FirebaseDatabase.getInstance()
     private val authUid = FirebaseAuth.getInstance().currentUser?.uid
 
+
+    //유저 생성
     @ExperimentalCoroutinesApi
     fun createUser(userDTO : UserDTO) = callbackFlow<Boolean> {
         val databaseReference = db.collection("user").document()
@@ -31,6 +33,7 @@ class UserRepository {
         }
     }
 
+    //테스트 유저 생성 - delete soon
     @ExperimentalCoroutinesApi
     fun createTestUser(userData: UserDTO) = callbackFlow<Boolean> {
         val databaseReference = db.collection("testUser").document()
@@ -43,6 +46,7 @@ class UserRepository {
         awaitClose { eventListener.isComplete }
     }
 
+    //테스트 유저 목록 가져오기 - delete soon
     @ExperimentalCoroutinesApi
     fun getTestUserList() = callbackFlow<ArrayList<UserDTO>> {
         val databaseReference = db.collection("testUser")
@@ -58,8 +62,7 @@ class UserRepository {
         awaitClose { eventListener.remove() }
     }
 
-
-
+    //모든 유저 정보 가져오기
     @ExperimentalCoroutinesApi
     fun getAllUser() = callbackFlow<ArrayList<UserDTO>> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
@@ -78,6 +81,7 @@ class UserRepository {
         awaitClose { eventListener }
     }
 
+    //유저의 프로필 이미지 url 가져오기
     @ExperimentalCoroutinesApi
     fun getUserProfileImage(uid : String) = callbackFlow<String> {
         val databaseReference = db.collection("profileImages").document(uid)
@@ -93,6 +97,7 @@ class UserRepository {
 
     }
 
+    //유저 닉네임 가져오기
     @ExperimentalCoroutinesApi
     fun getUserNickName(uid : String) = callbackFlow<String> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid",uid)
@@ -113,6 +118,7 @@ class UserRepository {
         awaitClose { eventListener }
     }
 
+    //특정 유저 한명의 정보 가져오기
     @ExperimentalCoroutinesApi
     fun getUser(uid : String) = callbackFlow<UserDTO> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid",uid)
@@ -135,6 +141,7 @@ class UserRepository {
         awaitClose { eventListener.remove() }
     }
 
+    //유저의 닉네임이 존재하는지 체크
     @ExperimentalCoroutinesApi
     fun checkUserNickName(userNickName: String) = callbackFlow<Boolean> {
         val databaseReference = db.collection("user").document("userNickNameList")
@@ -222,6 +229,41 @@ class UserRepository {
                     }
                 }
             }
+        }
+        awaitClose { eventListener }
+    }
+
+    //친구 목록 가져오기
+    fun getFriendsList(uid : String) = callbackFlow<FriendsDTO> {
+        val databaseReference = db.collection("User")
+            .document("UserData")
+            .collection("userInfo")
+            .whereEqualTo("uid",uid)
+
+        val eventListener = databaseReference.get().addOnCompleteListener {
+            if (it.isSuccessful){
+                if (it.result != null){
+                    it.result.documents.forEach {
+                        if(it["uid"]!!.equals(uid)){
+                            val databaseReference2 = db.collection("User").document("UserData")
+                                .collection("userInfo")
+                                .document(it.id)
+                                .collection("FriendsList")
+                                .document(uid)
+
+                            val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
+                                if (value != null){
+                                    if(value.exists()){
+                                        this@callbackFlow.sendBlocking(value.toObject(FriendsDTO::class.java)!!)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.addOnFailureListener {
+            println("친구목록 불러오기 실패")
         }
         awaitClose { eventListener }
     }

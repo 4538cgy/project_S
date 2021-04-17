@@ -320,7 +320,24 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         recyclerData.postValue(list)
     }
 
+    //해당 유저의 친구 목록 가져오기
+    fun initUserFriendsList(uid : String){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.getFriendsList(uid).collect{
+                println("가져온 친구 목록 = ${it.toString()}")
 
+            }
+        }
+    }
+
+    //유저 정보 가져오기
+    fun getUserData(uid : String){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.getUser(uid).collect {
+                
+            }
+        }
+    }
 
     //친구 목록 가져오기
     //친구 목록 최초 초기화

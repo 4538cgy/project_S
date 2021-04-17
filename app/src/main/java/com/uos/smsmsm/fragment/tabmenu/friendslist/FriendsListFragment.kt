@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
@@ -28,6 +29,8 @@ class FriendsListFragment : Fragment() {
     lateinit var binding: FragmentFriendsListBinding
     private val viewmodel: SNSUtilViewModel by viewModels()
 
+    private val auth = FirebaseAuth.getInstance()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,6 +39,9 @@ class FriendsListFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_friends_list, container, false)
         binding.fragmentfriendslist = this
+
+        //친구목록 가져오기
+        viewmodel.initUserFriendsList(auth.currentUser!!.uid)
 
         viewmodel.initFriendsList()
         initRecyclerViewAdapter()
