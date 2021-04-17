@@ -91,7 +91,7 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
                 .replace(R.id.activity_lobby_fragmelayout, chatFragment).commit()
             true
         }
-        R.id.action_favorite_alarm -> {
+        R.id.action_friendslist -> {
             // var -> val
             val friendslistFragment = FriendsListFragment()
             supportFragmentManager.beginTransaction()

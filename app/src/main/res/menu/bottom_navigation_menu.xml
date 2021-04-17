@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/action_friendslist"
+        android:icon="@drawable/ic_baseline_groups_24"
+        android:enabled="true"
+        android:title="@string/friendsList"
+        />
+    <item
         android:id="@+id/action_home"
         android:icon="@drawable/ic_home"
         android:enabled="true"
@@ -18,12 +24,7 @@
         android:enabled="true"
         android:title="@string/upload_image"
         />
-    <item
-        android:id="@+id/action_favorite_alarm"
-        android:icon="@drawable/ic_baseline_chat_24"
-        android:enabled="true"
-        android:title="@string/favorite"
-        />
+
     <item
         android:id="@+id/action_more"
         android:icon="@drawable/ic_baseline_more_horiz_24"

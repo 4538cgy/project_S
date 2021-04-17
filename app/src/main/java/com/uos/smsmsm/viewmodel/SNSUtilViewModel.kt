@@ -73,6 +73,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             {
                 pathList.add(it)
 
+                println("SNS 뷰모델에서의 필터링된 유저 데이터 ${it.toString()}")
 
             }
         }
