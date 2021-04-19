@@ -46,6 +46,13 @@
     <string name="alarm_chat">님이 메세지를 보내셨습니다.</string>
     <string name="alarm_follower_update">님이 새로운 소식을 올리셨습니다.</string>
 
+    <!-- Notice -->
+    <string name="notice_no_friends">어머 친구가 없으시군요? \n
+    다음과 같이 진행하여 친구를 추가해보세요 \n
+    1. 돋보기를 클릭 \n
+    2. 친구를 검색 \n
+    3. 해당 친구를 클릭하여 추가 버튼 클릭</string>
+
     <!-- Comment -->
     <string name="send">Send</string>
 

@@ -38,6 +38,9 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     //본목적
     var userList : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
 
+    //친구 목록 리스트의 상태
+    var friendsListState : MutableLiveData<String> = MutableLiveData()
+
     val repository = UserRepository()
 
     val auth = FirebaseAuth.getInstance()
@@ -320,124 +323,63 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         recyclerData.postValue(list)
     }
 
-
-
-    //친구 목록 가져오기
-    //친구 목록 최초 초기화
-    //호출 후 recyclerView 반드시 notifyChange
-    fun initFriendsList(){
-        var list : ArrayList<RecyclerDefaultModel> = arrayListOf()
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.TEXT_TYPE,
-                "",
-                "aaa",
-                null,
-                "즐겨찾기",
-                ""
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2054%EB%B6%84%2045%EC%B4%88_.png?alt=media&token=b15104e7-ed95-4acd-8f41-c9890af2a5ec",
-                "aaa",
-                null,
-                "아 적기 힘들다",
-                "아 뭐적어야함."
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2054%EB%B6%84%2034%EC%B4%88_.png?alt=media&token=7de3d26f-59ce-44da-a588-a0e4728140c5",
-                "aaa",
-                null,
-                "24세빻돔",
-                "뭘봐 시벌"
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2051%EB%B6%84%2048%EC%B4%88_.png?alt=media&token=d5429bc4-bee5-4be8-a7e6-82e3989913fe",
-                "aaa",
-                null,
-                "FD_양꼬치와칭따오",
-                "양꼬치 같이드실분"
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2051%EB%B6%84%2048%EC%B4%88_.png?alt=media&token=d5429bc4-bee5-4be8-a7e6-82e3989913fe",
-                "aaa",
-                null,
-                "퀸더블랙",
-                ""
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.TEXT_TYPE,
-                "",
-                "aaa",
-                null,
-                "친구 62",
-                ""
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2055%EB%B6%84%2000%EC%B4%88_.png?alt=media&token=32d9aa22-3b5b-4d2d-a3da-dc65b783d576",
-                "aaa",
-                null,
-                "FS_로뎅",
-                "22살 서울시 부산구 동대문동 서식중"
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2055%EB%B6%84%2007%EC%B4%88_.png?alt=media&token=f551c7b1-04dc-4ffb-a0d1-b80509ec153a",
-                "aaa",
-                null,
-                "MS 24/7",
-                "캬ㅕ캬컄캬캬컄ㅋ"
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2052%EB%B6%84%2004%EC%B4%88_.png?alt=media&token=fd6e1bb5-b45a-4528-a292-aa48189538dd",
-                "aaa",
-                null,
-                "내다릴봐예뿌짜낭",
-                ""
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2051%EB%B6%84%2021%EC%B4%88_.png?alt=media&token=5cf7b0b8-7920-4394-a047-635c15e417e5",
-                "aaa",
-                null,
-                "으컁컁",
-                "으캬캬캬컄ㅇ컁컁ㅋㅇ"
-            )
-        )
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2055%EB%B6%84%2026%EC%B4%88_.png?alt=media&token=bcc4d7dc-b58e-43e3-8b96-08b14f20f2ea",
-                "aaa",
-                null,
-                "노예구함",
-                "이쁜이구해용~"
-            )
-        )
-        recyclerData.postValue(list)
+    //해당 유저의 친구 목록 가져오기
+    fun initUserFriendsList(uid : String){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.getFriendsList(uid).collect{
+                println("가져온 친구 목록 = ${it.toString()}")
+                it.forEach {
+                    getUserData(it.uid.toString())
+                }
+            }
+        }
     }
+
+    //유저 정보 가져오기
+    fun getUserData(uid : String){
+        friendsListState.postValue("getting")
+        viewModelScope.launch(Dispatchers.IO){
+            repository.getUser(uid).collect {userData ->
+                println("가져온 유저 정보 = ${userData}")
+
+                repository.getUserProfileImage(uid).collect{userProfileImageUrl ->
+                    println("가져온 유저 프로필 이미지 정보 = ${userProfileImageUrl}")
+
+                    var arrayList = arrayListOf<RecyclerDefaultModel>()
+
+                    if (userProfileImageUrl != null){
+                        arrayList.add(
+                            RecyclerDefaultModel(
+                                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
+                                userProfileImageUrl,
+                                userData.uid.toString(),
+                                null,
+                                userData.userName.toString(),
+                                "임시 프로필 설명"
+                            )
+                        )
+                    }else{
+                        arrayList.add(
+                            RecyclerDefaultModel(
+                                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
+                                "",
+                                userData.uid.toString(),
+                                null,
+                                userData.userName.toString(),
+                                "임시 프로필 설명"
+                            )
+                        )
+                    }
+
+
+
+
+                    recyclerData.postValue(arrayList)
+                    friendsListState.postValue("complete")
+                }
+            }
+        }
+    }
+
 
 }
