@@ -335,6 +335,8 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         }
     }
 
+
+
     //유저 정보 가져오기
     fun getUserData(uid : String){
         friendsListState.postValue("getting")

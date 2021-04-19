@@ -10,6 +10,7 @@ data class RecyclerDefaultModel(
     val content: String? // content
 
 ) {
+
     // 친구 목록 모델
     data class FirendsRecyclerModel(
         val type: Int, // type

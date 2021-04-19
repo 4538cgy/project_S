@@ -18,12 +18,6 @@
         android:enabled="true"
         android:title="@string/search"
         />
-    <item
-        android:id="@+id/action_photo"
-        android:icon="@drawable/ic_edit"
-        android:enabled="true"
-        android:title="@string/upload_image"
-        />
 
     <item
         android:id="@+id/action_more"

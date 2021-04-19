@@ -6,12 +6,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.FragmentUserBinding
+import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class UserFragment : Fragment() {
 
     lateinit var binding: FragmentUserBinding
+
+    private val viewmodel: SNSUtilViewModel by viewModels()
+
+    private val auth = FirebaseAuth.getInstance()
+
 
     companion object {
         // var -> const val
@@ -29,6 +43,8 @@ class UserFragment : Fragment() {
 
         return binding.root
     }
+
+
 
     // 프로필 변경 이벤트
     fun clickProfilePhoto(view: View) {
