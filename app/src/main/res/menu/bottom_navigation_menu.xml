@@ -7,16 +7,16 @@
         android:title="@string/friendsList"
         />
     <item
-        android:id="@+id/action_home"
+        android:id="@+id/action_timeline"
         android:icon="@drawable/ic_home"
         android:enabled="true"
-        android:title="@string/home"
+        android:title="@string/timelist"
         />
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search"
+        android:id="@+id/action_chat"
+        android:icon="@drawable/ic_baseline_chat_24"
         android:enabled="true"
-        android:title="@string/search"
+        android:title="@string/chat"
         />
 
     <item
