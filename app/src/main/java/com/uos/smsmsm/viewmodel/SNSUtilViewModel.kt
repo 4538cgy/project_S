@@ -2,9 +2,6 @@ package com.uos.smsmsm.viewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.KeyEvent
-import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -31,7 +28,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     var chatList : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
     var searchUserResult : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
     var searchContentResult : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
-
+    var chatRoomList : MutableLiveData<ArrayList<ChatDTO>> = MutableLiveData()
 
     //테스트 목적
     var testUserList : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
@@ -41,27 +38,22 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     //친구 목록 리스트의 상태
     var friendsListState : MutableLiveData<String> = MutableLiveData()
 
-    val repository = UserRepository()
+    val userRepository = UserRepository()
+    val chatRepository = ChatRepository()
 
     val auth = FirebaseAuth.getInstance()
-
-
 
     //유저 검색 서치 뷰 리스너
     fun searchUserQueryTextListener() = object : SearchView.OnQueryTextListener{
         override fun onQueryTextSubmit(query: String?): Boolean {
             //검색 버튼 클릭시
             var emptyList = emptyList<String>()
-
-            println("으아아아 $query")
-
             getSearchUserList(query!!)
             return false
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
             //검색어 변경 시
-            println("으아아아 $newText")
             filteringUserList(newText!!)
             return true
         }
@@ -75,14 +67,10 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             if (it.toString().contains(newText))
             {
                 pathList.add(it)
-
-                println("SNS 뷰모델에서의 필터링된 유저 데이터 ${it.toString()}")
-
             }
         }
         searchUserResult.postValue(pathList)
         searchUserResultDataConvertRecyclerData()
-        println("searchUserResult의 값입니다." +searchUserResult.value.toString())
     }
 
     fun searchUserResultDataConvertRecyclerData(){
@@ -100,18 +88,16 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
 
     fun getSearchUserList(query: String) {
-        println("getSearchUserList 실행 ++++++++++++++++++++++++")
         viewModelScope.launch(Dispatchers.IO) {
 
-            repository.getUser(query).collect{
-                println(it.toString() + " 유저 검색 결과 입니다. ")
+            userRepository.getUser(query).collect{
             }
 
         }
     }
     fun getAllUserSearchResult(){
         viewModelScope.launch(Dispatchers.IO){
-            repository.getAllUser().collect {
+            userRepository.getAllUser().collect {
                 userList.postValue(it)
             }
         }
@@ -119,7 +105,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     fun getTestUserSearchResult(){
         viewModelScope.launch(Dispatchers.IO){
-            repository.getTestUserList().collect {
+            userRepository.getTestUserList().collect {
 
                 testUserList.postValue(it)
             }
@@ -132,7 +118,6 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             //검색 버튼 클릭시
             var emptyList = emptyList<String>()
             if(emptyList.isEmpty()){
-                println("결과가 없음")
                 return true
             }else{
                 getSearchUserList(query!!)
@@ -154,10 +139,6 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     fun getSearchContentList() {
         viewModelScope.launch(Dispatchers.IO) {
-            /*
-            repository.getContentList().collect{
-            }
-             */
         }
     }
 
@@ -182,28 +163,17 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         val repository = ChatRepository()
         viewModelScope.launch(Dispatchers.IO) {
             repository.checkChatRoom(destinationUid).collect {
-                println("으앙아ㅣ래캥랰앸 $it")
 
-                chatRoomUid.postValue(it.toString())
-                println("채팅방 확인중~~~~~~ ${chatRoomUid.value}")
+                chatRoomUid.postValue(it)
             }
         }
-
-        /*
-        if (chatRoomUid.value == null){
-            println("으아아 채팅방이 없습니다. 채팅방을 만들러갑니다.")
-            createChatRoom(destinationUid)
-        }
-         */
     }
 
     //메세지 가져오기
     fun getMessageList(){
-        println("메세지 가져오기")
         val repository = ChatRepository()
         viewModelScope.launch(Dispatchers.IO) {
             repository.getChat(chatRoomUid.value.toString()).collect {
-                println("가져온 메세지 ${it.toString()}")
                 chatList.postValue(it)
             }
         }
@@ -228,10 +198,6 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     }
 
     //채팅 보내기
-    /*
-    Q: 뷰에서 sendMessage를 onClick으로 호출할 때 아래와 같은 인자값들을 어떻게 전달합니까?
-    Sub Q: 혹시 이 인자들을 호출시에 전달하지않고 ChatRoomFragment 혹은 메세지를 전달해야하는 View에서 라이브데이터에 이 인자들의 값을 넣어두고 꺼내올 수 있습니까?
-     */
     fun sendMessage(destinationUid: String){
         val repository = ChatRepository()
 
@@ -294,39 +260,19 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     }
 
-
     //채팅방 목록 가져오기
-    //채팅방 목록 최초 초기화
-    //호출 후 recyclerView 반드시 notifyChange
-    fun initChatRoomList(){
-        var list : ArrayList<RecyclerDefaultModel> = arrayListOf()
-        list.add(
-            RecyclerDefaultModel(
-                RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
-                "https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/TestImage%2FTEST_IMAGE_2021%EB%85%84%2002%EC%9B%94%2028%EC%9D%BC%20%EC%98%A4%ED%9B%84%2003%EC%8B%9C%2054%EB%B6%84%2045%EC%B4%88_.png?alt=media&token=b15104e7-ed95-4acd-8f41-c9890af2a5ec",
-                "aaa",
-                null,
-                "아 적기 힘들다",
-                "아 뭐적어야함"
-            )
-        )
-
-        recyclerData.postValue(list)
-    }
-
-    //채팅 목록 가져오기
-    //채팅 목록 최초 초기화
-    //호출 후 recyclerView 반드시 notifyChange
-    fun initChatList(){
-        var list : ArrayList<RecyclerDefaultModel> = arrayListOf()
-        getMessageList()
-        recyclerData.postValue(list)
+    fun initMyChatRoomList(uid: String){
+        viewModelScope.launch(Dispatchers.IO){
+            chatRepository.getChatRoomList(uid).collect{
+                chatRoomList.postValue(it)
+            }
+        }
     }
 
     //해당 유저의 친구 목록 가져오기
     fun initUserFriendsList(uid : String){
         viewModelScope.launch(Dispatchers.IO){
-            repository.getFriendsList(uid).collect{
+            userRepository.getFriendsList(uid).collect{
                 println("가져온 친구 목록 = ${it.toString()}")
                 it.forEach {
                     getUserData(it.uid.toString())
@@ -341,10 +287,10 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     fun getUserData(uid : String){
         friendsListState.postValue("getting")
         viewModelScope.launch(Dispatchers.IO){
-            repository.getUser(uid).collect {userData ->
+            userRepository.getUser(uid).collect { userData ->
                 println("가져온 유저 정보 = ${userData}")
 
-                repository.getUserProfileImage(uid).collect{userProfileImageUrl ->
+                userRepository.getUserProfileImage(uid).collect{ userProfileImageUrl ->
                     println("가져온 유저 프로필 이미지 정보 = ${userProfileImageUrl}")
 
                     var arrayList = arrayListOf<RecyclerDefaultModel>()
