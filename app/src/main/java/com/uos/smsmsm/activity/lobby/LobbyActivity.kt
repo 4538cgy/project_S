@@ -52,7 +52,7 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
             1
         )
 
-        binding.activityLobbyBottomNavigation.selectedItemId = R.id.action_home
+        binding.activityLobbyBottomNavigation.selectedItemId = R.id.action_friendslist
 
         // registerPushToken()
     }
@@ -77,14 +77,14 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
     // Change return with When
     override fun onNavigationItemSelected(item: MenuItem) = when (item.itemId) {
 
-        R.id.action_home -> {
+        R.id.action_timeline -> {
             // var -> val
             val timelineFragment = TimeLineFragment()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.activity_lobby_fragmelayout, timelineFragment).commit()
             true
         }
-        R.id.action_search -> {
+        R.id.action_chat -> {
             // var -> val
             val chatFragment = ChatRoomFragment()
             supportFragmentManager.beginTransaction()

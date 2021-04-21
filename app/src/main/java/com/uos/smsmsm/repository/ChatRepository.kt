@@ -9,6 +9,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatRepository {
 
@@ -78,6 +80,92 @@ class ChatRepository {
             }
         })
         
+        awaitClose {  }
+    }
+
+    //채팅룸 리스트 가져오기
+    @ExperimentalCoroutinesApi
+    fun getChatRoomList(uid: String) = callbackFlow<ArrayList<ChatDTO>> {
+
+        var chat : ArrayList<ChatDTO> = arrayListOf()
+        var chatTimestampList : ArrayList<String> = arrayListOf()
+        var resultChat : ArrayList<ChatDTO> = arrayListOf()
+
+        val databaseReference = rdb.reference.child("chatrooms").orderByChild("users/$uid").equalTo(true)
+        val eventListener = databaseReference.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                chat.clear()
+                for (item in snapshot.children) {
+                    chat.add(item.getValue(ChatDTO::class.java)!!)
+                }
+
+
+
+
+
+                println("데이터 정렬1")
+                chat.forEachIndexed{
+                        index, chatDTO ->
+                    println("chat 의 값 = $chatDTO" )
+                    val commentMap: MutableMap<String, ChatDTO.Comment> =
+                        TreeMap(Collections.reverseOrder())
+                    commentMap.putAll(chat[index].comments)
+                    val lastMessageKey = commentMap.keys.toTypedArray()[0]
+                    val timeStamp = commentMap[lastMessageKey]?.timestamp
+                    chatTimestampList.add(timeStamp.toString())
+
+                    chatTimestampList.forEach {
+                        println("chatTimestampList 의 값 = $it")
+                    }
+                }
+
+                println("데이터 정렬2")
+
+                chatTimestampList.sortDescending()
+
+
+                chatTimestampList.forEach {
+                    println("chatTimestampList 의 값 = $it")
+                }
+
+                println("데이터 정렬3")
+                chatTimestampList.forEachIndexed { index,it ->
+
+                    chat.forEachIndexed { chatindex, chatDTO ->
+                        val commentMap: MutableMap<String, ChatDTO.Comment> =
+                            TreeMap(Collections.reverseOrder())
+                        commentMap.putAll(chatDTO.comments)
+                        val lastMessageKey = commentMap.keys.toTypedArray()[0]
+                        if (it.equals(commentMap[lastMessageKey]?.timestamp.toString())){
+                            println("데이터 추가함" + commentMap[lastMessageKey]?.timestamp.toString() + " 으앜 "  + it.toString())
+                            resultChat.add(index,chatDTO)
+                        }else{
+                            println("데이터 추가안함"+ commentMap[lastMessageKey]?.timestamp.toString() + " 으앜 "  + it.toString())
+                            return@forEachIndexed
+                        }
+                    }
+                }
+
+                println("데이터 정렬4")
+                resultChat.forEachIndexed {index,it ->
+
+                    val commentMap: MutableMap<String, ChatDTO.Comment> =
+                        TreeMap(Collections.reverseOrder())
+                    commentMap.putAll(it.comments)
+                    val lastMessageKey = commentMap.keys.toTypedArray()[0]
+                    println("최종값 ${commentMap[lastMessageKey]?.timestamp.toString()}")
+                }
+
+                this@callbackFlow.sendBlocking(resultChat)
+
+            }
+
+        })
+
         awaitClose {  }
     }
 }

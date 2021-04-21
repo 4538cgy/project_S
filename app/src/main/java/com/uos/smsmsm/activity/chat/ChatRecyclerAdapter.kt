@@ -38,7 +38,6 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
     override fun getItemCount(): Int = list.value!!.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        println("chat리사이클러뷰의 아이템 ${list.value.toString()}")
         (holder as MessageViewHolder).onBind(list.value!![position])
         
         //내가 보낸 메세지
@@ -51,28 +50,13 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
         }else{//상대방이 보낸 메세지
             //프로필 이미지 가져오고
             //유저 닉네임 가져오고
-            /*
-            runBlocking {
-                launch {
-                    userRepository.getUserProfileImage(destinationUid).collect{
-                        Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.messageItemImageviewProfile)
-                    }
-                    userRepository.getUserNickName(destinationUid).collect {
-                        holder.binding.messageItemTextviewName.text = it
-                    }
-                }
-            }
-
-             */
             ioScope.launch {
                 userRepository.getUserProfileImage(destinationUid).collect{
-                    println("유저의 프로필 이미지 $it")
                     Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.messageItemImageviewProfile)
                 }
             }
             ioScope.launch {
                 userRepository.getUserNickName(destinationUid).collect {
-                    println("유저의 닉네임 $it")
                     holder.binding.messageItemTextviewName.text = it
                 }
             }
@@ -84,7 +68,7 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
             holder.binding.messageItemTextViewMessage.textSize = 18F
             holder.binding.messageItemLinearlayoutMain.gravity = Gravity.LEFT
         }
-        holder.binding.messageItemTextviewTimestamp.text = TimeUtil().getTime()
+        holder.binding.messageItemTextviewTimestamp.text = TimeUtil().formatTimeString(list.value!![position].timestamp!!.toLong())
     }
 
     inner class MessageViewHolder(var binding : ItemChatBubbleBinding) : RecyclerView.ViewHolder(binding.root){

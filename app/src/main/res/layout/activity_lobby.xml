@@ -38,6 +38,7 @@
             app:itemTextColor="@color/colorNavIcon"
             app:itemIconTint="@color/colorNavIcon"
             app:itemBackground="@color/colorPrimary"
+            android:background="@color/colorPrimary"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

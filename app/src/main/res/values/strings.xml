@@ -22,6 +22,8 @@
     <string name="account">사용자</string>
     <string name="more">더보기</string>
     <string name="friendsList">친구 목록</string>
+    <string name="timelist">타임라인</string>
+    <string name="chat">채팅</string>
 
     <!-- Account -->
     <string name="post">Post</string>
