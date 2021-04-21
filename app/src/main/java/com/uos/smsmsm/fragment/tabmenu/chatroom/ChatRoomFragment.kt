@@ -1,5 +1,7 @@
 package com.uos.smsmsm.fragment.tabmenu.chatroom
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +21,7 @@ import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentChatRoomBinding
 import com.uos.smsmsm.recycleradapter.ChatRoomListRecyclerAdapter
 import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,6 +33,7 @@ class ChatRoomFragment : Fragment() {
     private val viewmodel: SNSUtilViewModel by viewModels()
 
     private val auth = FirebaseAuth.getInstance()
+    lateinit var loadingDialog: LoadingDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,10 +43,20 @@ class ChatRoomFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_room, container, false)
         binding.fragmentchatroom = this
         setHasOptionsMenu(true)
+
+        //프로그레스 초기화
+        loadingDialog = LoadingDialog(binding.root.context)
+        //프로그레스 투명하게
+        loadingDialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        //프로그레스 꺼짐 방지
+        loadingDialog!!.setCancelable(false)
+
+
         (activity as AppCompatActivity).setSupportActionBar(binding.fragmentChatRoomToolbar)
         var actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.setDisplayShowTitleEnabled(false)
 
+        loadingDialog.show()
         viewmodel.initMyChatRoomList(auth.currentUser!!.uid)
         initRecyclerView()
         return binding.root
@@ -54,6 +68,7 @@ class ChatRoomFragment : Fragment() {
             data.value = livedata
             binding.fragmentChatRoomRecyclerview.adapter = ChatRoomListRecyclerAdapter(binding.root.context,data)
             binding.fragmentChatRoomRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
+            loadingDialog.dismiss()
         }
 
         viewmodel.chatRoomList.observe(viewLifecycleOwner, recyclerObserver)
