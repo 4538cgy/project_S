@@ -30,6 +30,7 @@
                 android:background="@android:color/transparent"
                 android:text="코드로 추가"
                 android:layout_weight="1"
+                android:onClick="@{bottomsheetdialogaddfriendslayout.groupClick}"
                 />
 
             <Button
@@ -40,6 +41,7 @@
                 android:background="@android:color/transparent"
                 android:text="연락처로 추가"
                 android:layout_weight="1"
+                android:onClick="@{bottomsheetdialogaddfriendslayout.groupClick}"
                 />
 
             <Button
@@ -50,6 +52,7 @@
                 android:background="@android:color/transparent"
                 android:text="ID로 추가"
                 android:layout_weight="1"
+                android:onClick="@{bottomsheetdialogaddfriendslayout.groupClick}"
                 />
 
             <Button
@@ -60,6 +63,7 @@
                 android:background="@android:color/transparent"
                 android:text="추천 친구"
                 android:layout_weight="1"
+                android:onClick="@{bottomsheetdialogaddfriendslayout.groupClick}"
                 />
 
 

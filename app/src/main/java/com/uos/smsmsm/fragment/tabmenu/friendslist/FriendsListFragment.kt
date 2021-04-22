@@ -22,6 +22,7 @@ import com.uos.smsmsm.activity.search.SearchFriendActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
 import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogAddFriends
 import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -104,6 +105,11 @@ class FriendsListFragment : Fragment() {
     }
     fun openSearhActivity(view: View) {
         startActivity(Intent(binding.root.context, SearchFriendActivity::class.java))
+    }
+
+    fun addFriend(view : View){
+        val bottomSheetDialog = BottomSheetDialogAddFriends()
+        bottomSheetDialog.show(requireActivity().supportFragmentManager,"wow")
     }
 
     fun openFriendListSettingActivity(view: View) {

@@ -52,6 +52,7 @@
                         android:src="@drawable/ic_baseline_person_add_alt_1_24"
                         android:background="@android:color/transparent"
                         android:layout_marginRight="8dp"
+                        android:onClick="@{fragmentfriendslist.addFriend}"
                         />
 
                     <ImageButton
