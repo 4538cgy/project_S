@@ -43,6 +43,7 @@
                 android:layout_height="50dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_baseline_more_vert_24"
+                android:onClick="@{activityprofile.showOptionPopup}"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

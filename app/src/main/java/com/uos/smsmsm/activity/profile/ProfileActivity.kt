@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -71,6 +72,22 @@ class ProfileActivity : AppCompatActivity() {
         )
 
     }
+
+    fun showOptionPopup(view : View){
+        PopupMenu(binding.root.context,view).apply {
+            setOnMenuItemClickListener { 
+                when(it.itemId){
+                    R.id.popup_profile_option_report ->{
+                        println("신고하기 버튼")
+                    }
+                }
+                false
+            }
+            inflate(R.menu.popup_profile_option)
+            show()
+        }
+    }
+
 
     fun initDestinationUserData(){
         viewModel.initDestinationUser(destinationUid.toString())

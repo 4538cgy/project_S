@@ -67,6 +67,9 @@
     <!-- Toolbar -->
     <string name="back">Back</string>
 
+    <!-- popup -->
+    <string name="popup_profile_option_report">신고</string>
+
     <!-- etc -->
     <item name="visible" type="id" />
     <item name="masked" type="id" />
@@ -75,4 +78,6 @@
 
     <string name="image_description_setting_icon">setting-icon</string>
     <string name="activity_setting_preview_item_name">버전정보</string>
+
+
 </resources>
