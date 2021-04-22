@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.chat.LegacyChatActivity
@@ -21,6 +22,7 @@ class ProfileActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityProfileBinding
     private val viewModel : UserUtilViewModel by viewModels()
+    private val auth = FirebaseAuth.getInstance()
 
     var destinationUid : String ? = null
 
@@ -48,12 +50,10 @@ class ProfileActivity : AppCompatActivity() {
                 .into(binding.activityProfileImageviewProfile)
         })
 
-        //친구인지 아닌지 구분
-        viewModel.checkFriend(destinationUid.toString())
-        viewModel.checkFriends.observe(this, Observer {
+        //본인인지 아닌지 구분
+        isMe(destinationUid.toString())
 
-            isFriend(it)
-        })
+
 
         initDestinationUserData()
 
@@ -95,6 +95,22 @@ class ProfileActivity : AppCompatActivity() {
 
     //친구 추가 버튼
     fun addFriend(view : View){ viewModel.addFriend(destinationUid.toString())}
+
+    fun isMe(uid : String){
+        if (uid == auth.currentUser?.uid){
+            binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
+            binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
+            binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+        }else{
+            binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
+            //친구인지 아닌지 구분
+            viewModel.checkFriend(destinationUid.toString())
+            viewModel.checkFriends.observe(this, Observer {
+
+                isFriend(it)
+            })
+        }
+    }
 
     fun isFriend(boolean: Boolean){
 

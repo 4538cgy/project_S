@@ -111,6 +111,7 @@ class OtherMenuFragment : Fragment() {
         var intent = Intent(binding.root.context,ProfileActivity::class.java)
         intent.apply {
             intent.putExtra("uid" , auth.currentUser?.uid)
+            println("으아아아아아아아아악2 ${auth.currentUser?.uid}")
             startActivity(intent)
         }}
 
