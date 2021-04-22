@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="bottomsheetdialogaddfriendslayout"
+            type="com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogAddFriends" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/bottom_sheet_dialog_add_friends_layout_button_code"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:drawableTop="@drawable/ic_baseline_qr_code_2_24"
+                android:background="@android:color/transparent"
+                android:text="코드로 추가"
+                android:layout_weight="1"
+                />
+
+            <Button
+                android:id="@+id/bottom_sheet_dialog_add_friends_layout_button_phone_number"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:drawableTop="@drawable/ic_baseline_assignment_ind_24"
+                android:background="@android:color/transparent"
+                android:text="연락처로 추가"
+                android:layout_weight="1"
+                />
+
+            <Button
+                android:id="@+id/bottom_sheet_dialog_add_friends_layout_button_id"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:drawableTop="@drawable/ic_baseline_3p_24"
+                android:background="@android:color/transparent"
+                android:text="ID로 추가"
+                android:layout_weight="1"
+                />
+
+            <Button
+                android:id="@+id/bottom_sheet_dialog_add_friends_layout_button_recommand"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:drawableTop="@drawable/ic_baseline_person_add_alt_1_24"
+                android:background="@android:color/transparent"
+                android:text="추천 친구"
+                android:layout_weight="1"
+                />
+
+
+
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
