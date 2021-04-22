@@ -82,7 +82,12 @@ class ProfileActivity : AppCompatActivity() {
             setOnMenuItemClickListener { 
                 when(it.itemId){
                     R.id.popup_profile_option_report ->{
-                        startActivity(Intent(binding.root.context,ReportActivity::class.java))
+                        var intent = Intent(binding.root.context,ReportActivity::class.java)
+                        intent.apply {
+                            putExtra("destinationUid",destinationUid)
+                            startActivity(intent)
+                        }
+
                     }
                 }
                 false
