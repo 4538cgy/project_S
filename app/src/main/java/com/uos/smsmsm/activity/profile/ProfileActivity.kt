@@ -15,6 +15,7 @@ import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.chat.LegacyChatActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
+import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
@@ -25,6 +26,7 @@ class ProfileActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
 
     var destinationUid : String ? = null
+    private var destinationUserProfileUrl : String ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,7 @@ class ProfileActivity : AppCompatActivity() {
         //유저 프로필 사진 가져오기
         viewModel.getUserProfile(destinationUid.toString())
         viewModel.profileImage.observe(this, Observer {
+            destinationUserProfileUrl = it.toString()
             Glide.with(binding.root.context)
                 .load(it.toString())
                 .circleCrop()
@@ -85,6 +88,14 @@ class ProfileActivity : AppCompatActivity() {
             }
             inflate(R.menu.popup_profile_option)
             show()
+        }
+    }
+
+    fun onClickProfileImage(view:View){
+        var intent = Intent(binding.root.context, PhotoViewActivity::class.java)
+        intent.apply {
+            putExtra("imageUrl",destinationUserProfileUrl)
+            startActivity(intent)
         }
     }
 

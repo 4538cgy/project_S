@@ -101,7 +101,7 @@ class OtherMenuFragment : Fragment() {
             //본인이 아니면 사진 보기
             var intent = Intent(binding.root.context,PhotoViewActivity::class.java)
             intent.apply {
-                putExtra("photoUrl",profileImageUri)
+                putExtra("imageUrl",profileImageUri)
                 startActivity(intent)
             }
         }
