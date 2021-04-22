@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.chat.LegacyChatActivity
+import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
@@ -81,7 +82,7 @@ class ProfileActivity : AppCompatActivity() {
             setOnMenuItemClickListener { 
                 when(it.itemId){
                     R.id.popup_profile_option_report ->{
-                        println("신고하기 버튼")
+                        startActivity(Intent(binding.root.context,ReportActivity::class.java))
                     }
                 }
                 false

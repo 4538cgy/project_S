@@ -5,12 +5,16 @@
     tools:context=".activity.report.ReportActivity">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="activityreport"
             type="com.uos.smsmsm.activity.report.ReportActivity" />
         <variable
             name="viewmodel"
             type="com.uos.smsmsm.viewmodel.BasicUtilViewModel" />
+        <variable
+            name="snsviewmodel"
+            type="com.uos.smsmsm.viewmodel.SNSUtilViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,6 +38,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="@{activityreport.onBackPressed}"
                 />
 
             <TextView
@@ -82,6 +87,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/activity_report_textview_cuase"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                android:checkedButton="@={viewmodel.reportCauseRadioButton}"
                 android:layout_marginTop="8dp"
                 >
                 <RadioButton
@@ -108,6 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="기타 사유를 입력해주세요."
+                android:addTextChangedListener="@{snsviewmodel.textWatcher()}"
                 app:layout_constraintTop_toBottomOf="@+id/activity_report_radiogroup_list"
                 android:visibility="gone"
                 />
@@ -124,6 +131,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginTop="32dp"
                 android:elevation="6dp"
+                android:onClick="@{activityreport.sendReport}"
                 android:layout_marginHorizontal="12dp"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
