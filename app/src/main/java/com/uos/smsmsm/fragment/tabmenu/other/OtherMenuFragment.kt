@@ -94,7 +94,7 @@ class OtherMenuFragment : Fragment() {
             var photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.apply {
                 type = "image/*"
-                activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
+                startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
             }
         }else {
             //본인이 아니면 사진 보기
@@ -112,6 +112,7 @@ class OtherMenuFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        println("리퀘스트 code $requestCode // 리저트 code $resultCode")
         if(requestCode == PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK){
 
             var progressDialog = LoadingDialog(binding.root.context)
@@ -127,7 +128,7 @@ class OtherMenuFragment : Fragment() {
                 var map = HashMap<String,Any>()
                 map["image"] = uri.toString()
                 FirebaseFirestore.getInstance().collection("profileImages").document(uid).set(map)
-
+                viewmodel.getUserProfile(auth.currentUser!!.uid)
                 progressDialog.dismiss()
             }
         }
