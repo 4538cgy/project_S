@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.activity.setting.SettingActivity
 import com.uos.smsmsm.databinding.FragmentOtherMenuBinding
 import com.uos.smsmsm.testactivity.AddTestUser
@@ -105,6 +106,13 @@ class OtherMenuFragment : Fragment() {
             }
         }
     }
+
+    fun onClickProfileBar(view: View){
+        var intent = Intent(binding.root.context,ProfileActivity::class.java)
+        intent.apply {
+            intent.putExtra("uid" , auth.currentUser?.uid)
+            startActivity(intent)
+        }}
 
     fun onClickSettingButton(view: View) {
         startActivity(Intent(binding.root.context, SettingActivity::class.java))
