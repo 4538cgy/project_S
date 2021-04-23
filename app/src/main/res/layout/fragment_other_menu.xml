@@ -75,6 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:background="@color/colorLightGray"
+                    android:onClick="@{fragmentothermenu.onClickProfileBar}"
                     >
 
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -128,6 +129,22 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <Button
+                        android:id="@+id/fragment_other_menu_button_rating"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/fragment_other_menu_button_point"
+                        android:text="일반 회원"
+                        android:background="@drawable/background_edittext_round_gray_16dp"
+                        android:drawableLeft="@drawable/ic_baseline_star_rate_24"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:layout_marginRight="8dp"
+                        />
+
+                    <Button
+                        android:id="@+id/fragment_other_menu_button_point"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:background="@drawable/background_edittext_round_gray_16dp"

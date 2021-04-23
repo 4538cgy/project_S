@@ -18,7 +18,7 @@ class PhotoViewActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_photo_view)
         binding.activityphotoview = this@PhotoViewActivity
 
-        Glide.with(binding.root.context).load(intent.getStringExtra("imageUrl")).apply(RequestOptions().circleCrop()).into(binding.activityPhotoViewPhotoview)
+        Glide.with(binding.root.context).load(intent.getStringExtra("imageUrl")).into(binding.activityPhotoViewPhotoview)
 
 
     }

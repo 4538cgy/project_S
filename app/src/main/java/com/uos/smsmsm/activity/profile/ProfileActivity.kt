@@ -4,15 +4,19 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.chat.LegacyChatActivity
+import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
+import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
@@ -20,8 +24,10 @@ class ProfileActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityProfileBinding
     private val viewModel : UserUtilViewModel by viewModels()
+    private val auth = FirebaseAuth.getInstance()
 
     var destinationUid : String ? = null
+    private var destinationUserProfileUrl : String ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,18 +47,17 @@ class ProfileActivity : AppCompatActivity() {
         //유저 프로필 사진 가져오기
         viewModel.getUserProfile(destinationUid.toString())
         viewModel.profileImage.observe(this, Observer {
+            destinationUserProfileUrl = it.toString()
             Glide.with(binding.root.context)
                 .load(it.toString())
                 .circleCrop()
                 .into(binding.activityProfileImageviewProfile)
         })
 
-        //친구인지 아닌지 구분
-        viewModel.checkFriend(destinationUid.toString())
-        viewModel.checkFriends.observe(this, Observer {
+        //본인인지 아닌지 구분
+        isMe(destinationUid.toString())
 
-            isFriend(it)
-        })
+
 
         initDestinationUserData()
 
@@ -72,12 +77,57 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
+    fun showOptionPopup(view : View){
+        PopupMenu(binding.root.context,view).apply {
+            setOnMenuItemClickListener { 
+                when(it.itemId){
+                    R.id.popup_profile_option_report ->{
+                        var intent = Intent(binding.root.context,ReportActivity::class.java)
+                        intent.apply {
+                            putExtra("destinationUid",destinationUid)
+                            startActivity(intent)
+                        }
+
+                    }
+                }
+                false
+            }
+            inflate(R.menu.popup_profile_option)
+            show()
+        }
+    }
+
+    fun onClickProfileImage(view:View){
+        var intent = Intent(binding.root.context, PhotoViewActivity::class.java)
+        intent.apply {
+            putExtra("imageUrl",destinationUserProfileUrl)
+            startActivity(intent)
+        }
+    }
+
+
     fun initDestinationUserData(){
         viewModel.initDestinationUser(destinationUid.toString())
     }
 
     //친구 추가 버튼
     fun addFriend(view : View){ viewModel.addFriend(destinationUid.toString())}
+
+    fun isMe(uid : String){
+        if (uid == auth.currentUser?.uid){
+            binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
+            binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
+            binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+        }else{
+            binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
+            //친구인지 아닌지 구분
+            viewModel.checkFriend(destinationUid.toString())
+            viewModel.checkFriends.observe(this, Observer {
+
+                isFriend(it)
+            })
+        }
+    }
 
     fun isFriend(boolean: Boolean){
 
