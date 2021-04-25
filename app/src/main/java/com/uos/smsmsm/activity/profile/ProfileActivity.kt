@@ -28,6 +28,9 @@ class ProfileActivity : AppCompatActivity() {
 
     var destinationUid : String ? = null
     private var destinationUserProfileUrl : String ? = null
+    
+    //프로필 편집 버튼을 눌렀을때 뷰 변화 기준
+    private var updateOnOff = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +97,34 @@ class ProfileActivity : AppCompatActivity() {
             }
             inflate(R.menu.popup_profile_option)
             show()
+        }
+    }
+
+    fun onClickUpdateProfile(view: View){
+        if (!updateOnOff){
+            binding.activityProfileLine1.visibility = View.VISIBLE
+            binding.activityProfileLine2.visibility = View.VISIBLE
+            binding.activityProfileLine3.visibility = View.VISIBLE
+            binding.activityProfileImageviewProfileImageUpdate.visibility = View.VISIBLE
+            binding.activityProfileImageviewEdit1.visibility = View.VISIBLE
+            binding.activityProfileImageviewEdit2.visibility = View.VISIBLE
+            binding.activityProfileUpdateBack.visibility = View.VISIBLE
+            binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
+            binding.activityProfileImagebuttonFavorite.visibility = View.GONE
+            binding.activityProfileImagebuttonOption.visibility = View.GONE
+            updateOnOff=true
+        }else{
+            binding.activityProfileLine1.visibility = View.GONE
+            binding.activityProfileLine2.visibility = View.GONE
+            binding.activityProfileLine3.visibility = View.GONE
+            binding.activityProfileImageviewProfileImageUpdate.visibility = View.GONE
+            binding.activityProfileImageviewEdit1.visibility = View.GONE
+            binding.activityProfileImageviewEdit2.visibility = View.GONE
+            binding.activityProfileUpdateBack.visibility = View.GONE
+            binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
+            binding.activityProfileImagebuttonFavorite.visibility = View.VISIBLE
+            binding.activityProfileImagebuttonOption.visibility = View.VISIBLE
+            updateOnOff=false
         }
     }
 

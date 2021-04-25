@@ -12,14 +12,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.splash.SplashActivity
 
-class SignOut(context: Context) : Activity() {
+class SignOut(private val context: Context) : Activity() {
 
     var gac : GoogleApiClient ? = null
 
     init {
         val gso =
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build()
         gac = GoogleApiClient.Builder(context)
@@ -37,7 +37,7 @@ class SignOut(context: Context) : Activity() {
                     Auth.GoogleSignInApi.signOut(gac).setResultCallback { status ->
                         if (status.isSuccess) {
                             Log.v("알림", "로그아웃 성공")
-                            startActivity(Intent(applicationContext, SplashActivity::class.java))
+                            context.startActivity(Intent(context, SplashActivity::class.java))
                             finish()
                              setResult(1)
                         } else {
