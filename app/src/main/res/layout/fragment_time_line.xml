@@ -50,6 +50,42 @@
             >
 
 
+            <TextView
+                android:id="@+id/fragment_time_line_textview_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_gallery"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_gallery"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_gallery"
+                android:layout_marginRight="8dp"
+                android:text="사진첩에서 가져오기"
+                android:visibility="invisible"
+                />
+
+            <TextView
+                android:id="@+id/fragment_time_line_textview_write_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_write_post"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_write_post"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_write_post"
+                android:layout_marginRight="8dp"
+                android:text="글쓰기"
+                android:visibility="invisible"
+                />
+
+            <TextView
+                android:id="@+id/fragment_time_line_textview_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_camera"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_camera"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_camera"
+                android:layout_marginRight="8dp"
+                android:text="카메라로 사진찍기"
+                android:visibility="invisible"
+                />
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fragment_time_line_fab_write_post"
                 android:layout_width="wrap_content"
@@ -107,6 +143,7 @@
                 android:layout_marginBottom="12dp"
                 android:src="@drawable/ic_baseline_reorder_24"
                 app:fabSize="mini"
+
                 android:onClick="@{fragmenttimeline::clickFab}"
                 />
 

@@ -64,6 +64,16 @@ class TimeLineFragment : Fragment() {
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabCamera, "translationY", -200f)
                 .apply { start() }
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewGallery, "translationY", -600f)
+                .apply { start() }
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewWritePost, "translationY", -400f)
+                .apply { start() }
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewCamera, "translationY", -200f)
+                .apply { start() }
+
+            binding.fragmentTimeLineTextviewWritePost.visibility = View.VISIBLE
+            binding.fragmentTimeLineTextviewGallery.visibility = View.VISIBLE
+            binding.fragmentTimeLineTextviewCamera.visibility = View.VISIBLE
             true
         } else {
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabGallery, "translationY", -0f)
@@ -72,6 +82,16 @@ class TimeLineFragment : Fragment() {
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabCamera, "translationY", -0f)
                 .apply { start() }
+
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewGallery, "translationY", -0f)
+                .apply { start() }
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewWritePost, "translationY", -0f)
+                .apply { start() }
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewCamera, "translationY", -0f)
+                .apply { start() }
+            binding.fragmentTimeLineTextviewWritePost.visibility = View.INVISIBLE
+            binding.fragmentTimeLineTextviewGallery.visibility = View.INVISIBLE
+            binding.fragmentTimeLineTextviewCamera.visibility = View.INVISIBLE
             false
         }
     }
