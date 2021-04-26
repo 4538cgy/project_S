@@ -3,6 +3,7 @@ package com.uos.smsmsm.activity.content
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import android.view.ViewGroupOverlay
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
@@ -37,6 +39,9 @@ class AddContentActivity : AppCompatActivity() {
             activityaddcontent = this@AddContentActivity
             viewmodel = viewModel
         }
+
+        //업로드 버튼 비활성화
+        binding.activityAddContentButton.isEnabled = false
 
         binding.activityAddContentGalleryRecyclerView.layoutManager =
             GridLayoutManager(applicationContext, 3)
@@ -65,6 +70,21 @@ class AddContentActivity : AppCompatActivity() {
             // uploadImgDTO에 GalleryHolder 와 MediaItem 2 종류가 있는데
             // 하단 갤러리에서 선택할 경우 GalleryHolder로 등록이 촬영일 경우 MediaItem으로 등록 된다.
 
+        }
+
+        viewModel.contentEdittext.observe(this, Observer {
+            interactiveView()
+        })
+    }
+
+    //업로드 버튼 활성화
+    fun interactiveView(){
+        if (viewModel.contentEdittext.value != null && viewModel.contentEdittext.value!!.isNotEmpty()){
+            binding.activityAddContentButton.isEnabled = true
+            binding.activityAddContentButton.setTextColor(Color.BLACK)
+        }else{
+            binding.activityAddContentButton.isEnabled = false
+            binding.activityAddContentButton.setTextColor(Color.LTGRAY)
         }
     }
     //하단 갤러리 오픈

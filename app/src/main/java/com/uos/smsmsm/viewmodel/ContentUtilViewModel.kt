@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -25,6 +27,7 @@ import java.text.SimpleDateFormat
 class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle,@ApplicationContext private val  appContext : Context) : ViewModel(){
 
     var galleryItems = MutableLiveData<MutableList<GalleryUtil.MediaItem>>()
+    var contentEdittext = MutableLiveData<String>()
 
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
@@ -77,6 +80,22 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
     fun getGallery() {
         viewModelScope.launch {
             galleryItems.postValue( GalleryUtil(appContext).getGerryItem())
+        }
+
+    }
+
+    //에딧 텍스트 TextWatcher
+    fun textWatcher() = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            contentEdittext.postValue(s.toString())
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            contentEdittext.postValue(s.toString())
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            contentEdittext.postValue(s.toString())
         }
 
     }

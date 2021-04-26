@@ -118,6 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
+                android:addTextChangedListener="@{viewmodel.textWatcher()}"
                 android:hint="내용을 입력해 주세요"
                 app:layout_constraintTop_toBottomOf="@id/activity_add_content_add_image_view_pager"
                 app:layout_constraintStart_toStartOf="parent"
