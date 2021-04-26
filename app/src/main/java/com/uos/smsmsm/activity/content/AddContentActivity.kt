@@ -3,20 +3,17 @@ package com.uos.smsmsm.activity.content
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroupOverlay
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
-import com.uos.smsmsm.databinding.ItemUploadImageViewBinding
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
@@ -28,6 +25,7 @@ class AddContentActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddContentBinding
     private val viewModel: ContentUtilViewModel by viewModels()
     private var isSelectImgCount: Int = 0
+    private val MAX_SELECT_COUNT = 5
     private var uploadImageList = ArrayList<UploadImgDTO>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +106,7 @@ class AddContentActivity : AppCompatActivity() {
             binding.activityAddContentGalleryRecyclerView.getChildViewHolder(it) as GalleryHolder
         val imageBtn = clickViewHolder.binding.itemGalleryViewSelectorImgBtn
         // 최대 선택 갯수 현재 3개
-        if (isSelectImgCount < 3) {
+        if (isSelectImgCount < MAX_SELECT_COUNT) {
             imageBtn.isSelected = !imageBtn.isSelected
             // 이미 선택 되었다면 선택 해제
             if (!imageBtn.isSelected) {
@@ -132,7 +130,7 @@ class AddContentActivity : AppCompatActivity() {
                 removeImage(clickViewHolder, null)
             } else {
                // 신규 선택 할 경우
-                Toast.makeText(applicationContext, "최대 선택할 수 있는 이미지 수는  3장 입니다.", Toast.LENGTH_LONG)
+                Toast.makeText(applicationContext, "최대 선택할 수 있는 이미지 수는  ${MAX_SELECT_COUNT}장 입니다.", Toast.LENGTH_LONG)
                     .show()
             }
         }
