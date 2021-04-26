@@ -87,7 +87,7 @@ class FriendsListFragment : Fragment() {
         })
 
         initRecyclerViewAdapter()
-
+        loadingDialog.dismiss()
         return binding.root
     }
     fun initRecyclerViewAdapter(){
