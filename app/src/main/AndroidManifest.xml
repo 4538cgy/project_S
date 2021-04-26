@@ -20,7 +20,8 @@
         <activity android:name=".ui.photo.PhotoViewActivity" />
         <activity android:name=".activity.chat.LegacyChatActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />
-        <activity android:name=".activity.content.AddContentActivity" />
+        <activity android:name=".activity.content.AddContentActivity"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".activity.chat.ChatActivity" />
         <activity android:name=".testactivity.AddTestUser" />
         <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity" />
