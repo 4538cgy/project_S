@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.databinding.ItemUploadImageViewBinding
+import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
@@ -75,6 +76,12 @@ class AddContentActivity : AppCompatActivity() {
         viewModel.contentEdittext.observe(this, Observer {
             interactiveView()
         })
+    }
+
+    //게시글 옵션 선택 바텀 시트 열기
+    fun openContentOptionSelector(view: View){
+        val bottomSheetDialog = BottomSheetDialogWriteContent()
+        bottomSheetDialog.show(supportFragmentManager, "contentOption")
     }
 
     //업로드 버튼 활성화

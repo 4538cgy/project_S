@@ -25,50 +25,63 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             >
-            <ImageView
-                android:id="@+id/activity_add_content_imageview_title"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_baseline_public_24"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/activity_add_content_const_option_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginLeft="12dp"
-                />
+                app:layout_constraintRight_toLeftOf="@+id/activity_add_content_button"
+                android:onClick="@{activityaddcontent.openContentOptionSelector}"
+                >
+                <ImageView
+                    android:id="@+id/activity_add_content_imageview_title"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_baseline_public_24"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginLeft="12dp"
+                    />
 
-            <TextView
-                android:id="@+id/activity_add_content_textview_title"
-                app:layout_constraintLeft_toRightOf="@+id/activity_add_content_imageview_title"
-                app:layout_constraintTop_toTopOf="@+id/activity_add_content_imageview_title"
-                app:layout_constraintBottom_toBottomOf="@+id/activity_add_content_imageview_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="전체 공개"
-                android:layout_marginLeft="12dp"
-                android:textSize="16dp"
-                android:textColor="@color/colorBlack"
-                android:textStyle="bold"
-                />
+                <TextView
+                    android:id="@+id/activity_add_content_textview_title"
+                    app:layout_constraintLeft_toRightOf="@+id/activity_add_content_imageview_title"
+                    app:layout_constraintTop_toTopOf="@+id/activity_add_content_imageview_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/activity_add_content_imageview_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="전체 공개"
+                    android:layout_marginLeft="12dp"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    />
 
-            <ImageView
-                android:id="@+id/activity_add_content_imageview_swapper"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_baseline_swap_horiz_24"
-                app:layout_constraintLeft_toRightOf="@+id/activity_add_content_textview_title"
-                app:layout_constraintBottom_toBottomOf="@+id/activity_add_content_textview_title"
-                android:layout_marginLeft="6dp"
-                />
+                <ImageView
+                    android:id="@+id/activity_add_content_imageview_swapper"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_baseline_swap_horiz_24"
+                    app:layout_constraintLeft_toRightOf="@+id/activity_add_content_textview_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/activity_add_content_textview_title"
+                    android:layout_marginLeft="6dp"
+                    />
 
-            <TextView
-                app:layout_constraintTop_toBottomOf="@+id/activity_add_content_textview_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="모두가 볼 수 있는 옵션입니다."
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="6dp"
-                />
+                <TextView
+                    app:layout_constraintTop_toBottomOf="@+id/activity_add_content_textview_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="모두가 볼 수 있는 옵션입니다."
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="6dp"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
                 android:id="@+id/activity_add_content_button"
@@ -120,6 +133,7 @@
                 android:layout_margin="8dp"
                 android:addTextChangedListener="@{viewmodel.textWatcher()}"
                 android:hint="내용을 입력해 주세요"
+                android:background="@android:color/transparent"
                 app:layout_constraintTop_toBottomOf="@id/activity_add_content_add_image_view_pager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
