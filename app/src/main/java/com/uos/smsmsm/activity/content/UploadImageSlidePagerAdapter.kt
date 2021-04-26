@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.uos.smsmsm.databinding.ItemHeaderViewBinding
 import com.uos.smsmsm.databinding.ItemUploadImageViewBinding
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
@@ -21,7 +23,7 @@ class UploadImageSlidePagerAdapter(private val uploadList : ArrayList<UploadImgD
     )
 
     override fun onBindViewHolder(holder: UploadImageViewHolder, position: Int) {
-        holder.bind(uploadList[position],listener)
+        holder.bind(uploadList[position],listener,context)
     }
 
     override fun getItemCount(): Int = uploadList.size
@@ -33,14 +35,24 @@ class UploadImageViewHolder(val binding : ItemUploadImageViewBinding) : Recycler
 
     var holder: GalleryHolder? = null // 하단 갤러리로 선택된 이미지
     var mediaItem : MediaItem? = null // 사진 촬영으로 선택된 이미지
-    fun bind(item : UploadImgDTO, listener: View.OnClickListener){
+    fun bind(item : UploadImgDTO, listener: View.OnClickListener, context : Context){
         holder = item.galleryHolder
         mediaItem = item.mediaItem
         holder?.let{
-            binding.itemUploadImageViewImg.setImageURI(it.getMediaItem().contentUri)
+            Glide.with(context)
+                .load(it.getMediaItem().contentUri)
+                .apply(
+                    RequestOptions().centerCrop()
+                )
+                .into(binding.itemUploadImageViewImg)
         }?: run {
             mediaItem?.let { it_mediaitem ->
-                binding.itemUploadImageViewImg.setImageURI(it_mediaitem.contentUri)
+                Glide.with(context)
+                    .load(it_mediaitem.contentUri)
+                    .apply(
+                        RequestOptions().centerCrop()
+                    )
+                    .into(binding.itemUploadImageViewImg)
             }
         }
         binding.itemUploadImageViewCloseBtn.setOnClickListener(listener)
