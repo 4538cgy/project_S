@@ -1,8 +1,10 @@
 package com.uos.smsmsm.fragment.tabmenu.timeline
 
 import android.animation.ObjectAnimator
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +26,8 @@ class TimeLineFragment : Fragment() {
 
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
+        const val REQUEST_IMAGE_CAPTURE = 102
+        const val REQUEST_VIDEO_CAPTURE = 103
     }
 
     override fun onCreateView(
@@ -50,21 +54,34 @@ class TimeLineFragment : Fragment() {
         activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)
     }
 
-    fun takePhotoCamera(view: View) {}
+    fun takePhotoCamera(view: View) {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            }
+        }
+    }
 
-    fun takePhotoGallery(view: View) {activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)}
+    //fun takePhotoGallery(view: View) {activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)}
+    fun takeVideo(view: View) {
+        Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
+            takeVideoIntent.resolveActivity(activity?.packageManager!!)?.also {
+                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE)
+            }
+        }
+    }
 
     fun writeContent(view: View) { startActivity(Intent(binding.root.context,AddContentActivity::class.java))}
 
     fun clickFab(view: View) {
         isOpenFAB = if (!isOpenFAB) {
-            ObjectAnimator.ofFloat(binding.fragmentTimeLineFabGallery, "translationY", -600f)
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineFabVideo, "translationY", -600f)
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabWritePost, "translationY", -400f)
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabCamera, "translationY", -200f)
                 .apply { start() }
-            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewGallery, "translationY", -600f)
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewVideo, "translationY", -600f)
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewWritePost, "translationY", -400f)
                 .apply { start() }
@@ -72,27 +89,38 @@ class TimeLineFragment : Fragment() {
                 .apply { start() }
 
             binding.fragmentTimeLineTextviewWritePost.visibility = View.VISIBLE
-            binding.fragmentTimeLineTextviewGallery.visibility = View.VISIBLE
+            binding.fragmentTimeLineTextviewVideo.visibility = View.VISIBLE
             binding.fragmentTimeLineTextviewCamera.visibility = View.VISIBLE
             true
         } else {
-            ObjectAnimator.ofFloat(binding.fragmentTimeLineFabGallery, "translationY", -0f)
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineFabVideo, "translationY", -0f)
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabWritePost, "translationY", -0f)
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabCamera, "translationY", -0f)
                 .apply { start() }
 
-            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewGallery, "translationY", -0f)
+            ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewVideo, "translationY", -0f)
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewWritePost, "translationY", -0f)
                 .apply { start() }
             ObjectAnimator.ofFloat(binding.fragmentTimeLineTextviewCamera, "translationY", -0f)
                 .apply { start() }
             binding.fragmentTimeLineTextviewWritePost.visibility = View.INVISIBLE
-            binding.fragmentTimeLineTextviewGallery.visibility = View.INVISIBLE
+            binding.fragmentTimeLineTextviewVideo.visibility = View.INVISIBLE
             binding.fragmentTimeLineTextviewCamera.visibility = View.INVISIBLE
             false
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            //data.extras.get("data") as Bitmap
+            //imageview.setImageBitmap(imageBitmap)
+        }
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+            //val videoUri: Uri = intent.data
+            //videoView.setVideoURI(videoUri)
         }
     }
 }
