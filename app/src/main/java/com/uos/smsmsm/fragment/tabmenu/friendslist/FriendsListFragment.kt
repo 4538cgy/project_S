@@ -60,13 +60,14 @@ class FriendsListFragment : Fragment() {
         - 친구목록 내부데이터가 비어있을시에만 친구 목록을 가져올것 [ 최초 1회 실행 ]
         - 해당 activity가 실행되면 친구 목록 데이터가 갱신된 시간을 체크하여 내부데이터를 업데이트 해줄것
          */
-        loadingDialog.show()
+
         viewmodel.initUserFriendsList(auth.currentUser!!.uid)
 
 
         //friends List의 상태 확인
 
         viewmodel.friendsListState.observe(viewLifecycleOwner, Observer {
+            loadingDialog.show()
             when(it){
                 //데이터가 읽히는 중이면 실행
                 "getting" ->{ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
