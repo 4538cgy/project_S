@@ -15,7 +15,8 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.report.ReportActivity"></activity>
+        <activity android:name=".activity.welcome.WelcomeMainActivity"></activity>
+        <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />
         <activity android:name=".activity.chat.LegacyChatActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />

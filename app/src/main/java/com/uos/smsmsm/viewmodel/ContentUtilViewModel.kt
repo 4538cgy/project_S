@@ -21,11 +21,15 @@ import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.lang.Exception
 import java.text.SimpleDateFormat
+import javax.inject.Inject
 
 
 //게시글 업로드 , 게시글 다운로드 , 사진 업로드, 사진 다운로드 등등 Content와 관련된 모든 기능
 class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle,@ApplicationContext private val  appContext : Context) : ViewModel(){
 
+    private val galleryUtil : GalleryUtil by lazy{
+        GalleryUtil(appContext)
+    }
     var galleryItems = MutableLiveData<MutableList<GalleryUtil.MediaItem>>()
     var contentEdittext = MutableLiveData<String>()
 
@@ -79,9 +83,8 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
     }
     fun getGallery() {
         viewModelScope.launch {
-            galleryItems.postValue( GalleryUtil(appContext).getGerryItem())
+            galleryItems.postValue( galleryUtil.getGerryItem())
         }
-
     }
 
     //에딧 텍스트 TextWatcher

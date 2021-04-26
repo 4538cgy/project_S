@@ -63,6 +63,9 @@ dependencies {
 
     implementation "androidx.fragment:fragment-ktx:1.2.5"
 
+    //circle indicator
+    implementation 'me.relex:circleindicator:2.1.6'
+
     //dataBinding
     kapt 'com.android.databinding:compiler:3.5.0'
 
