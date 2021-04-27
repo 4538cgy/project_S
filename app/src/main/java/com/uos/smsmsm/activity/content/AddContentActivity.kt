@@ -96,8 +96,12 @@ class AddContentActivity : AppCompatActivity() {
 
         //이미지를 uri로 변환
         uploadImageList.forEach {
-            photoImageList.add(it.mediaItem?.contentUri!!)
-            photoImageList.add(Uri.parse(it.galleryHolder!!.getMediaItem().toString()))
+            if (it.mediaItem != null) {
+                photoImageList.add(it.mediaItem?.contentUri!!)
+            }
+            if (it.galleryHolder != null) {
+                photoImageList.add(Uri.parse(it.galleryHolder!!.getMediaItem().toString()))
+            }
         }
 
 
