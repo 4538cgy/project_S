@@ -21,9 +21,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
+import com.uos.smsmsm.fragment.util.PlayVideoFragment
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
+import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.isPermitted
@@ -31,7 +34,7 @@ import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddContentActivity : AppCompatActivity() {
+class AddContentActivity : AppCompatActivity(){
 
     lateinit var binding: ActivityAddContentBinding
     private val viewModel: ContentUtilViewModel by viewModels()
@@ -41,11 +44,22 @@ class AddContentActivity : AppCompatActivity() {
     // 사진을 찍어서 이미지를 가져왔을 경우 mediaItem이 not null이다.
     private var uploadImageList = ArrayList<UploadImgDTO>()
     private val auth = FirebaseAuth.getInstance()
-
     lateinit var loadingDialog: LoadingDialogText
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        intent?.getParcelableExtra<Uri>("uri")?.let {uri ->
+            intent?.getSerializableExtra("mediaType")?.let{type->
+                if(type is MediaType) {
+                    uploadImageList.add(
+                        UploadImgDTO(
+                            null,
+                            MediaItem(null, null, null, uri, type as MediaType)
+                        )
+                    )
+                }
+            }
+        }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_content)
         binding.apply {
             lifecycleOwner = this@AddContentActivity
@@ -81,6 +95,20 @@ class AddContentActivity : AppCompatActivity() {
                     viewHolder.mediaItem?.let {
                         removeImage(null, it)
                     }
+                },{
+                    val viewHolder =
+                        binding.activityAddContentAddImageViewPager.getChildViewHolder(it.parent as View) as UploadImageViewHolder
+                    viewHolder.holder?.let {
+                        binding.activityAddContentFragmentLayout.visibility = View.VISIBLE
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.activity_add_content_fragment_layout, PlayVideoFragment(it.getMediaItem().contentUri)).commit()
+                    }
+                    viewHolder.mediaItem?.let {
+
+                        binding.activityAddContentFragmentLayout.visibility = View.VISIBLE
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.activity_add_content_fragment_layout, PlayVideoFragment(it.contentUri)).commit()
+                    }
                 }, applicationContext
             )
         }
@@ -107,8 +135,17 @@ class AddContentActivity : AppCompatActivity() {
                 }
             }
         })
+        if(uploadImageList.size > 0){
+            binding.activityAddContentAddImageViewPager.visibility = View.VISIBLE
+        }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(binding.activityAddContentFragmentLayout.visibility == View.VISIBLE){
+            binding.activityAddContentFragmentLayout.visibility = View.GONE
+        }
+    }
     //게시글 올리기
     fun uploadPost(view: View) {
         println("게시글 올리기")
@@ -296,7 +333,7 @@ class AddContentActivity : AppCompatActivity() {
                         val uri =
                             viewModel.saveImageFile(contentResolver, filename, "image/jpg", bitmap)
                         uri?.let {
-                            uploadImageList.add(UploadImgDTO(null, MediaItem(null, null, null, it)))
+                            uploadImageList.add(UploadImgDTO(null, MediaItem(null, null, null, it, MediaType.Picture)))
                             binding.activityAddContentAddImageViewPager.run {
                                 visibility = View.VISIBLE
                                 (adapter as UploadImageSlidePagerAdapter).notifyDataSetChanged()

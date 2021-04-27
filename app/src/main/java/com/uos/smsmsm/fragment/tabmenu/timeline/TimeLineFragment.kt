@@ -3,12 +3,15 @@ package com.uos.smsmsm.fragment.tabmenu.timeline
 import android.animation.ObjectAnimator
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,17 +19,23 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
+import com.uos.smsmsm.activity.content.UploadImageSlidePagerAdapter
+import com.uos.smsmsm.activity.content.UploadImgDTO
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
 import com.uos.smsmsm.util.Config
+import com.uos.smsmsm.util.GalleryUtil
+import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TimeLineFragment : Fragment() {
 
     lateinit var binding: FragmentTimeLineBinding
     private var isOpenFAB = false
-    private lateinit var viewModel : ContentUtilViewModel
+    private val viewModel : ContentUtilViewModel by viewModels()
 
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
@@ -141,10 +150,39 @@ class TimeLineFragment : Fragment() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             //data.extras.get("data") as Bitmap
             //imageview.setImageBitmap(imageBitmap)
+            data?.extras?.get("data")?.let {
+                val bitmap = it as Bitmap
+                val filename = viewModel.newFileName()
+                val uri =
+                    viewModel.saveImageFile(requireActivity().contentResolver, filename, "image/jpg", bitmap)
+                uri?.let {
+                    val intent = Intent(binding.root.context,AddContentActivity::class.java)
+                    intent.putExtra("uri", uri)
+                    intent.putExtra("mediaType", MediaType.Picture)
+                    startActivity(intent)
+                } ?: {
+                    Toast.makeText(context, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
+                        .show()
+                }()
+
+            }
+
         }
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             //val videoUri: Uri = intent.data
             //videoView.setVideoURI(videoUri)
+            data?.data?.let{
+                val uri = it
+                val intent = Intent(binding.root.context,AddContentActivity::class.java)
+                intent.putExtra("uri", uri)
+                intent.putExtra("mediaType", MediaType.Video)
+                startActivity(intent)
+            } ?: {
+                Toast.makeText(context, "영상 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
+                    .show()
+            }()
         }
     }
+
+
 }
