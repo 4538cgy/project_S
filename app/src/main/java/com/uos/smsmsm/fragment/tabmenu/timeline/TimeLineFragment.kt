@@ -35,7 +35,7 @@ class TimeLineFragment : Fragment() {
 
     lateinit var binding: FragmentTimeLineBinding
     private var isOpenFAB = false
-    private val viewModel : ContentUtilViewModel by viewModels()
+    private val viewModel: ContentUtilViewModel by viewModels()
 
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
@@ -64,22 +64,25 @@ class TimeLineFragment : Fragment() {
          */
          */
 
-        activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)
+        activity?.startActivityForResult(viewModel.openGallery(), PICK_PROFILE_FROM_ALBUM)
     }
 
     fun takePhotoCamera(view: View) {
-        if(isPermitted(requireActivity(), Config.CAMERA_PERMISSION )) {
+        if (isPermitted(requireActivity(), Config.CAMERA_PERMISSION)) {
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
                 takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
             }
-        }else{
-            ActivityCompat.requestPermissions(requireActivity() , Config.CAMERA_PERMISSION,
-                Config.FLAG_PERM_CAMERA)
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(), Config.CAMERA_PERMISSION,
+                Config.FLAG_PERM_CAMERA
+            )
         }
 
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -90,7 +93,11 @@ class TimeLineFragment : Fragment() {
             if (isPermitted(requireContext(), Config.CAMERA_PERMISSION)) {
                 startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
             } else {
-                Toast.makeText(requireContext(), "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                    requireContext(),
+                    "Permissions not granted by the user.",
+                    Toast.LENGTH_SHORT
+                ).show();
             }
         }
     }
@@ -104,7 +111,9 @@ class TimeLineFragment : Fragment() {
         }
     }
 
-    fun writeContent(view: View) { startActivity(Intent(binding.root.context,AddContentActivity::class.java))}
+    fun writeContent(view: View) {
+        startActivity(Intent(binding.root.context, AddContentActivity::class.java))
+    }
 
     fun clickFab(view: View) {
         isOpenFAB = if (!isOpenFAB) {
@@ -147,19 +156,26 @@ class TimeLineFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             //data.extras.get("data") as Bitmap
             //imageview.setImageBitmap(imageBitmap)
             data?.extras?.get("data")?.let {
-                val bitmap = it as Bitmap
-                val filename = viewModel.newFileName()
                 val uri =
-                    viewModel.saveImageFile(requireActivity().contentResolver, filename, "image/jpg", bitmap)
+                    viewModel.saveImageFile(
+                        requireActivity().contentResolver,
+                        viewModel.newFileName(),
+                        "image/png",
+                        it as Bitmap
+                    )
                 uri?.let {
-                    val intent = Intent(binding.root.context,AddContentActivity::class.java)
-                    intent.putExtra("uri", uri)
-                    intent.putExtra("mediaType", MediaType.Picture)
-                    startActivity(intent)
+                    startActivity(
+                        Intent(
+                            binding.root.context,
+                            AddContentActivity::class.java
+                        ).apply {
+                            putExtra("uri", uri)
+                            putExtra("mediaType", MediaType.Picture)
+                        })
                 } ?: {
                     Toast.makeText(context, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
                         .show()
@@ -171,12 +187,12 @@ class TimeLineFragment : Fragment() {
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             //val videoUri: Uri = intent.data
             //videoView.setVideoURI(videoUri)
-            data?.data?.let{
+            data?.data?.let {
                 val uri = it
-                val intent = Intent(binding.root.context,AddContentActivity::class.java)
-                intent.putExtra("uri", uri)
-                intent.putExtra("mediaType", MediaType.Video)
-                startActivity(intent)
+                startActivity(Intent(binding.root.context, AddContentActivity::class.java).apply {
+                    putExtra("uri", uri)
+                    putExtra("mediaType", MediaType.Video)
+                })
             } ?: {
                 Toast.makeText(context, "영상 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
                     .show()

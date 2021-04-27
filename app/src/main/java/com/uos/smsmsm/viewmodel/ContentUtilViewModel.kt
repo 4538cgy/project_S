@@ -110,7 +110,7 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
                 var descriptor = contentResolver.openFileDescriptor(uri,"w")
                 if(descriptor != null){
                     val fos = FileOutputStream(descriptor.fileDescriptor)   //OutputStream 예외처리
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                     fos.close()
                     return uri
                 }

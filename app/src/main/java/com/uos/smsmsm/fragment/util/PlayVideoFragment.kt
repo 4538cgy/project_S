@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.FragmentVideoPlayBinding
 
-class PlayVideoFragment(val uri: Uri) : Fragment(){
+class PlayVideoFragment(val uri: Uri) : Fragment() {
     lateinit var binding: FragmentVideoPlayBinding
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,27 +26,31 @@ class PlayVideoFragment(val uri: Uri) : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.fragmentVideoPlayVideoView.setMediaController(
-            android.widget.MediaController(
-                requireContext()
+        binding.fragmentVideoPlayVideoView.apply {
+            setMediaController(
+                android.widget.MediaController(
+                    requireContext()
+                )
             )
-        )
-        binding.fragmentVideoPlayVideoView.setVideoURI(uri)
-        binding.fragmentVideoPlayVideoView.start()
-
+            setVideoURI(uri)
+            start()
+        }
         binding.fragmentVideoPlayCloseBtn.setOnClickListener {
-            val mFragmentManager: FragmentManager = requireActivity().supportFragmentManager
-            val mFragmentTransaction: FragmentTransaction = mFragmentManager.beginTransaction()
-            mFragmentTransaction.remove(this)
-            mFragmentTransaction.commit()
+            requireActivity().supportFragmentManager.beginTransaction().apply {
+                remove(this@PlayVideoFragment)
+                commit()
+            }
         }
 
     }
 
     override fun onDetach() {
-        if(binding.fragmentVideoPlayVideoView.isPlaying)
-        binding.fragmentVideoPlayVideoView.pause()
-        binding.fragmentVideoPlayVideoView.stopPlayback()
+        binding.fragmentVideoPlayVideoView.run{
+            if(isPlaying){
+                pause()
+            }
+            stopPlayback()
+        }
         super.onDetach()
     }
 
