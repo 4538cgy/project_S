@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +17,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
+import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.databinding.ItemUploadImageViewBinding
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
@@ -32,6 +35,8 @@ class AddContentActivity : AppCompatActivity() {
     private val viewModel: ContentUtilViewModel by viewModels()
     private var isSelectImgCount: Int = 0
     private var uploadImageList = ArrayList<UploadImgDTO>()
+    private val auth = FirebaseAuth.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_content)
@@ -76,6 +81,27 @@ class AddContentActivity : AppCompatActivity() {
         viewModel.contentEdittext.observe(this, Observer {
             interactiveView()
         })
+    }
+
+    //게시글 올리기
+    fun uploadPost(view:View){
+
+        var contents = ContentDTO()
+        contents.explain = viewModel.contentEdittext.value.toString()
+        contents.timestamp = System.currentTimeMillis()
+        contents.uid = auth.uid.toString()
+        contents.postState = "public"
+
+        var photoImageList = arrayListOf<Uri>()
+
+        //이미지를 uri로 변환
+        uploadImageList.forEach {
+            photoImageList.add(it.mediaItem?.contentUri!!)
+            photoImageList.add(Uri.parse(it.galleryHolder!!.getMediaItem().toString()))
+        }
+
+
+        viewModel.uploadPhoto(contents,photoImageList)
     }
 
     //게시글 옵션 선택 바텀 시트 열기

@@ -14,12 +14,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.util.GalleryUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.lang.Exception
+import java.net.URI
 import java.text.SimpleDateFormat
 
 
@@ -28,12 +34,34 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
 
     var galleryItems = MutableLiveData<MutableList<GalleryUtil.MediaItem>>()
     var contentEdittext = MutableLiveData<String>()
+    private val contentRepository = ContentRepository()
+    private val auth = FirebaseAuth.getInstance()
 
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
             type = "image/*"
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
             data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+    }
+
+    fun uploadPhoto(contents : ContentDTO , photoList : ArrayList<Uri>){
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.uploadPhotoList(photoList).collect{
+                println("ContentUtilViewModel의 UploadPhoto 부분의 collect(emit) 값입니다.")
+                uploadContent(contents, it)
+            }
+        }
+    }
+
+    fun uploadContent(contents : ContentDTO , photoDownLoadUrl : ArrayList<String>){
+
+        contents.imageDownLoadUrlList = photoDownLoadUrl
+
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.uploadContent(contents,auth.currentUser?.uid.toString()).collect {
+                if (it) print("업로드 성공") else println("업로드 실패라능")
+            }
         }
     }
 
