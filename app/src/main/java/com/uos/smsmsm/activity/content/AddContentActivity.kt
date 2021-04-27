@@ -86,6 +86,8 @@ class AddContentActivity : AppCompatActivity() {
     //게시글 올리기
     fun uploadPost(view:View){
 
+        println("게시글 올리기")
+
         var contents = ContentDTO()
         contents.explain = viewModel.contentEdittext.value.toString()
         contents.timestamp = System.currentTimeMillis()
@@ -94,18 +96,21 @@ class AddContentActivity : AppCompatActivity() {
 
         var photoImageList = arrayListOf<Uri>()
 
+        println(viewModel.galleryItems.value.toString())
+
         //이미지를 uri로 변환
-        uploadImageList.forEach {
-            if (it.mediaItem != null) {
-                photoImageList.add(it.mediaItem?.contentUri!!)
-            }
-            if (it.galleryHolder != null) {
-                photoImageList.add(Uri.parse(it.galleryHolder!!.getMediaItem().toString()))
-            }
+
+        viewModel.galleryItems.value!!.forEach {
+            photoImageList.add(it.contentUri)
         }
 
 
-        viewModel.uploadPhoto(contents,photoImageList)
+
+        if (photoImageList.isEmpty()){
+            viewModel.uploadContent(contents,null)
+        }else{
+            viewModel.uploadPhoto(contents,photoImageList)
+        }
     }
 
     //게시글 옵션 선택 바텀 시트 열기

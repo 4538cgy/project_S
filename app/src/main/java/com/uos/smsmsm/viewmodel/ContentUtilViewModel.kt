@@ -54,7 +54,7 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         }
     }
 
-    fun uploadContent(contents : ContentDTO , photoDownLoadUrl : ArrayList<String>){
+    fun uploadContent(contents : ContentDTO , photoDownLoadUrl : ArrayList<String> ? = null){
 
         contents.imageDownLoadUrlList = photoDownLoadUrl
 
