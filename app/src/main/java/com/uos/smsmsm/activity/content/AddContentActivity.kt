@@ -100,6 +100,7 @@ class AddContentActivity : AppCompatActivity() {
 
         //이미지를 uri로 변환
 
+        if (viewModel.galleryItems.value != null)
         viewModel.galleryItems.value!!.forEach {
             photoImageList.add(it.contentUri)
         }
@@ -107,9 +108,13 @@ class AddContentActivity : AppCompatActivity() {
 
 
         if (photoImageList.isEmpty()){
+            println("선택한 사진이 존재하지 않으므로 photo가 없는 data만 업로드 진행")
             viewModel.uploadContent(contents,null)
         }else{
-            viewModel.uploadPhoto(contents,photoImageList)
+            println("선택한 사진이 존재하므로 photo upload 진행")
+            println("업로드 하는 사진의 size = ${photoImageList.size}")
+            println("업로드 하는 사진 = ${photoImageList.toString()}")
+           // viewModel.uploadPhoto(contents,photoImageList)
         }
     }
 

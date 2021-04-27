@@ -40,12 +40,21 @@ class ContentRepository {
         var imageFileName = "SMSM_" + "Content_" + timestamp + "_.png"
         var storageRef = storage.reference.child("Content_Photo").child(imageFileName)
 
+        println("uloadPhotoList 진행")
+        println("photoUri의 크기 ${photoUri.size}")
+
         photoUri.forEach {
+            println("현재 업로드하는 photo의 uri = $it")
             storageRef.putFile(it)
                 ?.continueWithTask { task ->
                     return@continueWithTask storageRef.downloadUrl
                 }?.addOnSuccessListener { uri ->
+                    println("사진 업로드 성공")
                     photoDownloadUrl.add(uri.toString())
+                }.addOnFailureListener {
+                    println(" 사진 업로드 실패 cause = ${it.toString()}")
+                }.addOnCanceledListener {
+                    println(" 사진 업로드 취소 cause = ${it.toString()}")
                 }
         }
 
