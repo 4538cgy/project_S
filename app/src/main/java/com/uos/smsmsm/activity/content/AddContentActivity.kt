@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,6 +23,7 @@ import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
+import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -67,13 +69,6 @@ class AddContentActivity : AppCompatActivity() {
                     }
                 }, applicationContext
             )
-        }
-        binding.activityAddContentButton.setOnClickListener {
-            // 이미지 업로드 버튼 동작
-            // 업로드할 이미지 정보들은 uploadImageList 를 활용하면 된다.
-            // uploadImgDTO에 GalleryHolder 와 MediaItem 2 종류가 있는데
-            // 하단 갤러리에서 선택할 경우 GalleryHolder로 등록이 촬영일 경우 MediaItem으로 등록 된다.
-
         }
 
         viewModel.contentEdittext.observe(this, Observer {
@@ -164,7 +159,27 @@ class AddContentActivity : AppCompatActivity() {
     // 사진 촬영
     fun takePicture(view: View) {
         binding.activityAddContentGallery.visibility = View.GONE
-        startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
+        if(isPermitted(this, Config.CAMERA_PERMISSION )) {
+            startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
+        }else{
+            ActivityCompat.requestPermissions(this , Config.CAMERA_PERMISSION,
+                Config.FLAG_PERM_CAMERA)
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Config.FLAG_PERM_CAMERA) {
+            if (isPermitted(baseContext, Config.CAMERA_PERMISSION)) {
+                startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
+            } else {
+                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
+                this.finish()
+            }
+        }
     }
     // 하단 갤러리에서 사진 선택 시 동작
     private val clickListener = View.OnClickListener {

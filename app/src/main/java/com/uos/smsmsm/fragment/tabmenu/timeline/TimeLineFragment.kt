@@ -8,6 +8,8 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
+import com.uos.smsmsm.util.Config
+import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 
@@ -55,9 +59,29 @@ class TimeLineFragment : Fragment() {
     }
 
     fun takePhotoCamera(view: View) {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        if(isPermitted(requireActivity(), Config.CAMERA_PERMISSION )) {
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+        }else{
+            ActivityCompat.requestPermissions(requireActivity() , Config.CAMERA_PERMISSION,
+                Config.FLAG_PERM_CAMERA)
+        }
+
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Config.FLAG_PERM_CAMERA) {
+            if (isPermitted(requireContext(), Config.CAMERA_PERMISSION)) {
+                startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
+            } else {
+                Toast.makeText(requireContext(), "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
             }
         }
     }
