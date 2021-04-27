@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +15,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
+import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
 import com.uos.smsmsm.util.Config
@@ -30,6 +33,8 @@ class AddContentActivity : AppCompatActivity() {
     private var isSelectImgCount: Int = 0
     private val MAX_SELECT_COUNT = 5
     private var uploadImageList = ArrayList<UploadImgDTO>()
+    private val auth = FirebaseAuth.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_content)
@@ -74,6 +79,41 @@ class AddContentActivity : AppCompatActivity() {
         viewModel.contentEdittext.observe(this, Observer {
             interactiveView()
         })
+    }
+
+    //게시글 올리기
+    fun uploadPost(view:View){
+
+        println("게시글 올리기")
+
+        var contents = ContentDTO()
+        contents.explain = viewModel.contentEdittext.value.toString()
+        contents.timestamp = System.currentTimeMillis()
+        contents.uid = auth.uid.toString()
+        contents.postState = "public"
+
+        var photoImageList = arrayListOf<Uri>()
+
+        println(viewModel.galleryItems.value.toString())
+
+        //이미지를 uri로 변환
+
+        if (viewModel.galleryItems.value != null)
+        viewModel.galleryItems.value!!.forEach {
+            photoImageList.add(it.contentUri)
+        }
+
+
+
+        if (photoImageList.isEmpty()){
+            println("선택한 사진이 존재하지 않으므로 photo가 없는 data만 업로드 진행")
+            viewModel.uploadContent(contents,null)
+        }else{
+            println("선택한 사진이 존재하므로 photo upload 진행")
+            println("업로드 하는 사진의 size = ${photoImageList.size}")
+            println("업로드 하는 사진 = ${photoImageList.toString()}")
+           // viewModel.uploadPhoto(contents,photoImageList)
+        }
     }
 
     //게시글 옵션 선택 바텀 시트 열기
