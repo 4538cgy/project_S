@@ -56,15 +56,18 @@ class ContentRepository {
                 }.addOnCanceledListener {
                     println(" 사진 업로드 취소 cause = ${it.toString()}")
                 }
+            println("스코프 내부 ${photoDownloadUrl.toString()}")
+            this@callbackFlow.sendBlocking(photoDownloadUrl)
         }
+        println("스코프 외부 ${photoDownloadUrl.toString()}")
 
-        awaitClose { this@callbackFlow.sendBlocking(photoDownloadUrl) }
+        awaitClose {  }
     }
 
     //게시글 업로드
     @ExperimentalCoroutinesApi
     fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<Boolean> {
-        val databaseReference = db.collection("User").document("UserData").collection("UserInfo").whereEqualTo("uid" , uid)
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid" , uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
             if (it.isSuccessful){
@@ -78,8 +81,10 @@ class ContentRepository {
                                 .document()
 
                             val eventListener2 = databaseReference2.set(content).addOnCompleteListener {
+                                println("게시글 업로드 완료")
                                 this@callbackFlow.sendBlocking(true)
                             }.addOnFailureListener {
+                                println("게시글 업로드 실패")
                                 this@callbackFlow.sendBlocking(false)
                             }
                         }
@@ -89,18 +94,4 @@ class ContentRepository {
         }
         awaitClose {  }
     }
-
-
-
-    //유저 생성
-    @ExperimentalCoroutinesApi
-    fun createUser(userDTO : UserDTO) = callbackFlow<Boolean> {
-        val databaseReference = db.collection("user").document()
-        val eventListener = databaseReference.set(userDTO).addOnCompleteListener {
-            this@callbackFlow.sendBlocking(true)
-        }.addOnFailureListener {
-            this@callbackFlow.sendBlocking(false)
-        }
-    }
-
 }

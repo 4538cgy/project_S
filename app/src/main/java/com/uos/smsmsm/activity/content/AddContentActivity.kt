@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,6 +24,8 @@ import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
+import com.uos.smsmsm.util.dialog.LoadingDialog
+import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +42,8 @@ class AddContentActivity : AppCompatActivity() {
     private var uploadImageList = ArrayList<UploadImgDTO>()
     private val auth = FirebaseAuth.getInstance()
 
+    lateinit var loadingDialog: LoadingDialogText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_content)
@@ -47,6 +52,13 @@ class AddContentActivity : AppCompatActivity() {
             activityaddcontent = this@AddContentActivity
             viewmodel = viewModel
         }
+
+        //프로그레스 초기화
+        loadingDialog = LoadingDialogText(binding.root.context)
+        //프로그레스 투명하게
+        loadingDialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        //프로그레스 꺼짐 방지
+        loadingDialog!!.setCancelable(false)
 
         //업로드 버튼 비활성화
         binding.activityAddContentButton.isEnabled = false
@@ -76,11 +88,29 @@ class AddContentActivity : AppCompatActivity() {
         viewModel.contentEdittext.observe(this, Observer {
             interactiveView()
         })
+        viewModel.contentUploadState.observe(this, Observer {
+            loadingDialog.show()
+            when(it){
+                "upload_photo" ->{
+                    loadingDialog.binding.dialogProgressLoadingTextTextview.text = "사진이 물따라 내려가는중~"
+                }
+                "upload_photo_complete" ->{
+                    loadingDialog.binding.dialogProgressLoadingTextTextview.text = "사진이 호수에 도착!"
+                }
+                "upload_content" ->{
+                    loadingDialog.binding.dialogProgressLoadingTextTextview.text = "적은 글을 고이접어 우체통에 넣는중~"
+                }
+                "upload_content_complete" ->{
+                    loadingDialog.binding.dialogProgressLoadingTextTextview.text = "배달완료!"
+                    loadingDialog.dismiss()
+                    finish()
+                }
+            }
+        })
     }
 
     //게시글 올리기
     fun uploadPost(view: View) {
-
         println("게시글 올리기")
 
         var contents = ContentDTO()
@@ -110,13 +140,9 @@ class AddContentActivity : AppCompatActivity() {
 
 
         if (photoImageList.isEmpty()) {
-            println("선택한 사진이 존재하지 않으므로 photo가 없는 data만 업로드 진행")
             viewModel.uploadContent(contents, null)
         } else {
-            println("선택한 사진이 존재하므로 photo upload 진행")
-            println("업로드 하는 사진의 size = ${photoImageList.size}")
-            println("업로드 하는 사진 = ${photoImageList.toString()}")
-            // viewModel.uploadPhoto(contents,photoImageList)
+             viewModel.uploadPhoto(contents,photoImageList)
         }
     }
 

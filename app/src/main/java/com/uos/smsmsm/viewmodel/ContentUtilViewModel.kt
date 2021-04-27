@@ -41,6 +41,8 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
     private val contentRepository = ContentRepository()
     private val auth = FirebaseAuth.getInstance()
 
+    var contentUploadState = MutableLiveData<String>()
+
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
             type = "image/*"
@@ -50,10 +52,19 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
     }
 
     fun uploadPhoto(contents : ContentDTO , photoList : ArrayList<Uri>){
-        viewModelScope.launch(Dispatchers.IO){
-            contentRepository.uploadPhotoList(photoList).collect{
-                println("ContentUtilViewModel의 UploadPhoto 부분의 collect(emit) 값입니다.")
-                uploadContent(contents, it)
+
+        var photoDownLoadUrlList = arrayListOf<String>()
+
+        contentUploadState.postValue("upload_photo")
+        photoList.forEach {
+            viewModelScope.launch(Dispatchers.IO){
+                contentRepository.uploadPhoto(it).collect {
+                    photoDownLoadUrlList.add(it)
+                    if (photoList.size == photoDownLoadUrlList.size) {
+                        contentUploadState.postValue("upload_photo_complete")
+                        uploadContent(contents,photoDownLoadUrlList)
+                    }
+                }
             }
         }
     }
@@ -61,9 +72,10 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
     fun uploadContent(contents : ContentDTO , photoDownLoadUrl : ArrayList<String> ? = null){
 
         contents.imageDownLoadUrlList = photoDownLoadUrl
-
+        contentUploadState.postValue("upload_content")
         viewModelScope.launch(Dispatchers.IO){
             contentRepository.uploadContent(contents,auth.currentUser?.uid.toString()).collect {
+                contentUploadState.postValue("upload_content_complete")
                 if (it) print("업로드 성공") else println("업로드 실패라능")
             }
         }
