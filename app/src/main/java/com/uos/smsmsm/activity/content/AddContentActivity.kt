@@ -34,6 +34,8 @@ class AddContentActivity : AppCompatActivity() {
     private val viewModel: ContentUtilViewModel by viewModels()
     private var isSelectImgCount: Int = 0
     private val MAX_SELECT_COUNT = 5
+    // 갤러이에서 사진을 가져왔을 경우에는 galleryHoler가 not null이고
+    // 사진을 찍어서 이미지를 가져왔을 경우 mediaItem이 not null이다.
     private var uploadImageList = ArrayList<UploadImgDTO>()
     private val auth = FirebaseAuth.getInstance()
 
@@ -77,7 +79,7 @@ class AddContentActivity : AppCompatActivity() {
     }
 
     //게시글 올리기
-    fun uploadPost(view:View){
+    fun uploadPost(view: View) {
 
         println("게시글 올리기")
 
@@ -92,41 +94,49 @@ class AddContentActivity : AppCompatActivity() {
         println(viewModel.galleryItems.value.toString())
 
         //이미지를 uri로 변환
-
-        if (viewModel.galleryItems.value != null)
-        viewModel.galleryItems.value!!.forEach {
-            photoImageList.add(it.contentUri)
+        if (uploadImageList.size > 0) {
+            uploadImageList.forEach {
+                if (it.galleryHolder != null) {
+                    photoImageList.add(it.galleryHolder!!.getMediaItem().contentUri)
+                } else if (it.mediaItem != null) {
+                    photoImageList.add(it.mediaItem!!.contentUri)
+                }
+            }
         }
+//        if (viewModel.galleryItems.value != null)
+//        viewModel.galleryItems.value!!.forEach {
+//            photoImageList.add(it.contentUri)
+//        }
 
 
-
-        if (photoImageList.isEmpty()){
+        if (photoImageList.isEmpty()) {
             println("선택한 사진이 존재하지 않으므로 photo가 없는 data만 업로드 진행")
-            viewModel.uploadContent(contents,null)
-        }else{
+            viewModel.uploadContent(contents, null)
+        } else {
             println("선택한 사진이 존재하므로 photo upload 진행")
             println("업로드 하는 사진의 size = ${photoImageList.size}")
             println("업로드 하는 사진 = ${photoImageList.toString()}")
-           // viewModel.uploadPhoto(contents,photoImageList)
+            // viewModel.uploadPhoto(contents,photoImageList)
         }
     }
 
     //게시글 옵션 선택 바텀 시트 열기
-    fun openContentOptionSelector(view: View){
+    fun openContentOptionSelector(view: View) {
         val bottomSheetDialog = BottomSheetDialogWriteContent()
         bottomSheetDialog.show(supportFragmentManager, "contentOption")
     }
 
     //업로드 버튼 활성화
-    fun interactiveView(){
-        if (viewModel.contentEdittext.value != null && viewModel.contentEdittext.value!!.isNotEmpty()){
+    fun interactiveView() {
+        if (viewModel.contentEdittext.value != null && viewModel.contentEdittext.value!!.isNotEmpty()) {
             binding.activityAddContentButton.isEnabled = true
             binding.activityAddContentButton.setTextColor(Color.BLACK)
-        }else{
+        } else {
             binding.activityAddContentButton.isEnabled = false
             binding.activityAddContentButton.setTextColor(Color.LTGRAY)
         }
     }
+
     //하단 갤러리 오픈
     fun openGallery(view: View) {
         binding.activityAddContentGalleryRecyclerView.run {
@@ -156,16 +166,20 @@ class AddContentActivity : AppCompatActivity() {
         }
 
     }
+
     // 사진 촬영
     fun takePicture(view: View) {
         binding.activityAddContentGallery.visibility = View.GONE
-        if(isPermitted(this, Config.CAMERA_PERMISSION )) {
+        if (isPermitted(this, Config.CAMERA_PERMISSION)) {
             startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
-        }else{
-            ActivityCompat.requestPermissions(this , Config.CAMERA_PERMISSION,
-                Config.FLAG_PERM_CAMERA)
+        } else {
+            ActivityCompat.requestPermissions(
+                this, Config.CAMERA_PERMISSION,
+                Config.FLAG_PERM_CAMERA
+            )
         }
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -176,18 +190,20 @@ class AddContentActivity : AppCompatActivity() {
             if (isPermitted(baseContext, Config.CAMERA_PERMISSION)) {
                 startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
             } else {
-                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
+                    .show();
                 this.finish()
             }
         }
     }
+
     // 하단 갤러리에서 사진 선택 시 동작
     private val clickListener = View.OnClickListener {
 
         val clickViewHolder =
             binding.activityAddContentGalleryRecyclerView.getChildViewHolder(it) as GalleryHolder
         val imageBtn = clickViewHolder.binding.itemGalleryViewSelectorImgBtn
-        // 최대 선택 갯수 현재 3개
+        // 최대 선택 갯수 현재 MAX_SELECT_COUNT 개
         if (isSelectImgCount < MAX_SELECT_COUNT) {
             imageBtn.isSelected = !imageBtn.isSelected
             // 이미 선택 되었다면 선택 해제
@@ -206,17 +222,22 @@ class AddContentActivity : AppCompatActivity() {
         } else {
             // 3개 이상 선택 되었을 때
             // 이미 선택되 항목을 선택할 경우
-           if (imageBtn.isSelected) {
+            if (imageBtn.isSelected) {
                 imageBtn.isSelected = !imageBtn.isSelected
                 isSelectImgCount--
                 removeImage(clickViewHolder, null)
             } else {
-               // 신규 선택 할 경우
-                Toast.makeText(applicationContext, "최대 선택할 수 있는 이미지 수는  ${MAX_SELECT_COUNT}장 입니다.", Toast.LENGTH_LONG)
+                // 신규 선택 할 경우
+                Toast.makeText(
+                    applicationContext,
+                    "최대 선택할 수 있는 이미지 수는  ${MAX_SELECT_COUNT}장 입니다.",
+                    Toast.LENGTH_LONG
+                )
                     .show()
             }
         }
     }
+
     // 하단 갤러리나 추가할 이미지 프리뷰에서 클로즈 버튼을 통하여 업로드할 이미지 제거할 경우
     private fun removeImage(holder: GalleryHolder?, mediaItem: MediaItem?) {
 
@@ -236,6 +257,7 @@ class AddContentActivity : AppCompatActivity() {
             }
         }
     }
+
     // 사진 촬영 후 그 결과 처리
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
