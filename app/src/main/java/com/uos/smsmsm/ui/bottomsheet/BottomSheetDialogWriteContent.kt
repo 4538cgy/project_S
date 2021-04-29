@@ -10,11 +10,12 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.uos.smsmsm.R
 import com.uos.smsmsm.databinding.BottomSheetDialogAddFriendsLayoutBinding
+import com.uos.smsmsm.databinding.BottomSheetDialogWriteContentBinding
 import java.lang.ClassCastException
 
-class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
+class BottomSheetDialogWriteContent  : BottomSheetDialogFragment() {
     lateinit var bottomSheetButtonClickListener : BottomSheetButtonClickListener
-    private lateinit var binding : BottomSheetDialogAddFriendsLayoutBinding
+    private lateinit var binding : BottomSheetDialogWriteContentBinding
 
     interface BottomSheetButtonClickListener { fun onBottomSheetButtonClick(text : String) }
 
@@ -23,8 +24,8 @@ class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.bottom_sheet_dialog_add_friends_layout,container,false)
-        binding.bottomsheetdialogaddfriendslayout = this@BottomSheetDialogAddFriends
+        binding = DataBindingUtil.inflate(inflater, R.layout.bottom_sheet_dialog_write_content,container,false)
+        binding.bottomsheetdialogwritecontent = this@BottomSheetDialogWriteContent
         return binding.root
     }
 
@@ -39,21 +40,15 @@ class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
 
     fun groupClick(view : View){
         when(view.id){
-            //qr 코드로 추가
-            binding.bottomSheetDialogAddFriendsLayoutButtonCode.id ->{
-                println("click code")
+            binding.bottomSheetDialogWriteContentButtonClose.id ->{ }
+            binding.bottomSheetDialogWriteContentConstOnlyMe.id ->{
+                println("only me")
             }
-            //id 로 추가
-            binding.bottomSheetDialogAddFriendsLayoutButtonId.id ->{
-                println("click id")
+            binding.bottomSheetDialogWriteContentConstOnlyFriends.id ->{
+                println("only friends")
             }
-            //연락처로 추가
-            binding.bottomSheetDialogAddFriendsLayoutButtonPhoneNumber.id ->{
-                println("click number")
-            }
-            //추천 친구
-            binding.bottomSheetDialogAddFriendsLayoutButtonRecommand.id ->{
-                println("click recommand")
+            binding.bottomSheetDialogWriteContentConstPublic.id ->{
+                println("public")
             }
         }
         dismiss()

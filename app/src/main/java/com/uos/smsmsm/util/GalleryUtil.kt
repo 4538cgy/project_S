@@ -4,16 +4,22 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
+import android.os.Parcelable
 import android.provider.MediaStore
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
-
+enum class MediaType : Serializable{
+    Picture, Video
+}
 class GalleryUtil(val context: Context) {
+
     data class MediaItem(
         val id: Long?,
         val displayName: String?,
         val dateTaken: Date?,
-        val contentUri: Uri
+        val contentUri: Uri,
+        val isType : MediaType
     )
 
     val videoList = mutableListOf<MediaItem>()
@@ -53,7 +59,7 @@ class GalleryUtil(val context: Context) {
                     id.toString()
                 )
 
-                videoList += MediaItem(id, displayName, dateTaken, contentUri)
+                videoList += MediaItem(id, displayName, dateTaken, contentUri, MediaType.Picture)
             }
         }
         return videoList

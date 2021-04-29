@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -12,12 +14,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.util.GalleryUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.lang.Exception
+import java.net.URI
 import java.text.SimpleDateFormat
 import javax.inject.Inject
 
@@ -29,12 +37,47 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         GalleryUtil(appContext)
     }
     var galleryItems = MutableLiveData<MutableList<GalleryUtil.MediaItem>>()
+    var contentEdittext = MutableLiveData<String>()
+    private val contentRepository = ContentRepository()
+    private val auth = FirebaseAuth.getInstance()
+
+    var contentUploadState = MutableLiveData<String>()
 
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
             type = "image/*"
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
             data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+    }
+
+    fun uploadPhoto(contents : ContentDTO , photoList : ArrayList<Uri>){
+
+        var photoDownLoadUrlList = arrayListOf<String>()
+
+        contentUploadState.postValue("upload_photo")
+        photoList.forEach {
+            viewModelScope.launch(Dispatchers.IO){
+                contentRepository.uploadPhoto(it).collect {
+                    photoDownLoadUrlList.add(it)
+                    if (photoList.size == photoDownLoadUrlList.size) {
+                        contentUploadState.postValue("upload_photo_complete")
+                        uploadContent(contents,photoDownLoadUrlList)
+                    }
+                }
+            }
+        }
+    }
+
+    fun uploadContent(contents : ContentDTO , photoDownLoadUrl : ArrayList<String> ? = null){
+
+        contents.imageDownLoadUrlList = photoDownLoadUrl
+        contentUploadState.postValue("upload_content")
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.uploadContent(contents,auth.currentUser?.uid.toString()).collect {
+                contentUploadState.postValue("upload_content_complete")
+                if (it) print("업로드 성공") else println("업로드 실패라능")
+            }
         }
     }
 
@@ -67,7 +110,7 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
                 var descriptor = contentResolver.openFileDescriptor(uri,"w")
                 if(descriptor != null){
                     val fos = FileOutputStream(descriptor.fileDescriptor)   //OutputStream 예외처리
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                     fos.close()
                     return uri
                 }
@@ -82,5 +125,21 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         viewModelScope.launch {
             galleryItems.postValue( galleryUtil.getGerryItem())
         }
+    }
+
+    //에딧 텍스트 TextWatcher
+    fun textWatcher() = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            contentEdittext.postValue(s.toString())
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            contentEdittext.postValue(s.toString())
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            contentEdittext.postValue(s.toString())
+        }
+
     }
 }

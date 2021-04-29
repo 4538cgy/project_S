@@ -50,6 +50,42 @@
             >
 
 
+            <TextView
+                android:id="@+id/fragment_time_line_textview_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_video"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_video"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_video"
+                android:layout_marginRight="8dp"
+                android:text="동영상찍어서 올리기"
+                android:visibility="invisible"
+                />
+
+            <TextView
+                android:id="@+id/fragment_time_line_textview_write_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_write_post"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_write_post"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_write_post"
+                android:layout_marginRight="8dp"
+                android:text="글쓰기"
+                android:visibility="invisible"
+                />
+
+            <TextView
+                android:id="@+id/fragment_time_line_textview_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_camera"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_camera"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_camera"
+                android:layout_marginRight="8dp"
+                android:text="카메라로 사진찍기"
+                android:visibility="invisible"
+                />
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fragment_time_line_fab_write_post"
                 android:layout_width="wrap_content"
@@ -82,7 +118,7 @@
                 android:onClick="@{fragmenttimeline.takePhotoCamera}"
                 />
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fragment_time_line_fab_gallery"
+                android:id="@+id/fragment_time_line_fab_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_main"
@@ -92,9 +128,9 @@
                 android:backgroundTint="@color/colorWhite"
                 app:borderWidth="0dp"
 
-                android:src="@drawable/ic_baseline_add_photo_alternate_24"
+                android:src="@drawable/ic_baseline_video_call_24"
                 app:fabSize="mini"
-                android:onClick="@{fragmenttimeline.takePhotoGallery}"
+                android:onClick="@{fragmenttimeline.takeVideo}"
                 />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -107,6 +143,7 @@
                 android:layout_marginBottom="12dp"
                 android:src="@drawable/ic_baseline_reorder_24"
                 app:fabSize="mini"
+
                 android:onClick="@{fragmenttimeline::clickFab}"
                 />
 

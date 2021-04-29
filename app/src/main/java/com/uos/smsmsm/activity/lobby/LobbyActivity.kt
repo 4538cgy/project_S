@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -40,7 +41,8 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
         binding = DataBindingUtil.setContentView(this, R.layout.activity_lobby)
         binding.lifecycleOwner = this
         binding.snsviewmodel = viewmodel
-
+        //캡처 방지
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
 
         // 바텀 네비게이션 리스너 초기화
