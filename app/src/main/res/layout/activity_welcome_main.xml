@@ -51,6 +51,19 @@
             android:visibility="gone"
             android:onClick="@{activitywelcomemain.onClickAccept}"
             />
-
+        <Button
+            android:id="@+id/activity_welcome_main_button_permission_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/background_edittext_round_gray_16dp"
+            android:orientation="horizontal"
+            android:text="@string/approve"
+            android:visibility="gone"
+            android:onClick="@{activitywelcomemain.onRequestPermission}"
+            app:layout_constraintBottom_toTopOf="@+id/activity_welcome_main_indicator"
+            app:layout_constraintLeft_toLeftOf="@+id/activity_welcome_main_indicator"
+            app:layout_constraintRight_toRightOf="@+id/activity_welcome_main_indicator" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
