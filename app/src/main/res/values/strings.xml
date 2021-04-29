@@ -71,6 +71,18 @@
     <string name="intro_message">SMSM은 만 19세 이상 (한국나이) 부터 이용 가능한 에세머 전용 SNS 입니다. \n\n\n본인이 만 19세 이상이라면 계속 진행해주세요. \n\n그렇지않으면 종료하시고 앱을 삭제해주세요.</string>
     <string name="adult_check">당신은 만 19세 (한국나이) 이상 이신가요? \n\n\n\n19세 이상이라면 동의를 누르고 시작해주세요. \n\n만약 거짓으로 동의하고 이용하실 경우 계정의 이용이 영구히 정지되며 이용에 불이익을 받을 수 있습니다.</string>
 
+    <!--welcome permission -->
+    <string name="plz_permission">다음의 권한들을 승인해 주세요.\n\n승인하지 않으실 경우 앱사용에 제한이 생길 수 있습니다.</string>
+    <string name="mic">마이크</string>
+    <string name="body_sensor">신체 센서</string>
+    <string name="location">위치</string>
+    <string name="storage">저장용량</string>
+    <string name="call">전화</string>
+    <string name="contracts">주소록</string>
+    <string name="camera">카메라</string>
+    <string name="calendar">캘랜더</string>
+    <string name="sms">SMS</string>
+    <string name="approve">승인하기</string>
 
     <!-- Toolbar -->
     <string name="back">Back</string>

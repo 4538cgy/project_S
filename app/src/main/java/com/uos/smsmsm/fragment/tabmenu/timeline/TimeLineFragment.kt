@@ -6,28 +6,21 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
-import com.uos.smsmsm.activity.content.UploadImageSlidePagerAdapter
-import com.uos.smsmsm.activity.content.UploadImgDTO
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
 import com.uos.smsmsm.util.Config
-import com.uos.smsmsm.util.GalleryUtil
 import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
-import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
