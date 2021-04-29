@@ -10,17 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
-import com.uos.smsmsm.activity.chat.ChatRecyclerAdapter
 import com.uos.smsmsm.data.ChatDTO
-import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentChatRoomBinding
-import com.uos.smsmsm.recycleradapter.ChatRoomListRecyclerAdapter
-import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.recycleradapter.chatroomlist.ChatRoomListRecyclerAdapter
 import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,7 +61,11 @@ class ChatRoomFragment : Fragment() {
         val recyclerObserver : Observer<ArrayList<ChatDTO>>
             = Observer { livedata ->
             data.value = livedata
-            binding.fragmentChatRoomRecyclerview.adapter = ChatRoomListRecyclerAdapter(binding.root.context,data)
+            binding.fragmentChatRoomRecyclerview.adapter =
+                ChatRoomListRecyclerAdapter(
+                    binding.root.context,
+                    data
+                )
             binding.fragmentChatRoomRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
             loadingDialog.dismiss()
         }

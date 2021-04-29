@@ -1,20 +1,14 @@
-package com.uos.smsmsm.recycleradapter
+package com.uos.smsmsm.recycleradapter.chatroomlist
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.util.TimeUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.R
-import com.google.firebase.ktx.Firebase
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.ItemChatRoomListBinding

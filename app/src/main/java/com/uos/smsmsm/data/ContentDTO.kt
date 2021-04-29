@@ -24,7 +24,8 @@ data class ContentDTO(
     //조회수
     var viewActionCount : Int ? = 0,
     //조회한 사람 uid
-    var viewActioners : MutableMap<String,Boolean> = HashMap()
+    var viewActioners : MutableMap<String,Boolean> = HashMap(),
+
 ) {
     data class Comment(
         var uid : String ? = null,

@@ -22,6 +22,7 @@ class UserRepository {
     private val authUid = FirebaseAuth.getInstance().currentUser?.uid
 
 
+
     //유저 생성
     @ExperimentalCoroutinesApi
     fun createUser(userDTO : UserDTO) = callbackFlow<Boolean> {
