@@ -7,7 +7,10 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import com.uos.smsmsm.R
+import com.uos.smsmsm.data.ContentDTO
+import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ActivityTimeLineBinding
+import com.uos.smsmsm.recycleradapter.timeline.TimeLineRecyclerAdapter
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +39,12 @@ class TimeLineActivity : AppCompatActivity() {
             binding.activityTimeLineTextviewTitle.text = it.toString() + "의 타임라인"
         })
 
+        //유저의 contents가져오기
+        viewModel.getUserTimeLinePosts(destinationUid.toString())
+
+
+        //리사이클러뷰
+        //binding.activityTimeLineRecycler.adapter = TimeLineRecyclerAdapter(binding.root.context,)
     }
 
     fun onBack(view: View){ finish() }

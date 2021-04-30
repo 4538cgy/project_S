@@ -1,9 +1,8 @@
 package com.uos.smsmsm.data
 
 data class TimeLineDTO(
-    var postState : Int ? = null, //
-    var title : String ? = null,
-    var contents : MutableMap<String,ContentDTO> = mutableMapOf()
+    var content : ContentDTO ? = null,
+    var contentId : String ? = null
 ){
     companion object {
         //post state

@@ -94,4 +94,38 @@ class ContentRepository {
         }
         awaitClose {  }
     }
+
+    fun getUserPostContent(uid : String) = callbackFlow<ArrayList<ContentDTO>> {
+        val databaseReference = db.collection("User")
+            .document("UserData")
+            .collection("userInfo")
+            .whereEqualTo("uid", uid)
+
+        val eventListener = databaseReference.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                if (it.result != null) {
+                    it.result.documents.forEach {
+                        if (it["uid"]!!.equals(uid)){
+                            val databaseReference2 = db.collection("User").document("UserData")
+                                .collection("userInfo")
+                                .document(it.id)
+                                .collection("ContentsContainer")
+
+                            val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
+                                if(value != null){
+                                    if (!value.isEmpty){
+                                        var contents = value.toObjects(ContentDTO::class.java)
+                                        var contentsList = arrayListOf<ContentDTO>()
+                                        contentsList.addAll(contents)
+                                        this@callbackFlow.sendBlocking(contentsList)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose {  }
+    }
 }

@@ -81,6 +81,14 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         }
     }
 
+    fun getUserTimeLinePosts(uid : String) {
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.getUserPostContent(uid).collect {
+                println("가져온 데이터리스트 $it")
+            }
+        }
+    }
+
     fun openCamera() : Intent{
         return Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     }
