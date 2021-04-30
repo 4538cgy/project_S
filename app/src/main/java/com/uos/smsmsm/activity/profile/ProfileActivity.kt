@@ -41,6 +41,7 @@ class ProfileActivity : AppCompatActivity() {
 
         destinationUid = intent.getStringExtra("uid")
 
+        println("전달된 uid $destinationUid")
         //유저 닉네임 가져오기
         viewModel.getUserName(destinationUid.toString())
         viewModel.userName.observe(this, Observer {
@@ -78,6 +79,14 @@ class ProfileActivity : AppCompatActivity() {
             }
         )
 
+    }
+
+    fun onClickTimeLine(view : View){
+        var intent = Intent(binding.root.context, TimeLineActivity::class.java)
+        intent.apply { putExtra("destinationUid", destinationUid)
+        startActivity(intent)
+        }
+        println("타임라인 켜기")
     }
 
     fun showOptionPopup(view : View){
@@ -145,11 +154,14 @@ class ProfileActivity : AppCompatActivity() {
     fun addFriend(view : View){ viewModel.addFriend(destinationUid.toString())}
 
     fun isMe(uid : String){
+        println("이즈미 체크")
         if (uid == auth.currentUser?.uid){
+            println("본인임")
             binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
             binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
         }else{
+            println("본인이 아닙니다.")
             binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
             //친구인지 아닌지 구분
             viewModel.checkFriend(destinationUid.toString())
@@ -165,6 +177,7 @@ class ProfileActivity : AppCompatActivity() {
         if (boolean) {
             binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.VISIBLE
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+
         }else {
             binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.VISIBLE
