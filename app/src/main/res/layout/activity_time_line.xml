@@ -12,6 +12,9 @@
         <variable
             name="viewmodel"
             type="com.uos.smsmsm.viewmodel.ContentUtilViewModel" />
+        <variable
+            name="userviewmodel"
+            type="com.uos.smsmsm.viewmodel.UserUtilViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,6 +42,7 @@
                 android:onClick="@{activitytimeline.onBack}"
                 />
             <TextView
+                android:id="@+id/activity_time_line_textview_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="XXX의 타임라인"

@@ -11,12 +11,15 @@ import com.uos.smsmsm.databinding.ActivityTimeLineBinding
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Observer
 
 @AndroidEntryPoint
 class TimeLineActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityTimeLineBinding
     private val viewModel: ContentUtilViewModel by viewModels()
+    private val userViewModel : UserUtilViewModel by viewModels()
+    private var destinationUid : String ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +27,14 @@ class TimeLineActivity : AppCompatActivity() {
         binding.viewmodel = viewModel
         binding.activitytimeline = this@TimeLineActivity
         binding.lifecycleOwner = this@TimeLineActivity
+        binding.userviewmodel = userViewModel
 
-
+        destinationUid = intent.getStringExtra("destinationUid")
+        //유저 닉네임 가져오기
+        userViewModel.getUserName(destinationUid.toString())
+        userViewModel.userName.observe(this, androidx.lifecycle.Observer {
+            binding.activityTimeLineTextviewTitle.text = it.toString() + "의 타임라인"
+        })
 
     }
 
