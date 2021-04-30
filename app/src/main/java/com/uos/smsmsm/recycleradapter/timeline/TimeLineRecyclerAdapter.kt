@@ -25,10 +25,12 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         (holder as TimeLinePostViewHolder).onBind(list.value!![position])
 
 
+
     }
 
     inner class TimeLinePostViewHolder(val binding : ItemTimelinePostBinding) : RecyclerView.ViewHolder(binding.root){
         fun onBind(data : TimeLineDTO){
+
             binding.itemtimelinepost = data
         }
     }

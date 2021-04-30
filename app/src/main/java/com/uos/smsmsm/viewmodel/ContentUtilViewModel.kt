@@ -44,7 +44,7 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
     var contentUploadState = MutableLiveData<String>()
 
     //오직 개인 한유저만의 게시글 리스트
-    var userContentsList = MutableLiveData<ArrayList<ContentDTO>>()
+    var userContentsList = MutableLiveData<Map<String,ContentDTO>>()
 
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
