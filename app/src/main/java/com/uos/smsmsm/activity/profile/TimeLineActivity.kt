@@ -41,10 +41,13 @@ class TimeLineActivity : AppCompatActivity() {
 
         //유저의 contents가져오기
         viewModel.getUserTimeLinePosts(destinationUid.toString())
+        viewModel.userContentsList.observe(this, androidx.lifecycle.Observer {
+            //데이터 변동되면 리사이클러뷰에 넣기
+            binding.activityTimeLineRecycler.adapter
+            binding.activityTimeLineRecycler.layoutManager
+        })
 
 
-        //리사이클러뷰
-        //binding.activityTimeLineRecycler.adapter = TimeLineRecyclerAdapter(binding.root.context,)
     }
 
     fun onBack(view: View){ finish() }
