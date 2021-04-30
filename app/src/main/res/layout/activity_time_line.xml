@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.profile.TimeLineActivity">
+
+    <data>
+        <variable
+            name="activitytimeline"
+            type="com.uos.smsmsm.activity.profile.TimeLineActivity" />
+
+        <variable
+            name="viewmodel"
+            type="com.uos.smsmsm.viewmodel.ContentUtilViewModel" />
+        <variable
+            name="userviewmodel"
+            type="com.uos.smsmsm.viewmodel.UserUtilViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/activity_time_line_const_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            >
+            <ImageButton
+                android:id="@+id/activity_time_line_imagebutton_close"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/ic_baseline_close_24"
+                android:background="@android:color/transparent"
+                android:onClick="@{activitytimeline.onBack}"
+                />
+            <TextView
+                android:id="@+id/activity_time_line_textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XXX의 타임라인"
+                app:layout_constraintLeft_toRightOf="@+id/activity_time_line_imagebutton_close"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/colorBlack"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/activity_time_line_const_subject_bar"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toBottomOf="@+id/activity_time_line_const_top_bar"
+            >
+            <View
+                android:id="@+id/activity_time_line_view_middle_line"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorGray"
+                />
+
+            <TextView
+                android:id="@+id/activity_time_line_textview_contents"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/activity_time_line_view_middle_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="게시글"
+                android:onClick="@{activitytimeline.selectSubject}"
+                />
+
+            <TextView
+                android:id="@+id/activity_time_line_textview_media"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/activity_time_line_view_middle_line"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="미디어"
+                android:onClick="@{activitytimeline.selectSubject}"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_time_line_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_time_line_const_subject_bar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

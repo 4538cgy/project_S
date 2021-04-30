@@ -22,6 +22,7 @@ class UserRepository {
     private val authUid = FirebaseAuth.getInstance().currentUser?.uid
 
 
+
     //유저 생성
     @ExperimentalCoroutinesApi
     fun createUser(userDTO : UserDTO) = callbackFlow<Boolean> {
@@ -181,9 +182,11 @@ class UserRepository {
 
                             val eventListener2 = databaseReference2.get().addOnCompleteListener {
                                 if (it.isSuccessful){
-                                    if (it.result.documents != null){
+                                    if (it.result.documents.isNotEmpty()){
+                                        println("으아아아아아아1111111 ${it.result.documents.toString()}")
                                         this@callbackFlow.sendBlocking(true)
                                     }else{
+                                        println("으아아아아아아2222222 ${it.result.documents.toString()}")
                                         this@callbackFlow.sendBlocking(false)
                                     }
                                 }

@@ -43,6 +43,9 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
 
     var contentUploadState = MutableLiveData<String>()
 
+    //오직 개인 한유저만의 게시글 리스트
+    var userContentsList = MutableLiveData<ArrayList<ContentDTO>>()
+
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
             type = "image/*"
@@ -77,6 +80,14 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
             contentRepository.uploadContent(contents,auth.currentUser?.uid.toString()).collect {
                 contentUploadState.postValue("upload_content_complete")
                 if (it) print("업로드 성공") else println("업로드 실패라능")
+            }
+        }
+    }
+
+    fun getUserTimeLinePosts(uid : String) {
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.getUserPostContent(uid).collect {
+                userContentsList.postValue(it)
             }
         }
     }

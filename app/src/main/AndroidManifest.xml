@@ -10,7 +10,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:name=".util.shareddate.SharedData"
@@ -20,14 +23,18 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.welcome.WelcomeMainActivity"></activity>
+        <activity android:name=".activity.profile.TimeLineActivity"></activity>
+        <activity android:name=".activity.welcome.WelcomeMainActivity" />
         <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />
         <activity android:name=".activity.chat.LegacyChatActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />
-        <activity android:name=".activity.content.AddContentActivity"
-            android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".activity.chat.ChatActivity" />
+        <activity
+            android:name=".activity.content.AddContentActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".activity.chat.ChatActivity"
+            android:windowSoftInputMode="adjustNothing" />
         <activity android:name=".testactivity.AddTestUser" />
         <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity" />
         <activity android:name=".activity.search.SearchFriendActivity" />
