@@ -95,7 +95,7 @@ class ContentRepository {
         awaitClose {  }
     }
 
-    fun getUserPostContent(uid : String) = callbackFlow<ArrayList<ContentDTO>> {
+    fun getUserPostContent(uid : String) = callbackFlow<Map<String,ContentDTO>> {
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -114,10 +114,14 @@ class ContentRepository {
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if(value != null){
                                     if (!value.isEmpty){
-                                        var contents = value.toObjects(ContentDTO::class.java)
-                                        var contentsList = arrayListOf<ContentDTO>()
-                                        contentsList.addAll(contents)
-                                        this@callbackFlow.sendBlocking(contentsList)
+
+                                        var map : MutableMap<String,ContentDTO> = HashMap()
+
+                                        value.forEach {
+                                            map.put(it.id,it.toObject(ContentDTO::class.java))
+                                        }
+
+                                        this@callbackFlow.sendBlocking(map)
                                     }
                                 }
                             }
