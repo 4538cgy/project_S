@@ -6,15 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemTimelinePostBinding
+import com.uos.smsmsm.recycleradapter.PhotoAdapter
 import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.repository.UtilRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class TimeLineRecyclerAdapter(private val context : Context, private val list : LiveData<ArrayList<TimeLineDTO>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val userRepository = UserRepository()
     private val utilRepository = UtilRepository()
+    private val mainScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemTimelinePostBinding.inflate(
@@ -32,12 +40,35 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         (holder as TimeLinePostViewHolder).onBind(list.value!![position])
 
         //글쓴 유저의 uid를 가져온뒤 프로필 이미지
+        mainScope.launch {
+            userRepository.getUserProfileImage(list.value!![position].content!!.uid!!).collect{
 
+                Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemTimelinePostImageviewProfileImage)
+            }
+        }
         //글쓴 유저의 닉네임
-
+        mainScope.launch {
+            userRepository.getUserNickName(list.value!![position].content!!.uid!!).collect {
+                holder.binding.itemTimelinePostTextviewNickname.text = it
+            }
+        }
         //viewpager에 사진 연결
-
+        if (list.value!![position].content!!.imageDownLoadUrlList != null) {
+            holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.VISIBLE
+            holder.binding.itemTimelinePostViewpagerPhotoList.adapter = PhotoAdapter(
+                holder.binding.root.context,
+                list.value!![position].content!!.imageDownLoadUrlList!!
+            )
+        }else{
+            holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.GONE
+        }
         //댓글창이 3개 이하면 댓글 리사이클러뷰 연결
+        if (list.value!![position].content!!.commentCount!!.toInt() < 3){
+            holder.binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.VISIBLE
+            holder.binding.itemTimelinePostRecyclerviewFriendscomments.adapter
+        }else{
+            holder.binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.GONE
+        }
 
         //댓글이 0개 이상이면 갯수 연결
 
