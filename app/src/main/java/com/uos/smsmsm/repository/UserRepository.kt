@@ -203,6 +203,7 @@ class UserRepository {
     @ExperimentalCoroutinesApi
     fun addFriend(uid: String, destinationUid: String, friendsDTO: FriendsDTO ) = callbackFlow<Boolean> {
 
+        println("친구 추가 db 로직 내부로 전달된 uid ${uid.toString()}")
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -216,7 +217,7 @@ class UserRepository {
                                 .collection("userInfo")
                                 .document(it.id)
                                 .collection("FriendsList")
-                                .document(uid)
+                                .document()
 
                             val eventListener2 = databaseReference2.set(friendsDTO).addOnCompleteListener {
                                 if (it.isSuccessful){

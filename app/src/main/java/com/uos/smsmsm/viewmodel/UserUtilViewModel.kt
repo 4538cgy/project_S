@@ -4,10 +4,15 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.FriendsDTO
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.UserRepository
+import com.uos.smsmsm.util.workmanager.BackgroundWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -22,13 +27,15 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     var userName : MutableLiveData<String> = MutableLiveData()
     //ProfileActivity - 유저 사진
     var profileImage : MutableLiveData<String> = MutableLiveData()
-
+    //친구 추가에 성공했는지 판단
+    var isSuccessAddFirends : MutableLiveData<Boolean> = MutableLiveData()
 
     var checkFriends = MutableLiveData<Boolean>()
 
     val userRepository  = UserRepository()
 
     val auth = FirebaseAuth.getInstance()
+
 
     fun checkFriend(destinationUid: String){
         viewModelScope.launch(Dispatchers.IO){
@@ -48,10 +55,14 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
                 
                 //친구 추가에 성공했으면 친구인지 아닌지 판별
                 checkFriend(destinationUid)
-                if (it) println("친구 추가 성공") else println("친구 추가 실패")
+                if (it){
+                    println("친구 추가 성공")
+                    isSuccessAddFirends.postValue(it)
+                }else println("친구 추가 실패")
             }
         }
     }
+
 
     fun getUserName(destinationUid: String){
         viewModelScope.launch(Dispatchers.IO){

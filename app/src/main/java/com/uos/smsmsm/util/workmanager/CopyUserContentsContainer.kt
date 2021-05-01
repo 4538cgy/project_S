@@ -5,6 +5,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.repository.BackgroundRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,14 +20,18 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
     override fun doWork(): Result {
 
         val workState = inputData.getInt("WORK_STATE",1)
-        val uid = inputData.getString("WORK_UID").toString()
-
+        val destinationUid = inputData.getString("WORK_DESTINATION_UID").toString()
+        println("백그라운드 work 시작 1. $workState 2.$destinationUid 3. ${inputData.toString()}")
         //copy user contents collection & upload
         when(workState) {
             BackgroundWorker.WORK_COPY_PASTE_CONTENTS -> {
+                println("데이터 시작!")
                 mainScope.launch {
-                    repository.copyUserContents(uid = uid).collect {
-
+                    repository.copyUserContents(uid = destinationUid).collect {
+                        println("끄아아아아아아 ${it.toString()}")
+                        repository.pasteUserContentsMyContainer(it).collect{
+                            println("께에에에에에에엨 ")
+                        }
                     }
                 }
             }
@@ -47,10 +52,10 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
     /*
         var data22 : MutableMap<String,Any> = HashMap()
 
-        data22.put("work_state" , BackgroundWorker.WORK_COPY_PASTE_CONTENTS.toString())
-        data22.put("work_uid" , FirebaseAuth.getInstance().uid.toString())
+        data22.put("WORK_STATE" , BackgroundWorker.WORK_COPY_PASTE_CONTENTS)
+        data22.put("WORK_UID" , FirebaseAuth.getInstance().uid.toString())
 
-        val inputData = Data.Builder().putAll(data22)
+        val inputData = Data.Builder().putAll(data22).build()
 
         val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
         WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
