@@ -27,6 +27,11 @@ class CommentRecyclerAdapter(private val context : Context , private val comment
         }
     }
 
+    //조되씀
+    /*
+    ContentDTO.Comment 에 ContentDTO.Comment.ReplyComment 가 물려있는 방식인데 이러면.. 리사이클러뷰 하나로 표현하는게 안됨.. 하슈발!
+     */
+
     inner class CommentReplyViewHolder(val binding : ItemCommentReplyThumbnailBinding) : RecyclerView.ViewHolder(binding.root){
         fun onBind(data : ContentDTO.Comment.ReplyComment){
             binding.itemcommentreply = data
