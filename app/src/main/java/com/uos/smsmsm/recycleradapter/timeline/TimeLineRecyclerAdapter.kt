@@ -1,20 +1,33 @@
 package com.uos.smsmsm.recycleradapter.timeline
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.uos.smsmsm.activity.chat.ChatActivity
+import com.uos.smsmsm.activity.comment.CommentActivity
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemTimelinePostBinding
+import com.uos.smsmsm.recycleradapter.viewpager.PhotoAdapter
 import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.repository.UtilRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class TimeLineRecyclerAdapter(private val context : Context, private val list : LiveData<ArrayList<TimeLineDTO>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val userRepository = UserRepository()
     private val utilRepository = UtilRepository()
+    private val mainScope = CoroutineScope(Dispatchers.Main)
+    private val auth  = FirebaseAuth.getInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemTimelinePostBinding.inflate(
@@ -32,34 +45,100 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         (holder as TimeLinePostViewHolder).onBind(list.value!![position])
 
         //글쓴 유저의 uid를 가져온뒤 프로필 이미지
+        mainScope.launch {
+            userRepository.getUserProfileImage(list.value!![position].content!!.uid!!).collect{
 
+                Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemTimelinePostImageviewProfileImage)
+            }
+        }
         //글쓴 유저의 닉네임
-
+        mainScope.launch {
+            userRepository.getUserNickName(list.value!![position].content!!.uid!!).collect {
+                holder.binding.itemTimelinePostTextviewNickname.text = it
+            }
+        }
         //viewpager에 사진 연결
+        if (list.value!![position].content!!.imageDownLoadUrlList != null) {
+            if (list.value!![position].content!!.imageDownLoadUrlList!!.size > 0) {
+                holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.VISIBLE
+                holder.binding.itemTimelinePostViewpagerPhotoList.adapter =
+                    PhotoAdapter(
+                        holder.binding.root.context,
+                        list.value!![position].content!!.imageDownLoadUrlList!!
+                    )
 
-        //댓글창이 3개 이하면 댓글 리사이클러뷰 연결
+            }else{
+                holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.GONE
 
+            }
+        }
+        //댓글창이 3개 이하면 댓글 리사이클러뷰 연결 
+        //보류
+        if (list.value!![position].content!!.commentCount!!.toInt() < 3){
+            holder.binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.VISIBLE
+            holder.binding.itemTimelinePostRecyclerviewFriendscomments.adapter
+        }else{
+            holder.binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.GONE
+        }
         //댓글이 0개 이상이면 갯수 연결
-
+        if(list.value!![position].content!!.commentCount!!.toInt() > 0){
+            holder.binding.itemTimelinePostTextviewCommentsCount.text = list.value!![position].content!!.commentCount.toString()
+        }
         //조회수 연결
-
+        holder.binding.itemTimelinePostTextviewViewCounts.text = list.value!![position].content!!.viewCount.toString()
         //좋아요 액션
-
+        favoriteEvent()
         //북마크 액션
+        addBookMark()
 
         //dm 액션
-
+        holder.binding.itemTimelineImagebuttonDirectMessage.setOnClickListener {
+            var intentChat = Intent(holder.binding.root.context, ChatActivity::class.java)
+            intentChat.apply {
+                putExtra("uid", list.value!![position].content!!.uid.toString())
+                holder.binding.root.context.startActivity(intentChat)
+            }
+        }
         //댓글 액션 = 댓글 activity로 이동 + 댓글 edittext 클릭시 이동 + 댓글 버튼 클릭시 이동
+        holder.binding.itemTimelineImagebuttonComments.setOnClickListener {
+            var intentComment = Intent(holder.binding.root.context, CommentActivity::class.java)
+            intentComment.apply {
+                putExtra("postUid", list.value!![position].contentId.toString())
+                holder.binding.root.context.startActivity(intentComment)
+            }
+        }
+        //게시글 내용
+        holder.binding.itemTimelinePostTextviewExplain.text = list.value!![position].content!!.explain.toString()
 
         //이모티콘 액션 연결
-
+        openEmoticonBar()
         //댓글 작성하기 좌측에 보고있는 유저의 프로필 연결
+        mainScope.launch {
+            userRepository.getUserProfileImage(auth.currentUser!!.uid.toString()).collect{
 
+                Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemTimelinePostImageviewCommentProfile)
+            }
+        }
         //옵션 버튼 클릭시 팝업 박스 표시
-
+        openOption()
         //사진 더블 클릭시 좋아요 액션
 
         
+    }
+    fun favoriteEvent(){
+
+    }
+
+    fun addBookMark(){
+
+    }
+
+    fun openOption(){
+
+    }
+
+    fun openEmoticonBar(){
+
     }
 
     inner class TimeLinePostViewHolder(val binding : ItemTimelinePostBinding) : RecyclerView.ViewHolder(binding.root){

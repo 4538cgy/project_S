@@ -92,7 +92,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/item_timeline_post_const_content_bar"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="4dp"
@@ -149,37 +149,40 @@
 
             <ImageButton
                 android:id="@+id/item_timeline_imagebutton_favorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_baseline_favorite_border_36"
                 android:background="@android:color/transparent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
+                android:scaleType="centerInside"
                 android:layout_marginLeft="12dp"
                 />
 
             <ImageButton
                 android:id="@+id/item_timeline_imagebutton_comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_baseline_comment_36"
                 android:background="@android:color/transparent"
                 app:layout_constraintLeft_toRightOf="@+id/item_timeline_imagebutton_favorite"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:scaleType="centerInside"
                 android:layout_marginLeft="12dp"
                 />
 
             <ImageButton
                 android:id="@+id/item_timeline_imagebutton_direct_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/ic_baseline_near_me_36"
                 android:background="@android:color/transparent"
                 app:layout_constraintLeft_toRightOf="@+id/item_timeline_imagebutton_comments"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:scaleType="centerInside"
                 android:layout_marginLeft="12dp"
                 />
 
@@ -198,14 +201,15 @@
 
             <ImageButton
                 android:id="@+id/item_timeline_imagebutton_bookmark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:src="@drawable/ic_baseline_bookmarks_24"
                 android:background="@android:color/transparent"
                 android:layout_marginRight="12dp"
+                android:scaleType="centerInside"
                 />
 
 
