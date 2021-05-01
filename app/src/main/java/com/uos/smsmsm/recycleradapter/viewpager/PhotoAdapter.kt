@@ -1,4 +1,4 @@
-package com.uos.smsmsm.recycleradapter
+package com.uos.smsmsm.recycleradapter.viewpager
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,8 +11,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.uos.smsmsm.R
 
 class PhotoAdapter(private val context : Context, private val photoList : ArrayList<String> ) : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(context).inflate(
-        R.layout.item_content_photo,parent,false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.item_content_photo, parent, false
+            )
+        )
 
     override fun getItemCount(): Int = photoList.size
 

@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemTimelinePostBinding
-import com.uos.smsmsm.recycleradapter.PhotoAdapter
+import com.uos.smsmsm.recycleradapter.viewpager.PhotoAdapter
 import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.repository.UtilRepository
 import kotlinx.coroutines.CoroutineScope
@@ -55,10 +55,11 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         //viewpager에 사진 연결
         if (list.value!![position].content!!.imageDownLoadUrlList != null) {
             holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.VISIBLE
-            holder.binding.itemTimelinePostViewpagerPhotoList.adapter = PhotoAdapter(
-                holder.binding.root.context,
-                list.value!![position].content!!.imageDownLoadUrlList!!
-            )
+            holder.binding.itemTimelinePostViewpagerPhotoList.adapter =
+                PhotoAdapter(
+                    holder.binding.root.context,
+                    list.value!![position].content!!.imageDownLoadUrlList!!
+                )
         }else{
             holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.GONE
         }
