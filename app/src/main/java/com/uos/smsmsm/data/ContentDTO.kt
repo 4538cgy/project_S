@@ -41,4 +41,9 @@ data class ContentDTO(
             var timestamp: Long? = null
         )
     }
+
+   data class PostThumbnail(
+       var uid : String ? = null,
+       var timestamp : String ? = null
+   )
 }
