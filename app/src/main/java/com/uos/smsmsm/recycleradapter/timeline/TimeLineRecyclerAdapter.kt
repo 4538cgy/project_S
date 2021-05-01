@@ -66,6 +66,7 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
                         holder.binding.root.context,
                         list.value!![position].content!!.imageDownLoadUrlList!!
                     )
+
             }else{
                 holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.GONE
 
