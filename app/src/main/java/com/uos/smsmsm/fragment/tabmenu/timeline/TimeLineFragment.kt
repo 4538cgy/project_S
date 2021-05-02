@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
@@ -22,6 +23,7 @@ import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.annotation.meta.When
 
 @AndroidEntryPoint
 class TimeLineFragment : Fragment() {
@@ -62,7 +64,7 @@ class TimeLineFragment : Fragment() {
 
     fun takePhotoCamera(view: View) {
         if (isPermitted(requireActivity(), Config.CAMERA_PERMISSION)) {
-            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            viewModel.openCamera().also { takePictureIntent ->
                 takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
                 }
@@ -149,47 +151,40 @@ class TimeLineFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            //data.extras.get("data") as Bitmap
-            //imageview.setImageBitmap(imageBitmap)
-            data?.extras?.get("data")?.let {
-                val uri =
-                    viewModel.saveImageFile(
-                        requireActivity().contentResolver,
-                        viewModel.newFileName(),
-                        "image/png",
-                        it as Bitmap
-                    )
-                uri?.let {
+        if(resultCode == RESULT_OK){
+            when(requestCode){
+                REQUEST_IMAGE_CAPTURE -> {
+                    data?.extras?.get("data")?.let {
+                        val uri =
+                            viewModel.saveImageFile(requireActivity().contentResolver, viewModel.newFileName(), "image/png", it as Bitmap)
+                        uri?.let { itUri ->
+                            activity?.let { it1 -> viewModel.requestCrop(itUri).start(it1) }
+                        } ?: {
+                            Toast.makeText(context, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
+                        }()
+                    }
+                }
+                CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
+                    val result = CropImage.getActivityResult(data)
                     startActivity(
-                        Intent(
-                            binding.root.context,
-                            AddContentActivity::class.java
-                        ).apply {
-                            putExtra("uri", uri)
+                        Intent(binding.root.context, AddContentActivity::class.java).apply {
+                            putExtra("uri", result.uri)
                             putExtra("mediaType", MediaType.Picture)
                         })
-                } ?: {
-                    Toast.makeText(context, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
-                        .show()
-                }()
-
+                }
+                REQUEST_VIDEO_CAPTURE -> {
+                    data?.data?.let {
+                        val uri = it
+                        startActivity(Intent(binding.root.context, AddContentActivity::class.java).apply {
+                            putExtra("uri", uri)
+                            putExtra("mediaType", MediaType.Video)
+                        })
+                    } ?: {
+                        Toast.makeText(context, "영상 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
+                            .show()
+                    }()
+                }
             }
-
-        }
-        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
-            //val videoUri: Uri = intent.data
-            //videoView.setVideoURI(videoUri)
-            data?.data?.let {
-                val uri = it
-                startActivity(Intent(binding.root.context, AddContentActivity::class.java).apply {
-                    putExtra("uri", uri)
-                    putExtra("mediaType", MediaType.Video)
-                })
-            } ?: {
-                Toast.makeText(context, "영상 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
-                    .show()
-            }()
         }
     }
 

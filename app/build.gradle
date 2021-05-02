@@ -142,4 +142,8 @@ dependencies {
     // Hilt로 ViewModel 객체 삽입
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha01'
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
+
+
+    //image crop
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 }
