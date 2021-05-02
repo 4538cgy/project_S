@@ -15,7 +15,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
+import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.content.AddContentActivity
 import com.uos.smsmsm.data.TestDTO
 import com.uos.smsmsm.databinding.ActivityLobbyBinding
 import com.uos.smsmsm.fragment.tabmenu.chatroom.ChatRoomFragment
@@ -23,6 +25,7 @@ import com.uos.smsmsm.fragment.tabmenu.friendslist.FriendsListFragment
 import com.uos.smsmsm.fragment.tabmenu.other.OtherMenuFragment
 import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
+import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.time.TimeUtil
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -141,6 +144,14 @@ class LobbyActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItem
                 images.timestamp = System.currentTimeMillis()
                 FirebaseFirestore.getInstance().collection("TextImage").document().set(images)
             }
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val result = CropImage.getActivityResult(data)
+            startActivity(
+                Intent(binding.root.context, AddContentActivity::class.java).apply {
+                    putExtra("uri", result.uri)
+                    putExtra("mediaType", MediaType.Picture)
+                })
         }
     }
 
