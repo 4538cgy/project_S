@@ -172,16 +172,21 @@ class UserRepository {
                             val databaseReference2 = db.collection("User").document("UserData")
                                 .collection("userInfo")
                                 .document(it.id)
-                                .collection("FriendsList")
-                                .whereEqualTo("uid",destinationUid)
+                                .collection("Subscribe")
+                                .document("subscribe")
 
                             val eventListener2 = databaseReference2.get().addOnCompleteListener {
                                 if (it.isSuccessful){
-                                    if (it.result.documents.isNotEmpty()){
-                                        println("으아아아아아아1111111 ${it.result.documents.toString()}")
-                                        this@callbackFlow.sendBlocking(true)
+                                    if (it.result.exists()){
+                                        var data = it.result.toObject(SubscribeDTO::class.java)
+                                        data!!.subscribingList.forEach {
+                                            if (it.equals(destinationUid)){
+                                                this@callbackFlow.sendBlocking(true)
+                                            }else{
+                                                this@callbackFlow.sendBlocking(false)
+                                            }
+                                        }
                                     }else{
-                                        println("으아아아아아아2222222 ${it.result.documents.toString()}")
                                         this@callbackFlow.sendBlocking(false)
                                     }
                                 }
@@ -354,7 +359,7 @@ class UserRepository {
     }
 
     //친구 목록 가져오기
-    fun getFriendsList(uid : String) = callbackFlow<ArrayList<SubscribeDTO>> {
+    fun getFriendsList(uid : String) = callbackFlow<ArrayList<String>> {
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -368,15 +373,22 @@ class UserRepository {
                             val databaseReference2 = db.collection("User").document("UserData")
                                 .collection("userInfo")
                                 .document(it.id)
-                                .collection("FriendsList")
+                                .collection("Subscribe")
+                                .document("subscribe")
 
 
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if (value != null){
-                                    if (value.documents.isNotEmpty()){
+                                    if (value.data!!.isNotEmpty()){
 
-                                        var arrayList = arrayListOf<SubscribeDTO>()
-                                        arrayList.addAll(value.toObjects(SubscribeDTO::class.java))
+
+
+                                        var subscribeDTO = value.toObject(SubscribeDTO::class.java)
+                                        var arrayList = arrayListOf<String>()
+                                        subscribeDTO!!.subscribingList.keys.forEach {
+                                            arrayList.add(it)
+                                        }
+
 
                                         this@callbackFlow.sendBlocking(arrayList)
                                     }
