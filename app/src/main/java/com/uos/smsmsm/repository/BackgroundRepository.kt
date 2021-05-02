@@ -54,6 +54,15 @@ class BackgroundRepository {
     }
 
     @ExperimentalCoroutinesApi
+    fun addContentInSubscribeUserContainer(uid : String) = callbackFlow<Boolean> {
+        getSubscribeUserList(uid)
+    }
+
+    fun getSubscribeUserList(uid : String){
+
+    }
+
+    @ExperimentalCoroutinesApi
     fun pasteUserContentsMyContainer(contentList : Map<String,ContentDTO.PostThumbnail>) = callbackFlow<Boolean> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid",auth.currentUser!!.uid)
