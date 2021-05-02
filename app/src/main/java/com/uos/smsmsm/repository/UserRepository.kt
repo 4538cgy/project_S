@@ -1,14 +1,9 @@
 package com.uos.smsmsm.repository
 
-import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.uos.smsmsm.data.ChatDTO
-import com.uos.smsmsm.data.FriendsDTO
+import com.uos.smsmsm.data.SubscribeDTO
 import com.uos.smsmsm.data.UserDTO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -163,7 +158,7 @@ class UserRepository {
     //uid 의 친구 목록에 destinationUid 가 있는지 확인
     @ExperimentalCoroutinesApi
     fun isFriend(uid : String, destinationUid :String) = callbackFlow<Boolean> {
-
+        println("친구목록 가져오기 실행")
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -177,17 +172,22 @@ class UserRepository {
                             val databaseReference2 = db.collection("User").document("UserData")
                                 .collection("userInfo")
                                 .document(it.id)
-                                .collection("FriendsList")
-                                .whereEqualTo("uid",destinationUid)
+                                .collection("Subscribe")
+                                .document("subscribe")
 
                             val eventListener2 = databaseReference2.get().addOnCompleteListener {
                                 if (it.isSuccessful){
-                                    if (it.result.documents.isNotEmpty()){
-                                        println("으아아아아아아1111111 ${it.result.documents.toString()}")
-                                        this@callbackFlow.sendBlocking(true)
-                                    }else{
-                                        println("으아아아아아아2222222 ${it.result.documents.toString()}")
-                                        this@callbackFlow.sendBlocking(false)
+                                    if (it.result.exists()){
+                                        println("친구 목록이 있습니다. ${it.result.toString()}")
+                                        var data = it.result.toObject(SubscribeDTO::class.java)
+                                        data!!.subscribingList.forEach {
+                                            if (it.key.equals(destinationUid)){
+                                                this@callbackFlow.sendBlocking(true)
+                                                return@forEach
+                                            }else{
+                                                this@callbackFlow.sendBlocking(false)
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -201,43 +201,165 @@ class UserRepository {
 
     //친구 추가
     @ExperimentalCoroutinesApi
-    fun addFriend(uid: String, destinationUid: String, friendsDTO: FriendsDTO ) = callbackFlow<Boolean> {
+    fun addFriend(uid: String, destinationUid: String ) = callbackFlow<Boolean> {
 
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
             .whereEqualTo("uid", uid)
-        val eventListener = databaseReference.get().addOnCompleteListener {
-            if(it.isSuccessful){
-                if (it.result != null){
-                    it.result.documents.forEach {
-                        if (it["uid"]!!.equals(uid)){
-                            val databaseReference2 = db.collection("User").document("UserData")
-                                .collection("userInfo")
-                                .document(it.id)
-                                .collection("FriendsList")
-                                .document(uid)
+        val eventListener = databaseReference.get().addOnCompleteListener { dataSnapshot ->
+            if (dataSnapshot.isSuccessful) {
+                if (dataSnapshot.result != null) {
+                    dataSnapshot.result.documents.forEach { foreachDocumentSnapshot ->
+                        if (foreachDocumentSnapshot["uid"]!!.equals(uid)) {
+                            val tsDocSubscribing =
+                                db.collection("User").document("UserData").collection("userInfo")
+                                    .document(foreachDocumentSnapshot.id).collection("Subscribe")
+                                    .document("subscribe")
 
-                            val eventListener2 = databaseReference2.set(friendsDTO).addOnCompleteListener {
-                                if (it.isSuccessful){
-                                    this@callbackFlow.sendBlocking(true)
-                                }else{
-                                    this@callbackFlow.sendBlocking(false)
+                            db.runTransaction { transaction ->
+
+                                var friendsDTO = transaction.get(tsDocSubscribing)
+                                    .toObject(SubscribeDTO::class.java)
+
+                                //데이터가 없으면 데이터 생성
+                                if (friendsDTO == null) {
+                                    friendsDTO = SubscribeDTO()
+                                    var subscribingDTO = SubscribeDTO.SubscribingDTO()
+                                    subscribingDTO.uid = destinationUid
+                                    subscribingDTO.timestamp = System.currentTimeMillis()
+                                    friendsDTO.subscribingCount = 1
+                                    friendsDTO.subscribingList.put(destinationUid, subscribingDTO)
+
+                                    transaction.set(tsDocSubscribing, friendsDTO)
+                                    return@runTransaction
                                 }
-                            }.addOnFailureListener {
-                                this@callbackFlow.sendBlocking(false)
-                                println("친구 추가 실패 ${it.toString()}")
+
+                                //구독하기를 발생시킨 사람의 db 접근
+                                if (friendsDTO.subscribingList.containsKey(uid)) {
+                                    friendsDTO.subscribingCount = friendsDTO.subscribingCount!! - 1
+                                    friendsDTO.subscribingList.remove(destinationUid)
+                                } else {
+                                    var subscribingDTO = SubscribeDTO.SubscribingDTO()
+                                    subscribingDTO.uid = destinationUid
+                                    subscribingDTO.timestamp = System.currentTimeMillis()
+                                    friendsDTO.subscribingCount = friendsDTO.subscribingCount!! + 1
+                                    friendsDTO.subscribingList.put(destinationUid, subscribingDTO)
+                                }
+                                transaction.set(tsDocSubscribing, friendsDTO)
+                                println("내 db에 추가 끝")
+                                return@runTransaction
+
                             }
+
+                            //구독을 당한자의 db 접근
+                            
+                            println("상대 db에 추가")
+                            val databaseReference2 = db.collection("User")
+                                .document("UserData")
+                                .collection("userInfo")
+                                .whereEqualTo("uid", destinationUid)
+
+                            val eventListener2 =
+                                databaseReference2.get().addOnCompleteListener { dataSnapshot2 ->
+                                    if (dataSnapshot2.isSuccessful) {
+                                        if (dataSnapshot2.result != null) {
+                                            dataSnapshot2.result.documents.forEach { foreachDocumentSnapshot2 ->
+                                                if (foreachDocumentSnapshot2["uid"]!!.equals(
+                                                        destinationUid
+                                                    )
+                                                ) {
+                                                    val tsDocSubscriber =
+                                                        db.collection("User").document("UserData")
+                                                            .collection("userInfo")
+                                                            .document(foreachDocumentSnapshot2.id)
+                                                            .collection("Subscribe")
+                                                            .document("subscribe")
+
+                                                    println("으아아아 ${foreachDocumentSnapshot2.id}")
+                                                    println("수정 시작")
+                                                    db.runTransaction { transaction2 ->
+                                                        println("수정 진행중")
+                                                        var friendsDTO2 =
+                                                            transaction2.get(tsDocSubscriber)
+                                                                .toObject(SubscribeDTO::class.java)
+
+                                                        //데이터가 없으면 데이터 생성
+
+                                                        if (friendsDTO2 == null) {
+                                                            println("데이터가 없음 실행")
+                                                            friendsDTO2 = SubscribeDTO()
+                                                            var subscriberDTO =
+                                                                SubscribeDTO.SubScriberDTO()
+                                                            subscriberDTO.uid = uid
+                                                            subscriberDTO.timestamp =
+                                                                System.currentTimeMillis()
+                                                            friendsDTO2.subscriberCount = 1
+                                                            friendsDTO2.subscriberList.put(
+                                                                uid,
+                                                                subscriberDTO
+                                                            )
+
+                                                            transaction2.set(
+                                                                tsDocSubscriber,
+                                                                friendsDTO2
+                                                            )
+
+
+                                                            return@runTransaction
+                                                        }
+
+
+                                                println("꾸아아아앜")
+                                                        //구독하기를 발생시킨 사람의 db 접근
+                                                        if (friendsDTO2.subscriberList.containsKey(
+                                                                uid
+                                                            )
+                                                        ) {
+                                                            println("데이터가 있음 true")
+                                                            friendsDTO2.subscriberCount =
+                                                                friendsDTO2.subscriberCount!! - 1
+                                                            friendsDTO2.subscriberList.remove(uid)
+                                                        } else {
+                                                            println("데이터가 있음 false")
+                                                            var subscriberDTO =
+                                                                SubscribeDTO.SubScriberDTO()
+                                                            subscriberDTO.uid = uid
+                                                            subscriberDTO.timestamp =
+                                                                System.currentTimeMillis()
+                                                            friendsDTO2.subscriberCount =
+                                                                friendsDTO2.subscriberCount!! + 1
+                                                            friendsDTO2.subscriberList.put(
+                                                                uid,
+                                                                subscriberDTO
+                                                            )
+                                                        }
+                                                        transaction2.set(
+                                                            tsDocSubscriber,
+                                                            friendsDTO2
+                                                        )
+                                                        this@callbackFlow.sendBlocking(true)
+                                                        return@runTransaction
+
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+                                }
                         }
                     }
                 }
             }
         }
-        awaitClose { eventListener }
+        awaitClose {  }
     }
 
     //친구 목록 가져오기
-    fun getFriendsList(uid : String) = callbackFlow<ArrayList<FriendsDTO>> {
+    fun getFriendsList(uid : String) = callbackFlow<ArrayList<String>> {
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -251,15 +373,22 @@ class UserRepository {
                             val databaseReference2 = db.collection("User").document("UserData")
                                 .collection("userInfo")
                                 .document(it.id)
-                                .collection("FriendsList")
+                                .collection("Subscribe")
+                                .document("subscribe")
 
 
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if (value != null){
-                                    if (value.documents.isNotEmpty()){
+                                    if (value.data!!.isNotEmpty()){
 
-                                        var arrayList = arrayListOf<FriendsDTO>()
-                                        arrayList.addAll(value.toObjects(FriendsDTO::class.java))
+
+
+                                        var subscribeDTO = value.toObject(SubscribeDTO::class.java)
+                                        var arrayList = arrayListOf<String>()
+                                        subscribeDTO!!.subscribingList.keys.forEach {
+                                            arrayList.add(it)
+                                        }
+
 
                                         this@callbackFlow.sendBlocking(arrayList)
                                     }

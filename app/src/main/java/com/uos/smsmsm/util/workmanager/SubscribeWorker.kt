@@ -5,6 +5,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.repository.BackgroundRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,19 +20,26 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
     override fun doWork(): Result {
 
         val workState = inputData.getInt("WORK_STATE",1)
-        val uid = inputData.getString("WORK_UID").toString()
-
-        //copy user contents collection & upload
+        val destinationUid = inputData.getString("WORK_DESTINATION_UID").toString()
+        val subscribeUidList = inputData.getStringArray("WORK_SUBSCRIBE_UID_LIST")
+        //copy user contents collection copy & paste in MySubscribeContentsUidList
         when(workState) {
             BackgroundWorker.WORK_COPY_PASTE_CONTENTS -> {
-                mainScope.launch {
-                    repository.copyUserContents(uid = uid).collect {
 
+                mainScope.launch {
+                    repository.copyUserContents(uid = destinationUid).collect {
+
+                        repository.pasteUserContentsMyContainer(it).collect{
+
+                        }
                     }
                 }
             }
             BackgroundWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE ->{
+                mainScope.launch {
+                    //해당 유저를 구독하고 있는 목록 가져오기
 
+                }
             }
             BackgroundWorker.WORK_DELETE_CONTENTS ->{
 
@@ -47,10 +55,10 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
     /*
         var data22 : MutableMap<String,Any> = HashMap()
 
-        data22.put("work_state" , BackgroundWorker.WORK_COPY_PASTE_CONTENTS.toString())
-        data22.put("work_uid" , FirebaseAuth.getInstance().uid.toString())
+        data22.put("WORK_STATE" , BackgroundWorker.WORK_COPY_PASTE_CONTENTS)
+        data22.put("WORK_UID" , FirebaseAuth.getInstance().uid.toString())
 
-        val inputData = Data.Builder().putAll(data22)
+        val inputData = Data.Builder().putAll(data22).build()
 
         val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
         WorkManager.getInstance(binding.root.context).enqueue(uploadManager)

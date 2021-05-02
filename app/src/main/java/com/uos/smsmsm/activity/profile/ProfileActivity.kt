@@ -8,6 +8,10 @@ import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +21,7 @@ import com.uos.smsmsm.activity.chat.LegacyChatActivity
 import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
+import com.uos.smsmsm.util.workmanager.BackgroundWorker
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
@@ -79,6 +84,28 @@ class ProfileActivity : AppCompatActivity() {
             }
         )
 
+
+        //친구 추가가 성공했는지 지켜보기
+        viewModel.isSuccessAddFirends.observe(this, Observer {
+
+            println("친구 추가가 성공했나요? $it")
+            if (it){
+                //친구 추가가 성공했으면 친구의 게시글 싹다 긁어오기
+                //백그라운드 실행
+                var data : MutableMap<String,Any> = HashMap()
+
+                data.put("WORK_STATE" , BackgroundWorker.WORK_COPY_PASTE_CONTENTS)
+                data.put("WORK_DESTINATION_UID",destinationUid.toString())
+
+                val inputData = Data.Builder().putAll(data).build()
+
+                val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
+                WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
+
+                //게시글 긁어오기 실행 완료 했으면 false로 변경해줘서 다음 친구 추가 대응하기
+                viewModel.isSuccessAddFirends.postValue(false)
+            }
+        })
     }
 
     fun onClickTimeLine(view : View){
