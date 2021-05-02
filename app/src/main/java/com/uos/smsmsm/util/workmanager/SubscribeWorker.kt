@@ -19,10 +19,8 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
 
         val workState = inputData.getInt("WORK_STATE",1)
         val destinationUid = inputData.getString("WORK_DESTINATION_UID").toString()
-        val subscribeUidList = inputData.getStringArray("WORK_SUBSCRIBE_UID_LIST")
 
-        var postThumbnailId = inputData.getString("WORK_POST_UID")
-        var postThumbnailTimestamp = inputData.getString("WORK_POST_TIMESTAMP")!!.toLong()
+
         //copy user contents collection copy & paste in MySubscribeContentsUidList
         when(workState) {
             BackgroundWorker.WORK_COPY_PASTE_CONTENTS -> {
@@ -37,6 +35,8 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
                 }
             }
             BackgroundWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE ->{
+                var postThumbnailId = inputData.getString("WORK_POST_UID")
+                var postThumbnailTimestamp = inputData.getString("WORK_POST_TIMESTAMP")!!.toLong()
                 mainScope.launch {
                     //해당 유저를 구독하고 있는 목록 가져오기
                     repository.getSubscribeUserList(uid = destinationUid).collect {

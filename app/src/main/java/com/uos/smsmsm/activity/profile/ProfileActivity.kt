@@ -90,6 +90,9 @@ class ProfileActivity : AppCompatActivity() {
 
             println("친구 추가가 성공했나요? $it")
             if (it){
+                //친구 추가 성공했으면 뷰변경
+                isFriend(it)
+
                 //친구 추가가 성공했으면 친구의 게시글 싹다 긁어오기
                 //백그라운드 실행
                 var data : MutableMap<String,Any> = HashMap()
@@ -102,8 +105,7 @@ class ProfileActivity : AppCompatActivity() {
                 val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
                 WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
 
-                //게시글 긁어오기 실행 완료 했으면 false로 변경해줘서 다음 친구 추가 대응하기
-                viewModel.isSuccessAddFirends.postValue(false)
+               
             }
         })
     }
@@ -193,7 +195,7 @@ class ProfileActivity : AppCompatActivity() {
             //친구인지 아닌지 구분
             viewModel.checkFriend(destinationUid.toString())
             viewModel.checkFriends.observe(this, Observer {
-
+                println("친구 체크 완료")
                 isFriend(it)
             })
         }

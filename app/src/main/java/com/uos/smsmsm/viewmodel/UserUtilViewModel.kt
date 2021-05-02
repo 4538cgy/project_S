@@ -46,7 +46,7 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
             userRepository.addFriend(auth.currentUser!!.uid,destinationUid).collect{
                 
                 //친구 추가에 성공했으면 친구인지 아닌지 판별
-                checkFriend(destinationUid)
+                //checkFriend(destinationUid)
                 if (it){
                     println("친구 추가 성공")
                     isSuccessAddFirends.postValue(it)
