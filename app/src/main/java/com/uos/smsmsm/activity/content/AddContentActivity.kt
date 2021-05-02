@@ -2,11 +2,11 @@ package com.uos.smsmsm.activity.content
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -31,12 +31,14 @@ import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class AddContentActivity : AppCompatActivity(){
 
     lateinit var binding: ActivityAddContentBinding
     private val viewModel: ContentUtilViewModel by viewModels()
+    lateinit var currentPhotoPath: String
     private var isSelectImgCount: Int = 0
     private val MAX_SELECT_COUNT = 5
     // 갤러이에서 사진을 가져왔을 경우에는 galleryHoler가 not null이고
@@ -133,6 +135,9 @@ class AddContentActivity : AppCompatActivity(){
                     finish()
                 }
             }
+        })
+        viewModel.currentPhotoPath.observe(this, Observer {
+            this.currentPhotoPath = it
         })
         if(uploadImageList.size > 0){
             binding.activityAddContentAddImageViewPager.visibility = View.VISIBLE
@@ -235,7 +240,7 @@ class AddContentActivity : AppCompatActivity(){
     fun takePicture(view: View) {
         binding.activityAddContentGallery.visibility = View.GONE
         if (isPermitted(this, Config.CAMERA_PERMISSION)) {
-            startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
+            startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), Config.FLAG_REQ_CAMERA)
         } else {
             ActivityCompat.requestPermissions(
                 this, Config.CAMERA_PERMISSION,
@@ -252,7 +257,7 @@ class AddContentActivity : AppCompatActivity(){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Config.FLAG_PERM_CAMERA) {
             if (isPermitted(baseContext, Config.CAMERA_PERMISSION)) {
-                startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
+                startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), Config.FLAG_REQ_CAMERA)
             } else {
                 Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
                     .show();
@@ -328,18 +333,13 @@ class AddContentActivity : AppCompatActivity(){
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 Config.FLAG_REQ_CAMERA -> {
-                    if (data?.extras?.get("data") != null) {
-                        val bitmap = data.extras?.get("data") as Bitmap
-                        val filename = viewModel.newFileName()
-                        val uri =
-                            viewModel.saveImageFile(contentResolver, filename, "image/jpg", bitmap)
-                        uri?.let {
-                            viewModel.requestCrop(it).start(this@AddContentActivity)
-                        } ?: {
-                            Toast.makeText(applicationContext, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
-                                .show()
-                        }()
-                    }
+                    val f = File(currentPhotoPath)
+                    val uri = Uri.fromFile(f)
+                    uri?.let { itUri ->
+                        viewModel.requestCrop(itUri).start(this@AddContentActivity)
+                    } ?: {
+                        Toast.makeText(this, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
+                    }()
                 }
                 CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ->{
                     val result = CropImage.getActivityResult(data)
