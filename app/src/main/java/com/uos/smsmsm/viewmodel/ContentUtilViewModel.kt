@@ -1,5 +1,6 @@
 package com.uos.smsmsm.viewmodel
 
+import android.app.Activity
 import android.content.*
 import android.graphics.Bitmap
 import android.net.Uri
@@ -15,6 +16,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.repository.ContentRepository
@@ -92,9 +95,10 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         }
     }
 
-    fun openCamera() : Intent{
-        return Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-    }
+    fun openCamera() : Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+    fun requestCrop(uri : Uri) : CropImage.ActivityBuilder = CropImage.activity(uri).setGuidelines(CropImageView.Guidelines.ON)
+            .setCropShape(CropImageView.CropShape.RECTANGLE)
 
     fun newFileName() : String{
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")

@@ -6,28 +6,27 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
-import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.fragment.util.PlayVideoFragment
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
 import com.uos.smsmsm.util.MediaType
-import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
@@ -150,13 +149,15 @@ class AddContentActivity : AppCompatActivity(){
     fun uploadPost(view: View) {
         println("게시글 올리기")
 
-        var contents = ContentDTO()
-        contents.explain = viewModel.contentEdittext.value.toString()
-        contents.timestamp = System.currentTimeMillis()
-        contents.uid = auth.uid.toString()
-        contents.postState = "public"
+        val contents = ContentDTO().apply {
+            explain = viewModel.contentEdittext.value.toString()
+            timestamp = System.currentTimeMillis()
+            uid = auth.uid.toString()
+            postState = "public"
+        }
 
-        var photoImageList = arrayListOf<Uri>()
+
+        val photoImageList = arrayListOf<Uri>()
 
         println(viewModel.galleryItems.value.toString())
 
@@ -333,17 +334,29 @@ class AddContentActivity : AppCompatActivity(){
                         val uri =
                             viewModel.saveImageFile(contentResolver, filename, "image/jpg", bitmap)
                         uri?.let {
-                            uploadImageList.add(UploadImgDTO(null, MediaItem(null, null, null, it, MediaType.Picture)))
-                            binding.activityAddContentAddImageViewPager.run {
-                                visibility = View.VISIBLE
-                                (adapter as UploadImageSlidePagerAdapter).notifyDataSetChanged()
-                            }
+                            viewModel.requestCrop(it).start(this@AddContentActivity)
                         } ?: {
                             Toast.makeText(applicationContext, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
                                 .show()
                         }()
                     }
                 }
+                CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ->{
+                    val result = CropImage.getActivityResult(data)
+                    if (resultCode == RESULT_OK) {
+                        val resultUri = result.uri
+                        uploadImageList.add(UploadImgDTO(null, MediaItem(null, null, null, resultUri, MediaType.Picture)))
+                        binding.activityAddContentAddImageViewPager.run {
+                            visibility = View.VISIBLE
+                            (adapter as UploadImageSlidePagerAdapter).notifyDataSetChanged()
+                        }
+                    } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                        Toast.makeText(applicationContext, "사진 촬영에 실패하였습니다. (${result.error})", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+
+
             }
         }
     }
