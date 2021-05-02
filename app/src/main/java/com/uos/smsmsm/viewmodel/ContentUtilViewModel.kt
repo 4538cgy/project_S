@@ -3,12 +3,16 @@ package com.uos.smsmsm.viewmodel
 import android.app.Activity
 import android.content.*
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.core.content.FileProvider
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
@@ -20,17 +24,22 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.util.GalleryUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.lang.Exception
 import java.net.URI
 import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 //게시글 업로드 , 게시글 다운로드 , 사진 업로드, 사진 다운로드 등등 Content와 관련된 모든 기능
@@ -41,6 +50,7 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
     }
     var galleryItems = MutableLiveData<MutableList<GalleryUtil.MediaItem>>()
     var contentEdittext = MutableLiveData<String>()
+    val currentPhotoPath : MutableLiveData<String> by lazy { MutableLiveData<String>() }
     private val contentRepository = ContentRepository()
     private val auth = FirebaseAuth.getInstance()
 
@@ -100,16 +110,52 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         }
     }
 
-    fun openCamera() : Intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
     fun requestCrop(uri : Uri) : CropImage.ActivityBuilder = CropImage.activity(uri).setGuidelines(CropImageView.Guidelines.ON)
             .setCropShape(CropImageView.CropShape.RECTANGLE)
 
     fun newFileName() : String{
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
-        val filename = sdf.format(System.currentTimeMillis())
-        return filename;
+        val filename = "${sdf.format(System.currentTimeMillis())}.png"
+        return filename
     }
+
+    @Throws(IOException::class)
+    public fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath.value = absolutePath
+        }
+    }
+    fun dispatchTakePictureIntent(type : String) : Intent =
+        Intent(type).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(appContext.packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        appContext,
+                        "com.uos.smsmsm.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                }
+            }
+        }
+
     //이미지 저장
     fun saveImageFile(contentResolver: ContentResolver, filename:String, mimeType:String, bitmap: Bitmap) : Uri? {
         var values = ContentValues()
@@ -130,6 +176,11 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
                 var descriptor = contentResolver.openFileDescriptor(uri,"w")
                 if(descriptor != null){
                     val fos = FileOutputStream(descriptor.fileDescriptor)   //OutputStream 예외처리
+                    val bmOptions = BitmapFactory.Options().apply {
+                        inJustDecodeBounds = false
+                        inSampleSize = 1
+                    }
+                    BitmapFactory.decodeFile(uri.path, bmOptions)
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                     fos.close()
                     return uri

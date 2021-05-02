@@ -3,7 +3,7 @@ package com.uos.smsmsm.fragment.tabmenu.timeline
 import android.animation.ObjectAnimator
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -23,12 +23,13 @@ import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.annotation.meta.When
+import java.io.File
 
 @AndroidEntryPoint
 class TimeLineFragment : Fragment() {
 
     lateinit var binding: FragmentTimeLineBinding
+    lateinit var currentPhotoPath: String
     private var isOpenFAB = false
     private val viewModel: ContentUtilViewModel by viewModels()
 
@@ -51,6 +52,14 @@ class TimeLineFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            this.currentPhotoPath = it
+        })
+    }
+
     fun uploadPhoto(view: View) {
         /*
         val photoPickerIntent = Intent(Intent.ACTION_PICK)
@@ -64,11 +73,7 @@ class TimeLineFragment : Fragment() {
 
     fun takePhotoCamera(view: View) {
         if (isPermitted(requireActivity(), Config.CAMERA_PERMISSION)) {
-            viewModel.openCamera().also { takePictureIntent ->
-                takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                }
-            }
+            startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(), Config.CAMERA_PERMISSION,
@@ -86,7 +91,7 @@ class TimeLineFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Config.FLAG_PERM_CAMERA) {
             if (isPermitted(requireContext(), Config.CAMERA_PERMISSION)) {
-                startActivityForResult(viewModel.openCamera(), Config.FLAG_REQ_CAMERA)
+                startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -99,11 +104,7 @@ class TimeLineFragment : Fragment() {
 
     //fun takePhotoGallery(view: View) {activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)}
     fun takeVideo(view: View) {
-        Intent(MediaStore.ACTION_VIDEO_CAPTURE).also { takeVideoIntent ->
-            takeVideoIntent.resolveActivity(activity?.packageManager!!)?.also {
-                startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE)
-            }
-        }
+        startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_VIDEO_CAPTURE), REQUEST_VIDEO_CAPTURE)
     }
 
     fun writeContent(view: View) {
@@ -150,19 +151,18 @@ class TimeLineFragment : Fragment() {
         }
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == RESULT_OK){
             when(requestCode){
                 REQUEST_IMAGE_CAPTURE -> {
-                    data?.extras?.get("data")?.let {
-                        val uri =
-                            viewModel.saveImageFile(requireActivity().contentResolver, viewModel.newFileName(), "image/png", it as Bitmap)
-                        uri?.let { itUri ->
-                            activity?.let { it1 -> viewModel.requestCrop(itUri).start(it1) }
-                        } ?: {
-                            Toast.makeText(context, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
-                        }()
-                    }
+                    val f = File(currentPhotoPath)
+                    val uri = Uri.fromFile(f)
+                    uri?.let { itUri ->
+                        activity?.let { it1 -> viewModel.requestCrop(itUri).start(it1) }
+                    } ?: {
+                        Toast.makeText(context, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
+                    }()
                 }
                 CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
                     val result = CropImage.getActivityResult(data)
@@ -173,15 +173,15 @@ class TimeLineFragment : Fragment() {
                         })
                 }
                 REQUEST_VIDEO_CAPTURE -> {
-                    data?.data?.let {
-                        val uri = it
+                    val f = File(currentPhotoPath)
+                    val uri = Uri.fromFile(f)
+                    uri?.let { itUri ->
                         startActivity(Intent(binding.root.context, AddContentActivity::class.java).apply {
-                            putExtra("uri", uri)
+                            putExtra("uri", itUri)
                             putExtra("mediaType", MediaType.Video)
                         })
                     } ?: {
-                        Toast.makeText(context, "영상 촬영에 실패하였습니다.", Toast.LENGTH_LONG)
-                            .show()
+                        Toast.makeText(context, "영상 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
                     }()
                 }
             }
