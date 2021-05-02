@@ -158,7 +158,7 @@ class UserRepository {
     //uid 의 친구 목록에 destinationUid 가 있는지 확인
     @ExperimentalCoroutinesApi
     fun isFriend(uid : String, destinationUid :String) = callbackFlow<Boolean> {
-
+        println("친구목록 가져오기 실행")
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -178,16 +178,16 @@ class UserRepository {
                             val eventListener2 = databaseReference2.get().addOnCompleteListener {
                                 if (it.isSuccessful){
                                     if (it.result.exists()){
+                                        println("친구 목록이 있습니다. ${it.result.toString()}")
                                         var data = it.result.toObject(SubscribeDTO::class.java)
                                         data!!.subscribingList.forEach {
-                                            if (it.equals(destinationUid)){
+                                            if (it.key.equals(destinationUid)){
                                                 this@callbackFlow.sendBlocking(true)
+                                                return@forEach
                                             }else{
                                                 this@callbackFlow.sendBlocking(false)
                                             }
                                         }
-                                    }else{
-                                        this@callbackFlow.sendBlocking(false)
                                     }
                                 }
                             }

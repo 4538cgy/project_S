@@ -34,7 +34,7 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     fun checkFriend(destinationUid: String){
         viewModelScope.launch(Dispatchers.IO){
             userRepository.isFriend(auth.currentUser!!.uid, destinationUid).collect{
-
+                println("으아아아아아 $it")
                 checkFriends.postValue(it)
             }
         }
