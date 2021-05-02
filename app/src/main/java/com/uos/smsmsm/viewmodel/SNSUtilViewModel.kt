@@ -275,7 +275,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             userRepository.getFriendsList(uid).collect{
                 println("가져온 친구 목록 = ${it.toString()}")
                 it.forEach {
-                    //getUserData(it.uid.toString())
+                    getUserData(it)
                 }
             }
         }
