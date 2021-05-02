@@ -54,12 +54,15 @@ class BackgroundRepository {
     }
 
     @ExperimentalCoroutinesApi
-    fun addContentInSubscribeUserContainer(uid : String) = callbackFlow<Boolean> {
-        getSubscribeUserList(uid)
+    fun addContentInSubscribeUserContainer(uid : String, subscribeUidList : ArrayList<String>) = callbackFlow<Boolean> {
+
     }
 
-    fun getSubscribeUserList(uid : String){
-
+    @ExperimentalCoroutinesApi
+    fun getSubscribeUserList(uid : String) = callbackFlow<ArrayList<String>> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo")
+            .whereEqualTo("uid",auth.currentUser!!.uid)
+        println("으어아아아")
     }
 
     @ExperimentalCoroutinesApi

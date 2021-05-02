@@ -83,6 +83,7 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
                     print("업로드 성공")
                     //나를 구독중인 유저들의 ContentsContainer에 해당 게시글 전달
 
+
                 }else println("업로드 실패라능")
             }
         }
