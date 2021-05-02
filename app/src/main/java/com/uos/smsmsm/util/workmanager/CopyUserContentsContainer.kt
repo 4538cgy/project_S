@@ -21,16 +21,15 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
 
         val workState = inputData.getInt("WORK_STATE",1)
         val destinationUid = inputData.getString("WORK_DESTINATION_UID").toString()
-        println("백그라운드 work 시작 1. $workState 2.$destinationUid 3. ${inputData.toString()}")
-        //copy user contents collection & upload
+        //copy user contents collection copy & paste in MySubscribeContentsUidList
         when(workState) {
             BackgroundWorker.WORK_COPY_PASTE_CONTENTS -> {
-                println("데이터 시작!")
+
                 mainScope.launch {
                     repository.copyUserContents(uid = destinationUid).collect {
-                        println("끄아아아아아아 ${it.toString()}")
+
                         repository.pasteUserContentsMyContainer(it).collect{
-                            println("께에에에에에에엨 ")
+
                         }
                     }
                 }

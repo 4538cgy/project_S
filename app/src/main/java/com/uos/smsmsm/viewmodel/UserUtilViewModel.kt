@@ -4,15 +4,9 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.google.firebase.auth.FirebaseAuth
-import com.uos.smsmsm.data.FriendsDTO
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.UserRepository
-import com.uos.smsmsm.util.workmanager.BackgroundWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -49,9 +43,7 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     fun addFriend(destinationUid: String){
         viewModelScope.launch(Dispatchers.IO){
 
-            val friendsDTO = FriendsDTO(destinationUid,System.currentTimeMillis())
-
-            userRepository.addFriend(auth.currentUser!!.uid,destinationUid,friendsDTO).collect{
+            userRepository.addFriend(auth.currentUser!!.uid,destinationUid).collect{
                 
                 //친구 추가에 성공했으면 친구인지 아닌지 판별
                 checkFriend(destinationUid)
