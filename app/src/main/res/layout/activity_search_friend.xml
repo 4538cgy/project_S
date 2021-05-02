@@ -56,6 +56,8 @@
         </com.google.android.material.appbar.AppBarLayout>
 
 
+
+
         <androidx.recyclerview.widget.RecyclerView
             app:layout_constraintTop_toBottomOf="@+id/activity_search_friend_appbar_layout"
             app:layout_constraintLeft_toLeftOf="parent"

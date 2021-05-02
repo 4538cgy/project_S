@@ -19,5 +19,11 @@ class FriendsListSettingActivity : Activity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_friends_list_setting)
         binding.friendslistsetting = this@FriendsListSettingActivity
+
+        binding.activityFriendsListSettingButton.setOnClickListener {
+
+
+        }
+
     }
 }

@@ -66,7 +66,7 @@ class ContentRepository {
 
     //게시글 업로드
     @ExperimentalCoroutinesApi
-    fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<Boolean> {
+    fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<String> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid" , uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
@@ -78,14 +78,16 @@ class ContentRepository {
                                 .collection("userInfo")
                                 .document(it.id)
                                 .collection("ContentsContainer")
-                                .document()
 
-                            val eventListener2 = databaseReference2.set(content).addOnCompleteListener {
+
+                            val eventListener2 = databaseReference2.add(content).addOnCompleteListener {
+
                                 println("게시글 업로드 완료")
-                                this@callbackFlow.sendBlocking(true)
+
+                                this@callbackFlow.sendBlocking(it.result.id)
                             }.addOnFailureListener {
                                 println("게시글 업로드 실패")
-                                this@callbackFlow.sendBlocking(false)
+                                this@callbackFlow.sendBlocking("false")
                             }
                         }
                     }
