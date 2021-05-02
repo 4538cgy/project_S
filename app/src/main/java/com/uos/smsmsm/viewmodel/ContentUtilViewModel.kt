@@ -14,11 +14,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.util.GalleryUtil
+import com.uos.smsmsm.util.workmanager.BackgroundWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -45,6 +50,9 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
 
     //오직 개인 한유저만의 게시글 리스트
     var userContentsList = MutableLiveData<Map<String,ContentDTO>>()
+
+    //게시글을 업로드한 후 반환된 게시글의 id와 내용
+    var uploadResultData = MutableLiveData<Map<String,ContentDTO>>()
 
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
@@ -79,12 +87,9 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         viewModelScope.launch(Dispatchers.IO){
             contentRepository.uploadContent(contents,auth.currentUser?.uid.toString()).collect {
                 contentUploadState.postValue("upload_content_complete")
-                if (it != "false") {
-                    print("업로드 성공")
-                    //나를 구독중인 유저들의 ContentsContainer에 해당 게시글 전달
+                    //나를 구독중인 유저들의 ContentsContainer에 해당 게시글 전달하기 위해 데이터 post
+                    uploadResultData.postValue(it)
 
-
-                }else println("업로드 실패라능")
             }
         }
     }

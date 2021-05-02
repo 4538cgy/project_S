@@ -66,7 +66,7 @@ class ContentRepository {
 
     //게시글 업로드
     @ExperimentalCoroutinesApi
-    fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<String> {
+    fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<Map<String,ContentDTO>> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid" , uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
@@ -83,11 +83,11 @@ class ContentRepository {
                             val eventListener2 = databaseReference2.add(content).addOnCompleteListener {
 
                                 println("게시글 업로드 완료")
-
-                                this@callbackFlow.sendBlocking(it.result.id)
+                                var map : MutableMap<String,ContentDTO> = HashMap()
+                                map.put(it.result.id,content)
+                                this@callbackFlow.sendBlocking(map)
                             }.addOnFailureListener {
                                 println("게시글 업로드 실패")
-                                this@callbackFlow.sendBlocking("false")
                             }
                         }
                     }

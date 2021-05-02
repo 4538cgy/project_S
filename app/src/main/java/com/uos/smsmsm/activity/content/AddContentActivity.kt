@@ -17,6 +17,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.ContentDTO
@@ -30,6 +34,7 @@ import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.isPermitted
+import com.uos.smsmsm.util.workmanager.BackgroundWorker
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -130,10 +135,34 @@ class AddContentActivity : AppCompatActivity(){
                 }
                 "upload_content_complete" ->{
                     loadingDialog.binding.dialogProgressLoadingTextTextview.text = "배달완료!"
+
+
+
                     loadingDialog.dismiss()
                     finish()
                 }
             }
+        })
+        //게시글 업로드 후 id와 데이터가 전달되면 백그라운드 작업 진행 ( 나를구독하는 사용자들에게 post 전달 )
+        viewModel.uploadResultData.observe(this, Observer {
+
+
+
+
+            var data : MutableMap<String,Any> = HashMap()
+
+            data.put("WORK_STATE" , BackgroundWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE)
+            data.put("WORK_DESTINATION_UID",auth.currentUser!!.uid)
+            it.forEach { it->
+                data.put("WORK_POST_UID",it.key)
+                data.put("WORK_POST_TIMESTAMP", it.value.timestamp.toString())
+            }
+            val inputData = Data.Builder().putAll(data).build()
+
+            val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
+            WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
+
+
         })
         if(uploadImageList.size > 0){
             binding.activityAddContentAddImageViewPager.visibility = View.VISIBLE
