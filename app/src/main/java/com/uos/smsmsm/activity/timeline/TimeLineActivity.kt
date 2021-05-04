@@ -1,19 +1,16 @@
-package com.uos.smsmsm.activity.profile
+package com.uos.smsmsm.activity.timeline
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.ContentDTO
-import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ActivityTimeLineBinding
-import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
 import com.uos.smsmsm.recycleradapter.timeline.TimeLineRecyclerAdapter
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel

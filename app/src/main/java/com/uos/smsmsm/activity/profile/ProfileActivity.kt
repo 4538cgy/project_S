@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.report.ReportActivity
+import com.uos.smsmsm.activity.timeline.TimeLineActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.util.workmanager.SubscribeWorker

@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.comment.CommentActivity"></activity>
-        <activity android:name=".activity.profile.TimeLineActivity" />
+        <activity android:name=".activity.timeline.TimeLineActivity" />
         <activity android:name=".activity.welcome.WelcomeMainActivity" />
         <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />

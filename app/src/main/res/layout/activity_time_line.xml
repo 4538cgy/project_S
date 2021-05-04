@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activity.profile.TimeLineActivity">
+    tools:context=".activity.timeline.TimeLineActivity">
 
     <data>
         <variable
             name="activitytimeline"
-            type="com.uos.smsmsm.activity.profile.TimeLineActivity" />
+            type="com.uos.smsmsm.activity.timeline.TimeLineActivity" />
 
         <variable
             name="viewmodel"

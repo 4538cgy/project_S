@@ -129,10 +129,7 @@ class ContentRepository {
                 if (it.result != null) {
                     it.result.documents.forEach {
                         if (it["uid"]!!.equals(uid)){
-                            val databaseReference2 = db.collection("User").document("UserData")
-                                .collection("userInfo")
-                                .document(it.id)
-                                .collection("ContentsContainer")
+                            val databaseReference2 = db.collection("Contents").whereEqualTo("uid",uid)
 
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if(value != null){
