@@ -1,13 +1,18 @@
 package com.uos.smsmsm.viewmodel
 
+import android.app.Activity
 import android.content.*
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.core.content.FileProvider
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
@@ -15,16 +20,25 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import com.uos.smsmsm.data.ContentDTO
+import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.util.GalleryUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.lang.Exception
 import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 //게시글 업로드 , 게시글 다운로드 , 사진 업로드, 사진 다운로드 등등 Content와 관련된 모든 기능
