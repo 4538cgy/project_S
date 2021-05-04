@@ -141,7 +141,6 @@ class AddContentActivity : AppCompatActivity(){
                 }
             }
         })
-
         if(uploadImageList.size > 0){
             binding.activityAddContentAddImageViewPager.visibility = View.VISIBLE
         }
