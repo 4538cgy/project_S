@@ -144,6 +144,26 @@ class AddContentActivity : AppCompatActivity(){
                 }
             }
         })
+        //게시글 업로드 후 id와 데이터가 전달되면 백그라운드 작업 진행 ( 나를구독하는 사용자들에게 post 전달 )
+        viewModel.uploadResultData.observe(this, Observer {
+
+            println("게시글 작성 완료 ${it.toString()}")
+
+            var data : MutableMap<String,Any> = HashMap()
+
+            data.put("WORK_STATE" , SubscribeWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE)
+            data.put("WORK_DESTINATION_UID",auth.currentUser!!.uid)
+            it.forEach { it->
+                data.put("WORK_POST_UID",it.key)
+                data.put("WORK_POST_TIMESTAMP", it.value.timestamp.toString())
+            }
+            val inputData = Data.Builder().putAll(data).build()
+
+            val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
+            WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
+
+
+        })
         viewModel.currentPhotoPath.observe(this, Observer {
             this.currentPhotoPath = it
         })
