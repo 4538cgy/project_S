@@ -14,7 +14,9 @@ import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.data.UserDTO
+import com.uos.smsmsm.repository.BackgroundRepository
 import com.uos.smsmsm.repository.ChatRepository
+import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -41,14 +43,27 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     val userRepository = UserRepository()
     val chatRepository = ChatRepository()
+    val contentRepository = ContentRepository()
+
 
     val auth = FirebaseAuth.getInstance()
 
     var timelineDataList : MutableLiveData<ArrayList<TimeLineDTO>> = MutableLiveData()
 
-    fun timeLineDataListCreate(){
+    fun getTimeLineData(){
 
-        //ContentsContainer 데이터 가져와서 timelineDataList 에 꽂기
+        //#1 내 구독함 가져오기
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {
+                println("구독함 가져오기! ${it.toString()}")
+                if (it != null){
+                    //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기
+                    
+                }else{
+                    //#2 데이터가 음슴
+                }
+            }
+        }
 
         //MySubscribeContentsUidList에 담길 정보를 게시글 전체 정보로 수정
         //MySubscribeContentsUidList에 데이터 가져와서 timelineDataList에 꽂기

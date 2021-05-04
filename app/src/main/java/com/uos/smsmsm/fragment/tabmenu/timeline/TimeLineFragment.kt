@@ -22,6 +22,7 @@ import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
+import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -32,7 +33,7 @@ class TimeLineFragment : Fragment() {
     lateinit var currentPhotoPath: String
     private var isOpenFAB = false
     private val viewModel: ContentUtilViewModel by viewModels()
-
+    private val snsViewModel : SNSUtilViewModel by viewModels()
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
         const val REQUEST_IMAGE_CAPTURE = 102
@@ -49,7 +50,13 @@ class TimeLineFragment : Fragment() {
         binding.lifecycleOwner = this
         //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
+        snsViewModel.getTimeLineData()
+
         return binding.root
+    }
+
+    fun initRecyclerViewAdapter(){
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

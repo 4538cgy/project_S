@@ -73,28 +73,28 @@ class BackgroundRepository {
                                 db.runTransaction {transaction ->
                                     var thumbnail = transaction.get(tsDocSubscribing).toObject(ContentDTO.PostThumbnail::class.java)
 
+                                    println("호에에에에에에엑")
                                     if (thumbnail == null){
                                         println("없음")
                                         thumbnail = postThumbnail
                                         transaction.set(tsDocSubscribing,thumbnail)
                                         this@callbackFlow.sendBlocking(true)
                                         return@runTransaction
-                                    }
+                                    }else {
 
-                                    if (thumbnail.thumbnailList.containsKey(auth.currentUser!!.uid))
-                                    {
+
                                         println("있음")
                                         var data = ContentDTO.PostThumbnail.Thumbnail()
 
                                         postThumbnail.thumbnailList.forEach {
                                             data.uid = it.value.uid
                                             data.timestamp = it.value.timestamp
-                                            thumbnail.thumbnailList.put(it.key,data)
+                                            thumbnail.thumbnailList.put(it.key, data)
                                         }
 
 
 
-                                        transaction.set(tsDocSubscribing,thumbnail)
+                                        transaction.set(tsDocSubscribing, thumbnail)
                                         this@callbackFlow.sendBlocking(true)
                                         return@runTransaction
                                     }
