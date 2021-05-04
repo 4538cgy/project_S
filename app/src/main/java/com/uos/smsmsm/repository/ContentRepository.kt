@@ -64,9 +64,30 @@ class ContentRepository {
         awaitClose {  }
     }
 
+    //전체 게시글 목록에 게시글 업로드
+    @ExperimentalCoroutinesApi
+    fun uploadContentInContents(content: ContentDTO, uid: String) = callbackFlow<Map<String,ContentDTO>> {
+        val databaseReference = db.collection("Contents")
+
+        val eventListener = databaseReference.add(content).addOnCompleteListener {
+            if (it != null){
+                if(it.isSuccessful){
+
+                    var map : MutableMap<String,ContentDTO> = HashMap()
+                    map.put(it.result.id,content)
+
+                    this@callbackFlow.sendBlocking(map)
+
+                }
+            }
+        }
+
+        awaitClose { eventListener }
+    }
+
     //게시글 업로드
     @ExperimentalCoroutinesApi
-    fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<String> {
+    fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<Map<String,ContentDTO>> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid" , uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
@@ -83,11 +104,11 @@ class ContentRepository {
                             val eventListener2 = databaseReference2.add(content).addOnCompleteListener {
 
                                 println("게시글 업로드 완료")
-
-                                this@callbackFlow.sendBlocking(it.result.id)
+                                var map : MutableMap<String,ContentDTO> = HashMap()
+                                map.put(it.result.id,content)
+                                this@callbackFlow.sendBlocking(map)
                             }.addOnFailureListener {
                                 println("게시글 업로드 실패")
-                                this@callbackFlow.sendBlocking("false")
                             }
                         }
                     }
@@ -108,10 +129,7 @@ class ContentRepository {
                 if (it.result != null) {
                     it.result.documents.forEach {
                         if (it["uid"]!!.equals(uid)){
-                            val databaseReference2 = db.collection("User").document("UserData")
-                                .collection("userInfo")
-                                .document(it.id)
-                                .collection("ContentsContainer")
+                            val databaseReference2 = db.collection("Contents").whereEqualTo("uid",uid)
 
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if(value != null){

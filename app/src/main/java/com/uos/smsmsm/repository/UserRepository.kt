@@ -188,6 +188,9 @@ class UserRepository {
                                                 this@callbackFlow.sendBlocking(false)
                                             }
                                         }
+                                    }else{
+                                        println("친구 목록이 없습니다.")
+                                        this@callbackFlow.sendBlocking(false)
                                     }
                                 }
                             }
@@ -232,6 +235,7 @@ class UserRepository {
                                     friendsDTO.subscribingList.put(destinationUid, subscribingDTO)
 
                                     transaction.set(tsDocSubscribing, friendsDTO)
+                                    this@callbackFlow.sendBlocking(true)
                                     return@runTransaction
                                 }
 
@@ -245,6 +249,7 @@ class UserRepository {
                                     subscribingDTO.timestamp = System.currentTimeMillis()
                                     friendsDTO.subscribingCount = friendsDTO.subscribingCount!! + 1
                                     friendsDTO.subscribingList.put(destinationUid, subscribingDTO)
+                                    this@callbackFlow.sendBlocking(true)
                                 }
                                 transaction.set(tsDocSubscribing, friendsDTO)
                                 println("내 db에 추가 끝")
@@ -298,6 +303,7 @@ class UserRepository {
                                                             friendsDTO2.subscriberList.put(
                                                                 uid,
                                                                 subscriberDTO
+
                                                             )
 
                                                             transaction2.set(
@@ -305,12 +311,10 @@ class UserRepository {
                                                                 friendsDTO2
                                                             )
 
-
+                                                            this@callbackFlow.sendBlocking(true)
                                                             return@runTransaction
                                                         }
 
-
-                                                println("꾸아아아앜")
                                                         //구독하기를 발생시킨 사람의 db 접근
                                                         if (friendsDTO2.subscriberList.containsKey(
                                                                 uid
@@ -379,12 +383,14 @@ class UserRepository {
 
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if (value != null){
-                                    if (value.data!!.isNotEmpty()){
 
+                                    if (value.exists()) {
 
 
                                         var subscribeDTO = value.toObject(SubscribeDTO::class.java)
                                         var arrayList = arrayListOf<String>()
+
+
                                         subscribeDTO!!.subscribingList.keys.forEach {
                                             arrayList.add(it)
                                         }

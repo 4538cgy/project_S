@@ -35,7 +35,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
-import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -58,6 +57,9 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
 
     //오직 개인 한유저만의 게시글 리스트
     var userContentsList = MutableLiveData<Map<String,ContentDTO>>()
+
+    //게시글을 업로드한 후 반환된 게시글의 id와 내용
+    var uploadResultData = MutableLiveData<Map<String,ContentDTO>>()
 
     fun openGallery() : Intent{
         return Intent(Intent.ACTION_PICK).apply {
@@ -90,14 +92,12 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         contents.imageDownLoadUrlList = photoDownLoadUrl
         contentUploadState.postValue("upload_content")
         viewModelScope.launch(Dispatchers.IO){
-            contentRepository.uploadContent(contents,auth.currentUser?.uid.toString()).collect {
+            contentRepository.uploadContentInContents(contents,auth.currentUser?.uid.toString()).collect {
                 contentUploadState.postValue("upload_content_complete")
-                if (it != "false") {
-                    print("업로드 성공")
-                    //나를 구독중인 유저들의 ContentsContainer에 해당 게시글 전달
+                    //나를 구독중인 유저들의 ContentsContainer에 해당 게시글 전달하기 위해 데이터 post
+                    println("게시글작성 완료 ${it.toString()}")
+                    uploadResultData.postValue(it)
 
-
-                }else println("업로드 실패라능")
             }
         }
     }

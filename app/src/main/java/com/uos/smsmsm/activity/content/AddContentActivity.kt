@@ -17,6 +17,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
@@ -29,6 +33,7 @@ import com.uos.smsmsm.util.GalleryUtil.MediaItem
 import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.isPermitted
+import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -131,6 +136,9 @@ class AddContentActivity : AppCompatActivity(){
                 }
                 "upload_content_complete" ->{
                     loadingDialog.binding.dialogProgressLoadingTextTextview.text = "배달완료!"
+
+
+
                     loadingDialog.dismiss()
                     finish()
                 }

@@ -17,12 +17,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
-import com.uos.smsmsm.activity.chat.LegacyChatActivity
 import com.uos.smsmsm.activity.report.ReportActivity
+import com.uos.smsmsm.activity.timeline.TimeLineActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
-import com.uos.smsmsm.util.workmanager.BackgroundWorker
-import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
 class ProfileActivity : AppCompatActivity() {
@@ -90,20 +89,22 @@ class ProfileActivity : AppCompatActivity() {
 
             println("친구 추가가 성공했나요? $it")
             if (it){
+                //친구 추가 성공했으면 뷰변경
+                isFriend(it)
+
                 //친구 추가가 성공했으면 친구의 게시글 싹다 긁어오기
                 //백그라운드 실행
                 var data : MutableMap<String,Any> = HashMap()
 
-                data.put("WORK_STATE" , BackgroundWorker.WORK_COPY_PASTE_CONTENTS)
+                data.put("WORK_STATE" , SubscribeWorker.WORK_COPY_PASTE_CONTENTS)
                 data.put("WORK_DESTINATION_UID",destinationUid.toString())
 
                 val inputData = Data.Builder().putAll(data).build()
 
-                val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
+                val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
                 WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
 
-                //게시글 긁어오기 실행 완료 했으면 false로 변경해줘서 다음 친구 추가 대응하기
-                viewModel.isSuccessAddFirends.postValue(false)
+
             }
         })
     }
@@ -113,7 +114,6 @@ class ProfileActivity : AppCompatActivity() {
         intent.apply { putExtra("destinationUid", destinationUid)
         startActivity(intent)
         }
-        println("타임라인 켜기")
     }
 
     fun showOptionPopup(view : View){
@@ -193,7 +193,7 @@ class ProfileActivity : AppCompatActivity() {
             //친구인지 아닌지 구분
             viewModel.checkFriend(destinationUid.toString())
             viewModel.checkFriends.observe(this, Observer {
-
+                println("친구 체크 완료")
                 isFriend(it)
             })
         }

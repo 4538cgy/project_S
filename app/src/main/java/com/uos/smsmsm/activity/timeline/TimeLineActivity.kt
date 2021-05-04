@@ -1,19 +1,16 @@
-package com.uos.smsmsm.activity.profile
+package com.uos.smsmsm.activity.timeline
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.ContentDTO
-import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ActivityTimeLineBinding
-import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
 import com.uos.smsmsm.recycleradapter.timeline.TimeLineRecyclerAdapter
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
@@ -55,13 +52,11 @@ class TimeLineActivity : AppCompatActivity() {
         var timelineData = arrayListOf<TimeLineDTO>()
         val recyclerObserver : Observer<Map<String,ContentDTO>>
                 = Observer { livedata ->
-            println("데이터 변동됨")
-            println("변동된 데이터 ${livedata.toString()}")
+
             livedata.forEach {
                 timelineData.add(TimeLineDTO(it.value,it.key))
             }
             data.value = timelineData
-            println("스왑된 데이터 ${data.value.toString()}")
 
             //데이터 변동되면 리사이클러뷰에 넣기
             binding.activityTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)
