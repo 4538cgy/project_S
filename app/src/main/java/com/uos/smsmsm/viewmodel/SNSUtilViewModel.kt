@@ -10,11 +10,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.uos.smsmsm.data.ChatDTO
-import com.uos.smsmsm.data.RecyclerDefaultModel
-import com.uos.smsmsm.data.TimeLineDTO
-import com.uos.smsmsm.data.UserDTO
+import com.uos.smsmsm.data.*
+import com.uos.smsmsm.repository.BackgroundRepository
 import com.uos.smsmsm.repository.ChatRepository
+import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -41,14 +40,40 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     val userRepository = UserRepository()
     val chatRepository = ChatRepository()
+    val contentRepository = ContentRepository()
+
 
     val auth = FirebaseAuth.getInstance()
 
-    var timelineDataList : MutableLiveData<ArrayList<TimeLineDTO>> = MutableLiveData()
+    var timelineDataList = MutableLiveData<Map<String,ContentDTO>>()
 
-    fun timeLineDataListCreate(){
+    fun getTimeLineData(){
 
-        //ContentsContainer 데이터 가져와서 timelineDataList 에 꽂기
+        var contents : MutableMap<String,ContentDTO> = HashMap()
+
+        //#1 내 구독함 가져오기
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
+                if (contentIdList != null){
+                    //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기
+                    contentIdList.forEach {contentId ->
+                        viewModelScope.launch {
+                            contentRepository.getContents(contentId).collect {
+                                contents.putAll(it)
+                                if (contents.size == contentIdList.size) {
+                                    //#3 완성된 게시글 원본 recyclerview에 연결하기
+
+                                    timelineDataList.postValue(contents)
+                                }
+                            }
+                        }
+                    }
+
+                }else{
+                    //#2 데이터가 음슴
+                }
+            }
+        }
 
         //MySubscribeContentsUidList에 담길 정보를 게시글 전체 정보로 수정
         //MySubscribeContentsUidList에 데이터 가져와서 timelineDataList에 꽂기
