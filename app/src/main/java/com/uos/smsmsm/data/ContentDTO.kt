@@ -41,9 +41,18 @@ data class ContentDTO(
             var timestamp: Long? = null
         )
     }
-
+    /* 예비
    data class PostThumbnail(
        var uid : String ? = null,
        var timestamp : Long ? = null
    )
+     */
+    data class PostThumbnail(
+        var thumbnailList : MutableMap<String,Thumbnail> = HashMap()
+    ){
+        data class Thumbnail(
+            var uid : String ? = null,
+            var timestamp: Long ? = null
+        )
+    }
 }

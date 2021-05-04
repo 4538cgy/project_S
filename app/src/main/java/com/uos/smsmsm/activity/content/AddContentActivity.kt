@@ -25,16 +25,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
-import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.fragment.util.PlayVideoFragment
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
 import com.uos.smsmsm.util.MediaType
-import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.isPermitted
-import com.uos.smsmsm.util.workmanager.BackgroundWorker
+import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -146,12 +144,11 @@ class AddContentActivity : AppCompatActivity(){
         //게시글 업로드 후 id와 데이터가 전달되면 백그라운드 작업 진행 ( 나를구독하는 사용자들에게 post 전달 )
         viewModel.uploadResultData.observe(this, Observer {
 
-
-
+            println("게시글 작성 완료 ${it.toString()}")
 
             var data : MutableMap<String,Any> = HashMap()
 
-            data.put("WORK_STATE" , BackgroundWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE)
+            data.put("WORK_STATE" , SubscribeWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE)
             data.put("WORK_DESTINATION_UID",auth.currentUser!!.uid)
             it.forEach { it->
                 data.put("WORK_POST_UID",it.key)
@@ -159,7 +156,7 @@ class AddContentActivity : AppCompatActivity(){
             }
             val inputData = Data.Builder().putAll(data).build()
 
-            val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
+            val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
             WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
 
 

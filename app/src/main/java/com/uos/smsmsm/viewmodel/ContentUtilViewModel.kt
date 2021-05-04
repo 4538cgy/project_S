@@ -14,25 +14,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.ContentDTO
-import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.util.GalleryUtil
-import com.uos.smsmsm.util.workmanager.BackgroundWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 import java.lang.Exception
-import java.net.URI
 import java.text.SimpleDateFormat
-import javax.inject.Inject
 
 
 //게시글 업로드 , 게시글 다운로드 , 사진 업로드, 사진 다운로드 등등 Content와 관련된 모든 기능
@@ -85,9 +77,10 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
         contents.imageDownLoadUrlList = photoDownLoadUrl
         contentUploadState.postValue("upload_content")
         viewModelScope.launch(Dispatchers.IO){
-            contentRepository.uploadContent(contents,auth.currentUser?.uid.toString()).collect {
+            contentRepository.uploadContentInContents(contents,auth.currentUser?.uid.toString()).collect {
                 contentUploadState.postValue("upload_content_complete")
                     //나를 구독중인 유저들의 ContentsContainer에 해당 게시글 전달하기 위해 데이터 post
+                    println("게시글작성 완료 ${it.toString()}")
                     uploadResultData.postValue(it)
 
             }

@@ -3,6 +3,7 @@ package com.uos.smsmsm.util.workmanager
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.repository.BackgroundRepository
 import kotlinx.coroutines.CoroutineScope
@@ -10,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(context,worker){
+class SubscribeWorker(context: Context, worker : WorkerParameters) : Worker(context,worker){
 
     private val repository = BackgroundRepository()
     private val mainScope = CoroutineScope(Dispatchers.Main)
@@ -23,7 +24,7 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
 
         //copy user contents collection copy & paste in MySubscribeContentsUidList
         when(workState) {
-            BackgroundWorker.WORK_COPY_PASTE_CONTENTS -> {
+            SubscribeWorker.WORK_COPY_PASTE_CONTENTS -> {
 
                 mainScope.launch {
                     repository.copyUserContents(uid = destinationUid).collect {
@@ -34,7 +35,9 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
                     }
                 }
             }
-            BackgroundWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE ->{
+            SubscribeWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE ->{
+
+
                 var postThumbnailId = inputData.getString("WORK_POST_UID")
                 var postThumbnailTimestamp = inputData.getString("WORK_POST_TIMESTAMP")!!.toLong()
                 mainScope.launch {
@@ -43,8 +46,10 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
                         println("끄아아아아앜 ${it.toString()}")
                         if (it != null){
                             var thumbnail = ContentDTO.PostThumbnail()
-                            thumbnail.uid = postThumbnailId
-                            thumbnail.timestamp = postThumbnailTimestamp
+                            var thumbnailList = ContentDTO.PostThumbnail.Thumbnail()
+                            thumbnailList.uid = FirebaseAuth.getInstance().currentUser!!.uid
+                            thumbnailList.timestamp = postThumbnailTimestamp
+                            thumbnail.thumbnailList.put(postThumbnailId.toString(), thumbnailList)
                             println("끄아아아아아아아아앙아ㅏㅇ아앜 postThumbnailId $postThumbnailId postThumbnailTimestamp $postThumbnailTimestamp")
                             repository.addContentInSubscribeUserContainer(thumbnail,it).collect {
                                 println("끼에에에엙 $it")
@@ -54,7 +59,7 @@ class BackgroundWorker(context: Context, worker : WorkerParameters) : Worker(con
                     }
                 }
             }
-            BackgroundWorker.WORK_DELETE_CONTENTS ->{
+            SubscribeWorker.WORK_DELETE_CONTENTS ->{
 
             }
         }

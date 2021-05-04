@@ -64,6 +64,27 @@ class ContentRepository {
         awaitClose {  }
     }
 
+    //전체 게시글 목록에 게시글 업로드
+    @ExperimentalCoroutinesApi
+    fun uploadContentInContents(content: ContentDTO, uid: String) = callbackFlow<Map<String,ContentDTO>> {
+        val databaseReference = db.collection("Contents")
+
+        val eventListener = databaseReference.add(content).addOnCompleteListener {
+            if (it != null){
+                if(it.isSuccessful){
+
+                    var map : MutableMap<String,ContentDTO> = HashMap()
+                    map.put(it.result.id,content)
+
+                    this@callbackFlow.sendBlocking(map)
+
+                }
+            }
+        }
+
+        awaitClose { eventListener }
+    }
+
     //게시글 업로드
     @ExperimentalCoroutinesApi
     fun uploadContent(content : ContentDTO, uid : String) = callbackFlow<Map<String,ContentDTO>> {

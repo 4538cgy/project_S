@@ -55,13 +55,11 @@ class TimeLineActivity : AppCompatActivity() {
         var timelineData = arrayListOf<TimeLineDTO>()
         val recyclerObserver : Observer<Map<String,ContentDTO>>
                 = Observer { livedata ->
-            println("데이터 변동됨")
-            println("변동된 데이터 ${livedata.toString()}")
+
             livedata.forEach {
                 timelineData.add(TimeLineDTO(it.value,it.key))
             }
             data.value = timelineData
-            println("스왑된 데이터 ${data.value.toString()}")
 
             //데이터 변동되면 리사이클러뷰에 넣기
             binding.activityTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)

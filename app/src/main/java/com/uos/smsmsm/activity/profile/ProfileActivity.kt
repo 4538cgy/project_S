@@ -17,12 +17,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
-import com.uos.smsmsm.activity.chat.LegacyChatActivity
 import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
-import com.uos.smsmsm.util.workmanager.BackgroundWorker
-import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
 class ProfileActivity : AppCompatActivity() {
@@ -97,15 +95,15 @@ class ProfileActivity : AppCompatActivity() {
                 //백그라운드 실행
                 var data : MutableMap<String,Any> = HashMap()
 
-                data.put("WORK_STATE" , BackgroundWorker.WORK_COPY_PASTE_CONTENTS)
+                data.put("WORK_STATE" , SubscribeWorker.WORK_COPY_PASTE_CONTENTS)
                 data.put("WORK_DESTINATION_UID",destinationUid.toString())
 
                 val inputData = Data.Builder().putAll(data).build()
 
-                val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<BackgroundWorker>().setInputData(inputData).build()
+                val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
                 WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
 
-               
+
             }
         })
     }
@@ -115,7 +113,6 @@ class ProfileActivity : AppCompatActivity() {
         intent.apply { putExtra("destinationUid", destinationUid)
         startActivity(intent)
         }
-        println("타임라인 켜기")
     }
 
     fun showOptionPopup(view : View){

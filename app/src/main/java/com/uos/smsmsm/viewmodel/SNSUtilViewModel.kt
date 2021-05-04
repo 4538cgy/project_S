@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.ChatRepository
 import com.uos.smsmsm.repository.UserRepository
@@ -42,6 +43,17 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     val chatRepository = ChatRepository()
 
     val auth = FirebaseAuth.getInstance()
+
+    var timelineDataList : MutableLiveData<ArrayList<TimeLineDTO>> = MutableLiveData()
+
+    fun timeLineDataListCreate(){
+
+        //ContentsContainer 데이터 가져와서 timelineDataList 에 꽂기
+
+        //MySubscribeContentsUidList에 담길 정보를 게시글 전체 정보로 수정
+        //MySubscribeContentsUidList에 데이터 가져와서 timelineDataList에 꽂기
+        //
+    }
 
     //유저 검색 서치 뷰 리스너
     fun searchUserQueryTextListener() = object : SearchView.OnQueryTextListener{
