@@ -141,6 +141,26 @@ class ContentRepository {
         }
         awaitClose {  }
     }
+    @ExperimentalCoroutinesApi
+    fun getContents(contentId: String) = callbackFlow<Map<String,ContentDTO>> {
+
+            val databaseReference = db.collection("Contents").document(contentId)
+
+            val eventListener = databaseReference.get().addOnCompleteListener {
+                if (it != null){
+                    if (it.isSuccessful){
+                        if (it.result != null){
+                            var contentDTO = it.result.toObject(ContentDTO::class.java)
+                            var map : MutableMap<String,ContentDTO> = HashMap()
+
+                            map.put(it.result.id, contentDTO!!)
+                            this@callbackFlow.sendBlocking(map)
+                        }
+                    }
+                }
+            }
+        awaitClose {  }
+    }
 
     fun getUserPostContent(uid : String) = callbackFlow<Map<String,ContentDTO>> {
         val databaseReference = db.collection("User")

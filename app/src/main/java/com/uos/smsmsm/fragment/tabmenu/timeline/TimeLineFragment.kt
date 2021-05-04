@@ -14,10 +14,16 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
+import com.uos.smsmsm.data.ContentDTO
+import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
+import com.uos.smsmsm.recycleradapter.timeline.TimeLineRecyclerAdapter
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.isPermitted
@@ -50,13 +56,31 @@ class TimeLineFragment : Fragment() {
         binding.lifecycleOwner = this
         //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
+        //타임라인 게시글 리스트 완성을 위해 내가 구독하고있는 유저들의 timeline data 가져오기
         snsViewModel.getTimeLineData()
+        initRecyclerViewAdapter()
 
         return binding.root
     }
 
     fun initRecyclerViewAdapter(){
+        var data = MutableLiveData<ArrayList<TimeLineDTO>>()
+        var timelineData = arrayListOf<TimeLineDTO>()
+        val recyclerObserver : Observer<Map<String, ContentDTO>>
+                = Observer { livedata ->
 
+            livedata.forEach {
+                timelineData.add(TimeLineDTO(it.value,it.key))
+            }
+            data.value = timelineData
+
+            //데이터 변동되면 리사이클러뷰에 넣기
+            binding.fragmentTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)
+            binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,
+                LinearLayoutManager.VERTICAL,false)
+
+        }
+        snsViewModel.timelineDataList.observe(viewLifecycleOwner, recyclerObserver)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
