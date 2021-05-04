@@ -142,10 +142,6 @@ class AddContentActivity : AppCompatActivity(){
             }
         })
 
-        viewModel.currentPhotoPath.observe(this, Observer {
-            this.currentPhotoPath = it
-        })
-
         if(uploadImageList.size > 0){
             binding.activityAddContentAddImageViewPager.visibility = View.VISIBLE
         }
