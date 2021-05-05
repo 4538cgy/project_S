@@ -19,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.policy.PolicyActivity
+import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivitySignUpBinding
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
@@ -27,29 +28,15 @@ import com.uos.smsmsm.util.extensions.toast
 import com.uos.smsmsm.util.time.TimeUtil
 import java.util.concurrent.TimeUnit
 
-class SignUpActivity : AppCompatActivity() {
-
-    lateinit var binding: ActivitySignUpBinding
-
+class SignUpActivity : BaseActivity<ActivitySignUpBinding>(R.layout.activity_sign_up) {
     // Make private [mAuth, imageUri]
     private var mAuth: FirebaseAuth? = null
     private var imageUri: Uri? = null
-    var progressDialog: ProgressDialogPhoneAuthLoading? = null
     var phoneVerify = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up)
         binding.signup = this@SignUpActivity
-
-        // 로딩 초기화
-        progressDialog = ProgressDialogPhoneAuthLoading(binding.root.context)
-
-        // 프로그레스 투명하게
-        progressDialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        // 프로그레스 꺼짐 방지
-        progressDialog!!.setCancelable(false)
 
         // 파이어베이스 auth 초기화
         mAuth = FirebaseAuth.getInstance()

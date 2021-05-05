@@ -28,7 +28,6 @@
         <activity android:name=".activity.welcome.WelcomeMainActivity" />
         <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />
-        <activity android:name=".activity.chat.LegacyChatActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />
         <activity
             android:name=".activity.content.AddContentActivity"
@@ -60,11 +59,9 @@
             </intent-filter>
         </activity>
         -->
-        <activity android:name=".activity.permission.PermissionActivity" />
         <activity android:name=".activity.lobby.LobbyActivity" />
         <activity android:name=".activity.signup.SignUpActivity" />
         <activity android:name=".activity.login.LoginActivity" />
-        <activity android:name=".activity.MainActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.uos.smsmsm.fileprovider"

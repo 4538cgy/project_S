@@ -22,6 +22,7 @@ import com.google.firebase.storage.UploadTask
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.policy.PolicyActivity
+import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivitySignUpWithPhoneBinding
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
@@ -30,11 +31,7 @@ import com.uos.smsmsm.util.time.TimeUtil
 import java.util.concurrent.TimeUnit
 
 // SignUpActivity랑 무슨 차이인지 모르겠어서 일단 원본 유지
-class SignUpWithPhoneActivity : AppCompatActivity() {
-
-    lateinit var binding: ActivitySignUpWithPhoneBinding
-
-    var progressDialogPhoneVerify: ProgressDialogPhoneAuthLoading? = null
+class SignUpWithPhoneActivity : BaseActivity<ActivitySignUpWithPhoneBinding>(R.layout.activity_sign_up_with_phone) {
 
     var imageUri: Uri? = null
     var mAuth = FirebaseAuth.getInstance()
@@ -42,17 +39,7 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up_with_phone)
         binding.signupwithphone = this@SignUpWithPhoneActivity
-
-        // 로딩 초기화
-        progressDialogPhoneVerify = ProgressDialogPhoneAuthLoading(binding.root.context)
-
-        // 프로그레스 투명하게
-        progressDialogPhoneVerify!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        // 프로그레스 꺼짐 방지
-        progressDialogPhoneVerify!!.setCancelable(false)
 
         // 인증 요청
         binding.activitySignUpWithPhoneButtonPhoneAuth.setOnClickListener {
@@ -139,7 +126,7 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
     // 핸드폰 자동인증 처리
     private fun AutoRecieveThePhoneVerifyCode() {
 
-        progressDialogPhoneVerify?.show()
+        progressDialog.show()
         println("핸드폰 자동 인증 시작")
         val phoneNumber = "+82" + binding.activitySignUpWithPhoneEdittextPhone.text.toString()
         var code: String? = null
@@ -161,7 +148,7 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
                         "핸드폰 번호 인증에 성공했습니다.",
                         Toast.LENGTH_LONG
                     ).show()
-                    progressDialogPhoneVerify?.dismiss()
+                    progressDialog.dismiss()
 
                     FirebaseAuth.getInstance().signInWithCredential(p0).addOnCompleteListener {
 
@@ -184,7 +171,7 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
                         Toast.LENGTH_LONG
                     ).show()
 
-                    progressDialogPhoneVerify?.dismiss()
+                    progressDialog.dismiss()
                 }
 
                 override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
@@ -194,7 +181,7 @@ class SignUpWithPhoneActivity : AppCompatActivity() {
 
                 override fun onCodeAutoRetrievalTimeOut(p0: String) {
                     super.onCodeAutoRetrievalTimeOut(p0)
-                    progressDialogPhoneVerify?.dismiss()
+                    progressDialog.dismiss()
                 }
             })          // OnVerificationStateChangedCallbacks
             .build()

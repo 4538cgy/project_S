@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
+import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.FragmentChatRoomBinding
 import com.uos.smsmsm.recycleradapter.chatroomlist.ChatRoomListRecyclerAdapter
@@ -22,39 +23,24 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class ChatRoomFragment : Fragment() {
+class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragment_chat_room) {
 
-    lateinit var binding: FragmentChatRoomBinding
     private val viewmodel: SNSUtilViewModel by viewModels()
 
     private val auth = FirebaseAuth.getInstance()
-    lateinit var loadingDialog: LoadingDialog
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_room, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.fragmentchatroom = this
         setHasOptionsMenu(true)
 
-        //프로그레스 초기화
-        loadingDialog = LoadingDialog(binding.root.context)
-        //프로그레스 투명하게
-        loadingDialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        //프로그레스 꺼짐 방지
-        loadingDialog!!.setCancelable(false)
-
-
         (activity as AppCompatActivity).setSupportActionBar(binding.fragmentChatRoomToolbar)
-        var actionBar = (activity as AppCompatActivity).supportActionBar
+        val actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.setDisplayShowTitleEnabled(false)
 
         loadingDialog.show()
         viewmodel.initMyChatRoomList(auth.currentUser!!.uid)
         initRecyclerView()
-        return binding.root
     }
     fun initRecyclerView(){
         var data = MutableLiveData<ArrayList<ChatDTO>>()

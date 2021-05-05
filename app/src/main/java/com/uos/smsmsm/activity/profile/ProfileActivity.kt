@@ -1,12 +1,10 @@
 package com.uos.smsmsm.activity.profile
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import androidx.activity.viewModels
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -19,14 +17,14 @@ import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.activity.timeline.TimeLineActivity
+import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_profile) {
 
-    lateinit var binding : ActivityProfileBinding
     private val viewModel : UserUtilViewModel by viewModels()
     private val auth = FirebaseAuth.getInstance()
 
@@ -38,9 +36,7 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_profile)
         binding.viewmodel = viewModel
-        binding.lifecycleOwner = this
         binding.activityprofile = this
 
         destinationUid = intent.getStringExtra("uid")
@@ -56,7 +52,7 @@ class ProfileActivity : AppCompatActivity() {
         viewModel.getUserProfile(destinationUid.toString())
         viewModel.profileImage.observe(this, Observer {
             destinationUserProfileUrl = it.toString()
-            Glide.with(binding.root.context)
+            Glide.with(rootContext)
                 .load(it.toString())
                 .circleCrop()
                 .into(binding.activityProfileImageviewProfile)
@@ -74,7 +70,7 @@ class ProfileActivity : AppCompatActivity() {
             Observer {
                 binding.activityProfileTextviewNickname.text = it.userName
 
-                Glide.with(binding.root.context)
+                Glide.with(rootContext)
                     .load("https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/userProfileImages%2F3Mxl3osZxGW3eghWwy8FJFVEEPt2?alt=media&token=19080e5e-6cca-4f1e-a056-0e59740c3d43")
                     .apply(
                         RequestOptions().centerCrop().circleCrop()
@@ -102,7 +98,7 @@ class ProfileActivity : AppCompatActivity() {
                 val inputData = Data.Builder().putAll(data).build()
 
                 val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
-                WorkManager.getInstance(binding.root.context).enqueue(uploadManager)
+                WorkManager.getInstance(rootContext).enqueue(uploadManager)
 
 
             }
@@ -110,18 +106,18 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun onClickTimeLine(view : View){
-        var intent = Intent(binding.root.context, TimeLineActivity::class.java)
+        var intent = Intent(rootContext, TimeLineActivity::class.java)
         intent.apply { putExtra("destinationUid", destinationUid)
         startActivity(intent)
         }
     }
 
     fun showOptionPopup(view : View){
-        PopupMenu(binding.root.context,view).apply {
+        PopupMenu(rootContext,view).apply {
             setOnMenuItemClickListener { 
                 when(it.itemId){
                     R.id.popup_profile_option_report ->{
-                        var intent = Intent(binding.root.context,ReportActivity::class.java)
+                        var intent = Intent(rootContext,ReportActivity::class.java)
                         intent.apply {
                             putExtra("destinationUid",destinationUid)
                             startActivity(intent)
@@ -165,7 +161,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun onClickProfileImage(view:View){
-        var intent = Intent(binding.root.context, PhotoViewActivity::class.java)
+        var intent = Intent(rootContext, PhotoViewActivity::class.java)
         intent.apply {
             putExtra("imageUrl",destinationUserProfileUrl)
             startActivity(intent)
@@ -213,7 +209,7 @@ class ProfileActivity : AppCompatActivity() {
 
     fun openChat(view: View){
 
-        var intent = Intent(binding.root.context,ChatActivity::class.java)
+        var intent = Intent(rootContext,ChatActivity::class.java)
         intent.apply {
             putExtra("destinationUid",destinationUid)
 
