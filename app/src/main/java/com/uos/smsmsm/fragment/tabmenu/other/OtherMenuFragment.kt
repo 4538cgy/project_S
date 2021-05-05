@@ -23,6 +23,7 @@ import com.google.firebase.storage.UploadTask
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.activity.setting.SettingActivity
+import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.databinding.FragmentOtherMenuBinding
 import com.uos.smsmsm.testactivity.AddTestUser
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
@@ -30,14 +31,11 @@ import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
-class OtherMenuFragment : Fragment() {
-
-    lateinit var binding: FragmentOtherMenuBinding
+class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragment_other_menu) {
 
     private val viewmodel: UserUtilViewModel by viewModels()
 
     private val auth = FirebaseAuth.getInstance()
-    lateinit var loadingDialog: LoadingDialog
     private var destinationUid : String ? = null
 
     private var profileImageUri : String ? = null
@@ -46,23 +44,12 @@ class OtherMenuFragment : Fragment() {
         var PICK_PROFILE_FROM_ALBUM = 101
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View { // View? -> View (NonNull)
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_other_menu, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.fragmentothermenu = this
 
         //프라그먼트 재활용시 uid 받아오기
         destinationUid = arguments?.getString("destinationUid")
-
-        //프로그레스 초기화
-        loadingDialog = LoadingDialog(binding.root.context)
-        //프로그레스 투명하게
-        loadingDialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        //프로그레스 꺼짐 방지
-        loadingDialog!!.setCancelable(false)
 
         // 설정
         binding.fragmentOtherMenuSettingButton.setOnClickListener {
@@ -81,8 +68,6 @@ class OtherMenuFragment : Fragment() {
         viewmodel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentOtherMenuTextviewProfileNickname.text = it.toString()
         loadingDialog.dismiss()})
 
-
-        return binding.root
     }
 
     fun openManagePage(view: View){

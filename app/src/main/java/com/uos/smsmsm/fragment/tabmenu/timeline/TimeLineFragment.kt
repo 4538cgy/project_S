@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
+import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
@@ -33,9 +34,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
 @AndroidEntryPoint
-class TimeLineFragment : Fragment() {
+class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment_time_line) {
 
-    lateinit var binding: FragmentTimeLineBinding
     lateinit var currentPhotoPath: String
     private var isOpenFAB = false
     private val viewModel: ContentUtilViewModel by viewModels()
@@ -46,12 +46,9 @@ class TimeLineFragment : Fragment() {
         const val REQUEST_VIDEO_CAPTURE = 103
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View { // View? -> View (NonNull)
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_time_line, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.fragmenttimeline = this
         binding.lifecycleOwner = this
         //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
@@ -59,8 +56,9 @@ class TimeLineFragment : Fragment() {
         //타임라인 게시글 리스트 완성을 위해 내가 구독하고있는 유저들의 timeline data 가져오기
         snsViewModel.getTimeLineData()
         initRecyclerViewAdapter()
-
-        return binding.root
+        viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            this.currentPhotoPath = it
+        })
     }
 
     fun initRecyclerViewAdapter(){
@@ -81,14 +79,6 @@ class TimeLineFragment : Fragment() {
 
         }
         snsViewModel.timelineDataList.observe(viewLifecycleOwner, recyclerObserver)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            this.currentPhotoPath = it
-        })
     }
 
     fun uploadPhoto(view: View) {

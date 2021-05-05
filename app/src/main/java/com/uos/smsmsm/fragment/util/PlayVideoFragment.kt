@@ -10,18 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.uos.smsmsm.R
+import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.databinding.FragmentVideoPlayBinding
 
-class PlayVideoFragment(val uri: Uri) : Fragment() {
-    lateinit var binding: FragmentVideoPlayBinding
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_video_play, container, false)
-        return binding.root
-    }
+class PlayVideoFragment(val uri: Uri) : BaseFragment<FragmentVideoPlayBinding>(R.layout.fragment_video_play) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

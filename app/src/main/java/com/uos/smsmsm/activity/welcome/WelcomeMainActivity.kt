@@ -13,30 +13,39 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.login.LoginActivity
+import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityWelcomeMainBinding
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.util.shareddate.PreferenceUtil
 
-class WelcomeMainActivity : FragmentActivity() {
+class WelcomeMainActivity : BaseActivity<ActivityWelcomeMainBinding>(R.layout.activity_welcome_main) {
 
     private val NUM_PAGES = 4
 
-    lateinit var binding : ActivityWelcomeMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome_main)
-        binding.activitywelcomemain = this
-        binding.activityWelcomePageViewpager.adapter = SlidePagerAdapter(this)
-        binding.activityWelcomeMainIndicator.setViewPager(binding.activityWelcomePageViewpager)
-        binding.activityWelcomePageViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-            override fun onPageSelected(position: Int) {
-                if (position == 3){binding.activityWelcomeMainButtonAdultCheck.visibility = View.VISIBLE} else{ binding.activityWelcomeMainButtonAdultCheck.visibility = View.GONE}
-                if(position == 2){ binding.activityWelcomeMainButtonPermissionCheck.visibility = View.VISIBLE} else{ binding.activityWelcomeMainButtonPermissionCheck.visibility = View.GONE}
-                super.onPageSelected(position)
-            }
-        })
+        binding.apply {
+            activitywelcomemain = this@WelcomeMainActivity
+            activityWelcomePageViewpager.adapter = SlidePagerAdapter(this@WelcomeMainActivity)
+            activityWelcomeMainIndicator.setViewPager(activityWelcomePageViewpager)
+            activityWelcomePageViewpager.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    if (position == 3) {
+                        activityWelcomeMainButtonAdultCheck.visibility = View.VISIBLE
+                    } else {
+                        activityWelcomeMainButtonAdultCheck.visibility = View.GONE
+                    }
+                    if (position == 2) {
+                        activityWelcomeMainButtonPermissionCheck.visibility = View.VISIBLE
+                    } else {
+                        activityWelcomeMainButtonPermissionCheck.visibility = View.GONE
+                    }
+                    super.onPageSelected(position)
+                }
+            })
+        }
     }
     private inner class SlidePagerAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa){
         override fun getItemCount(): Int = NUM_PAGES

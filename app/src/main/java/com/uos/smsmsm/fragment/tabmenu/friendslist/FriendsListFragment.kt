@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
+import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
 import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
@@ -26,29 +27,15 @@ import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FriendsListFragment : Fragment() {
+class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fragment_friends_list) {
 
-    lateinit var binding: FragmentFriendsListBinding
     private val viewmodel: SNSUtilViewModel by viewModels()
-
     private val auth = FirebaseAuth.getInstance()
-    lateinit var loadingDialog: LoadingDialog
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_friends_list, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.fragmentfriendslist = this
-
-        //프로그레스 초기화
-        loadingDialog = LoadingDialog(binding.root.context)
-        //프로그레스 투명하게
-        loadingDialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        //프로그레스 꺼짐 방지
-        loadingDialog!!.setCancelable(false)
 
         //친구목록 가져오기
         /*
@@ -86,7 +73,6 @@ class FriendsListFragment : Fragment() {
 
         initRecyclerViewAdapter()
         loadingDialog.dismiss()
-        return binding.root
     }
     fun initRecyclerViewAdapter(){
         var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()

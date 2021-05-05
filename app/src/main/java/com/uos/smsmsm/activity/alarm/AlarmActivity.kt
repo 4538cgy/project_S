@@ -3,9 +3,8 @@ package com.uos.smsmsm.activity.alarm
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import com.uos.smsmsm.R
+import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityAlarmBinding
 import com.uos.smsmsm.viewmodel.AppUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,26 +15,22 @@ import java.util.*
  */
 
 @AndroidEntryPoint
-class AlarmActivity : AppCompatActivity() {
+class AlarmActivity : BaseActivity<ActivityAlarmBinding>(R.layout.activity_alarm) {
 
-    lateinit var bindng: ActivityAlarmBinding
     private val viewModel: AppUtilViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_alarm)
-        bindng = DataBindingUtil.setContentView(this, R.layout.activity_alarm)
-        bindng.alarmain = this
+        binding.alarmain = this
 
-        setSupportActionBar(bindng.toolbarAlarmActivity)
+        setSupportActionBar(binding.toolbarAlarmActivity)
 
         supportActionBar?.apply{
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(false)
         }
 
-        bindng.activityAlarmRecycler.adapter = AlarmAdapter(listOf(
+        binding.activityAlarmRecycler.adapter = AlarmAdapter(listOf(
             AlarmItem(AlarmType.DATE,null, AlarmItem.HeaderItem(Calendar.getInstance().time)),
             AlarmItem(AlarmType.LIKE_ALARM, AlarmItem.TextAlarmItem("xx님이 xx 글에 좋아요를 누르셨습니다.",""), null),
             AlarmItem(AlarmType.COMMENT_ALARM, AlarmItem.TextAlarmItem("xx님이 내 게시글 xx에 댓글을 남기셨습니다","아 참 이쁘네오"), null),

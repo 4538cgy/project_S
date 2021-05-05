@@ -16,23 +16,22 @@ import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.lifecycle.Observer
+import com.uos.smsmsm.base.BaseActivity
 
 @AndroidEntryPoint
-class TimeLineActivity : AppCompatActivity() {
+class TimeLineActivity : BaseActivity<ActivityTimeLineBinding>(R.layout.activity_time_line) {
 
-    lateinit var binding : ActivityTimeLineBinding
     private val viewModel: ContentUtilViewModel by viewModels()
     private val userViewModel : UserUtilViewModel by viewModels()
     private var destinationUid : String ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_time_line)
-        binding.viewmodel = viewModel
-        binding.activitytimeline = this@TimeLineActivity
-        binding.lifecycleOwner = this@TimeLineActivity
-        binding.userviewmodel = userViewModel
-
+        binding.apply {
+            viewmodel = viewModel
+            activitytimeline = this@TimeLineActivity
+            userviewmodel = userViewModel
+        }
         destinationUid = intent.getStringExtra("destinationUid")
         //유저 닉네임 가져오기
         userViewModel.getUserName(destinationUid.toString())
@@ -48,8 +47,8 @@ class TimeLineActivity : AppCompatActivity() {
     }
 
     fun initRecyclerViewAdapter(){
-        var data = MutableLiveData<ArrayList<TimeLineDTO>>()
-        var timelineData = arrayListOf<TimeLineDTO>()
+        val data = MutableLiveData<ArrayList<TimeLineDTO>>()
+        val timelineData = arrayListOf<TimeLineDTO>()
         val recyclerObserver : Observer<Map<String,ContentDTO>>
                 = Observer { livedata ->
 
