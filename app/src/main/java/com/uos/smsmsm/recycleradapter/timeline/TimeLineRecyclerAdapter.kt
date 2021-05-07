@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.comment.CommentActivity
+import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemTimelinePostBinding
 import com.uos.smsmsm.recycleradapter.viewpager.PhotoAdapter
@@ -123,6 +124,14 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         openOption()
         //사진 더블 클릭시 좋아요 액션
 
+        //프로필 이미지 클릭시 프로필로 이동
+        holder.binding.itemTimelinePostImageviewProfileImage.setOnClickListener {
+            var intent = Intent(holder.binding.root.context, ProfileActivity::class.java)
+            intent.apply {
+                putExtra("uid", list.value!![position].content!!.uid)
+            }
+            holder.binding.root.context.startActivity(intent)
+        }
         
     }
     fun favoriteEvent(){
