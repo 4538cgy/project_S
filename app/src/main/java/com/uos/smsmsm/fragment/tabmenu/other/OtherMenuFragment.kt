@@ -25,7 +25,6 @@ import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.activity.setting.SettingActivity
 import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.databinding.FragmentOtherMenuBinding
-import com.uos.smsmsm.testactivity.AddTestUser
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
@@ -71,7 +70,6 @@ class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragme
     }
 
     fun openManagePage(view: View){
-        startActivity(Intent(binding.root.context,AddTestUser::class.java))
     }
 
     fun onClickProfilePhoto(view: View) {

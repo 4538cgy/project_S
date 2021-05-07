@@ -73,6 +73,9 @@ class ContentRepository {
                                     if (value.exists()){
                                         var contentIdList = arrayListOf<String>()
                                         var postThumbnail = value.toObject(ContentDTO.PostThumbnail::class.java)
+                                        postThumbnail!!.thumbnailList.toList().sortedWith(
+                                            compareBy({it.second.timestamp})
+                                        ).toMap()
                                         postThumbnail!!.thumbnailList.forEach {
                                             contentIdList.add(it.key)
                                         }
