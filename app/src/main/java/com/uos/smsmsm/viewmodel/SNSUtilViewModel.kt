@@ -56,26 +56,30 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
                 if (contentIdList != null){
                     //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기
-                    contentIdList.forEach {contentId ->
+                    contentIdList.forEach { contentId ->
                         viewModelScope.launch {
                             contentRepository.getContents(contentId).collect {
                                 contents.putAll(it)
-                                //#3 내 게시글 가져와서 contents에 넣고 timestamp를 기준으로 정렬하기
-                                viewModelScope.launch {
-                                    contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
-                                        contents.putAll(it)
-                                        //#3-1 정렬
-                                        contents.toList().sortedWith(compareBy { it.second.timestamp }).toMap()
-                                        //#4 완성된 게시글 원본 recyclerview에 연결하기
 
-                                        timelineDataList.postValue(contents)
+                                if (contentIdList.size == contents.size){
+                                    //#3 내 게시글 가져와서 contents에 넣고 timestamp를 기준으로 정렬하기
+                                    viewModelScope.launch {
+                                        contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
+                                            contents.putAll(it)
+
+                                            //#3-1 정렬
+                                            var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
+                                            //#4 완성된 게시글 원본 recyclerview에 연결하기
+                                            timelineDataList.postValue(result)
+                                        }
                                     }
                                 }
-
-
                             }
                         }
+
                     }
+
+
 
                 }else{
                     //#2 데이터가 음슴
