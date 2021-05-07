@@ -54,6 +54,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
         //타임라인 게시글 리스트 완성을 위해 내가 구독하고있는 유저들의 timeline data 가져오기
+        println("데이터 가져오기")
         snsViewModel.getTimeLineData()
         initRecyclerViewAdapter()
         viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -66,7 +67,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         var timelineData = arrayListOf<TimeLineDTO>()
         val recyclerObserver : Observer<Map<String, ContentDTO>>
                 = Observer { livedata ->
-
+            println("변경된 데이터 ${livedata.toString()}")
             livedata.forEach {
                 timelineData.add(TimeLineDTO(it.value,it.key))
             }

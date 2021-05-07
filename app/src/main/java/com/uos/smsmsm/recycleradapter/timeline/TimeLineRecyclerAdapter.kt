@@ -147,7 +147,7 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
     fun comment(context: Context , position: Int){
         var intentComment = Intent(context,CommentActivity::class.java)
         intentComment.apply {
-            putExtra("postUid",list.value!![position].contentId.toString())
+            putExtra("postId",list.value!![position].contentId.toString())
             context.startActivity(intentComment)
         }
     }

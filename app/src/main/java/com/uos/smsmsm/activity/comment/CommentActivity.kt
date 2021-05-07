@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.signup.SignUpWithPhoneActivity
 import com.uos.smsmsm.base.BaseActivity
+import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.databinding.ActivityCommentBinding
 import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
@@ -40,6 +41,13 @@ class CommentActivity : BaseActivity<ActivityCommentBinding>(R.layout.activity_c
             activityCommentImagebuttonClose.setOnClickListener { finish() }
             activityCommentButtonUpload.setOnClickListener {
                 //댓글 올리기
+                var comments = ContentDTO.Comment()
+                println("으으으으으으 ${snsViewModel.edittextText.value}")
+                comments.comment = snsViewModel.edittextText.value.toString()
+                comments.timestamp = System.currentTimeMillis()
+                comments.uid = auth.currentUser!!.uid
+
+                contentViewModel.uploadComment(comments,intent.getStringExtra("postId"))
             }
             //프로필 이미지 연결
             //리사이클러뷰 연결

@@ -1,6 +1,7 @@
 package com.uos.smsmsm.repository
 
 import android.net.Uri
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.uos.smsmsm.data.ContentDTO
@@ -14,6 +15,33 @@ class ContentRepository {
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+
+    //댓글 업로드
+    @ExperimentalCoroutinesApi
+    fun uploadComment(comment : ContentDTO.Comment, postId : String) = callbackFlow<Boolean> {
+        val databaseReference = db.collection("Contents").document(postId)
+
+        println("끼엨 $postId")
+        println("댓글? $comment")
+
+        db.runTransaction {
+            transaction ->
+            var snapshot = transaction.get(databaseReference).toObject(ContentDTO::class.java)
+
+
+                //데이터 추가~
+                snapshot = ContentDTO()
+                snapshot.commentList.put(auth.currentUser!!.uid,comment)
+                snapshot.commentCount = snapshot.commentCount!! + 1
+                transaction.set(databaseReference, snapshot)
+                println("추가아")
+                this@callbackFlow.sendBlocking(true)
+                return@runTransaction
+
+        }
+        awaitClose {  }
+    }
 
     //사진 업로드
     @ExperimentalCoroutinesApi

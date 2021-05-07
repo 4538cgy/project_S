@@ -22,7 +22,7 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     //ProfileActivity - 유저 사진
     var profileImage : MutableLiveData<String> = MutableLiveData()
     //친구 추가에 성공했는지 판단
-    var isSuccessAddFirends : MutableLiveData<Boolean> = MutableLiveData()
+    var isSuccessAddFirends : MutableLiveData<String> = MutableLiveData()
 
     var checkFriends = MutableLiveData<Boolean>()
 
@@ -47,10 +47,8 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
                 
                 //친구 추가에 성공했으면 친구인지 아닌지 판별
                 //checkFriend(destinationUid)
-                if (it){
-                    println("친구 추가 성공")
-                    isSuccessAddFirends.postValue(it)
-                }else println("친구 추가 실패")
+                println("친구 추가 결과 ${it.toString()}")
+                isSuccessAddFirends.postValue(it)
             }
         }
     }
