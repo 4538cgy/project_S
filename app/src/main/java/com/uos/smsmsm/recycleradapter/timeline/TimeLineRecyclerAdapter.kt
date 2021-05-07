@@ -2,6 +2,7 @@ package com.uos.smsmsm.recycleradapter.timeline
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import com.uos.smsmsm.databinding.ItemTimelinePostBinding
 import com.uos.smsmsm.recycleradapter.viewpager.PhotoAdapter
 import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.repository.UtilRepository
+import com.uos.smsmsm.util.time.TimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -73,6 +75,9 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
 
             }
         }
+        //시간 표시
+        holder.binding.itemTimelinePostTextviewTimestamp.text = TimeUtil().formatTimeString(list.value!![position].content!!.timestamp!!)
+
         //댓글창이 3개 이하면 댓글 리사이클러뷰 연결 
         //보류
         if (list.value!![position].content!!.commentCount!!.toInt() < 3){
@@ -81,9 +86,14 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         }else{
             holder.binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.GONE
         }
+        //게시글이 친구면 댓글창 보여주기
+
+
         //댓글이 0개 이상이면 갯수 연결
         if(list.value!![position].content!!.commentCount!!.toInt() > 0){
             holder.binding.itemTimelinePostTextviewCommentsCount.text = list.value!![position].content!!.commentCount.toString()
+        }else{
+            holder.binding.itemTimelinePostTextviewCommentsCount.visibility = View.GONE
         }
         //조회수 연결
         holder.binding.itemTimelinePostTextviewViewCounts.text = list.value!![position].content!!.viewCount.toString()
@@ -96,20 +106,19 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         holder.binding.itemTimelineImagebuttonDirectMessage.setOnClickListener {
             var intentChat = Intent(holder.binding.root.context, ChatActivity::class.java)
             intentChat.apply {
-                putExtra("uid", list.value!![position].content!!.uid.toString())
+                putExtra("destinationUid", list.value!![position].content!!.uid.toString())
                 holder.binding.root.context.startActivity(intentChat)
             }
         }
         //댓글 액션 = 댓글 activity로 이동 + 댓글 edittext 클릭시 이동 + 댓글 버튼 클릭시 이동
-        holder.binding.itemTimelineImagebuttonComments.setOnClickListener {
-            var intentComment = Intent(holder.binding.root.context, CommentActivity::class.java)
-            intentComment.apply {
-                putExtra("postUid", list.value!![position].contentId.toString())
-                holder.binding.root.context.startActivity(intentComment)
-            }
-        }
+        holder.binding.itemTimelineImagebuttonComments.setOnClickListener {comment(holder.binding.root.context, position)}
+        holder.binding.itemTimelinePostConstNoneComment.setOnClickListener {comment(holder.binding.root.context, position)}
+        holder.binding.itemTimelinePostButtonWriteComment.setOnClickListener {comment(holder.binding.root.context, position)}
+
         //게시글 내용
         holder.binding.itemTimelinePostTextviewExplain.text = list.value!![position].content!!.explain.toString()
+
+
 
         //이모티콘 액션 연결
         openEmoticonBar()
@@ -134,6 +143,15 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         }
         
     }
+
+    fun comment(context: Context , position: Int){
+        var intentComment = Intent(context,CommentActivity::class.java)
+        intentComment.apply {
+            putExtra("postUid",list.value!![position].contentId.toString())
+            context.startActivity(intentComment)
+        }
+    }
+
     fun favoriteEvent(){
 
     }

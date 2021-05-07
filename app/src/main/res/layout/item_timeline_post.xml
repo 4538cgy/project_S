@@ -320,6 +320,17 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 
+            <TextView
+                android:id="@+id/item_timeline_post_textview_timestamp"
+                app:layout_constraintTop_toBottomOf="@+id/item_timeline_post_recyclerview_friendscomments"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textSize="10dp"
+                android:text="시간"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- 댓글 갯수 출력 ( 댓글이 없다면 gone ) -->
