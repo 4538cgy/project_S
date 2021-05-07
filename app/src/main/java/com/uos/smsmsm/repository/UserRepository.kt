@@ -101,7 +101,6 @@ class UserRepository {
         eventListener.addOnCompleteListener {
             if (it.isSuccessful){
                 var nickName : String = "미확인 사용자"
-                println("유저 닉네임 가져오기 repo 엌 ${it.toString()}")
                 it.result.documents.forEach {
                     if (it["uid"]!! == uid){
                         nickName = it["userName"].toString()

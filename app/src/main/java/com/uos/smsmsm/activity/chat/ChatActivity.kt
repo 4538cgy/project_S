@@ -41,18 +41,10 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
         viewModel.apply {
             checkChatRoom(destinationUid)
             chatRoomUid.observe(this@ChatActivity, Observer { uid ->
-                println("chatroom uid에서 변화가 일어났습니다. $uid")
                 //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
-                println("message를 가져옵니다.")
                 getMessageList()
                 chatList.observe(this@ChatActivity, Observer { livedata ->
-                    println("chatlist 에서 변화가 일어났습니다 ${livedata.toString()}")
                     this@ChatActivity.recyclerData.value = livedata
-                    /*
-                binding.activityChatRecyclerview.adapter = ChatRecyclerAdapter(binding.root.context,data,destinationUid)
-                binding.activityChatRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,
-                    LinearLayoutManager.VERTICAL,false)
-                 */
                     if (!chatRecyclerAdapterInitChecker) {
                         initRecyclerAdapter()
                     } else {

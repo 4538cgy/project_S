@@ -52,11 +52,8 @@ class ContentRepository {
                 }.addOnCanceledListener {
                     println(" 사진 업로드 취소 cause = ${it.toString()}")
                 }
-            println("스코프 내부 ${photoDownloadUrl.toString()}")
             this@callbackFlow.sendBlocking(photoDownloadUrl)
         }
-        println("스코프 외부 ${photoDownloadUrl.toString()}")
-
         awaitClose {  }
     }
 
@@ -178,13 +175,10 @@ class ContentRepository {
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 if(value != null){
                                     if (!value.isEmpty){
-
                                         var map : MutableMap<String,ContentDTO> = HashMap()
-
                                         value.forEach {
                                             map.put(it.id,it.toObject(ContentDTO::class.java))
                                         }
-
                                         this@callbackFlow.sendBlocking(map)
                                     }
                                 }

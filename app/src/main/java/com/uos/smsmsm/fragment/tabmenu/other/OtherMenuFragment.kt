@@ -96,7 +96,6 @@ class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragme
         var intent = Intent(binding.root.context,ProfileActivity::class.java)
         intent.apply {
             intent.putExtra("uid" , auth.currentUser?.uid)
-            println("으아아아아아아아아악2 ${auth.currentUser?.uid}")
             startActivity(intent)
         }}
 
@@ -106,7 +105,6 @@ class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragme
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        println("리퀘스트 code $requestCode // 리저트 code $resultCode")
         if(requestCode == PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK){
 
             var progressDialog = LoadingDialog(binding.root.context)

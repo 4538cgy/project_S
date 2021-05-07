@@ -82,8 +82,6 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
 
         //친구 추가가 성공했는지 지켜보기
         viewModel.isSuccessAddFirends.observe(this, Observer {
-
-            println("친구 추가가 성공했나요? $it")
             if (it){
                 //친구 추가 성공했으면 뷰변경
                 isFriend(it)
@@ -177,19 +175,15 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
     fun addFriend(view : View){ viewModel.addFriend(destinationUid.toString())}
 
     fun isMe(uid : String){
-        println("이즈미 체크")
         if (uid == auth.currentUser?.uid){
-            println("본인임")
             binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
             binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
         }else{
-            println("본인이 아닙니다.")
             binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
             //친구인지 아닌지 구분
             viewModel.checkFriend(destinationUid.toString())
             viewModel.checkFriends.observe(this, Observer {
-                println("친구 체크 완료")
                 isFriend(it)
             })
         }

@@ -17,7 +17,6 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
 import com.uos.smsmsm.base.BaseActivity
-import com.uos.smsmsm.data.TestDTO
 import com.uos.smsmsm.databinding.ActivityLobbyBinding
 import com.uos.smsmsm.fragment.tabmenu.chatroom.ChatRoomFragment
 import com.uos.smsmsm.fragment.tabmenu.friendslist.FriendsListFragment
