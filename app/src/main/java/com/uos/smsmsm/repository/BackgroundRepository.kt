@@ -14,6 +14,7 @@ class BackgroundRepository {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
+    //내가 구독한 유저의 contents 모두 긁어오기
     @ExperimentalCoroutinesApi
     fun copyUserContents(uid : String) = callbackFlow<Map<String,ContentDTO>> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
@@ -22,7 +23,6 @@ class BackgroundRepository {
         val eventListener = databaseReference.get().addOnCompleteListener {
             if (it.isSuccessful) {
                 if (it.result != null) {
-                    println("복사완료 ${it.result.documents.toString()}")
                     it.result.documents.forEach {documentSnapshot ->
                         if (documentSnapshot["uid"]!!.equals(uid)){
                             
@@ -30,19 +30,12 @@ class BackgroundRepository {
                                 .collection("userInfo")
                                 .document(documentSnapshot.id)
                                 .collection("ContentsContainer")
-
-
                             val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
                                 var map : MutableMap<String,ContentDTO> = HashMap()
                                 value!!.forEach {
                                     var thumbnail =
                                     map.put(it.id,it.toObject(ContentDTO::class.java))
                                 }
-
-
-
-
-
                                 this@callbackFlow.sendBlocking(map)
                             }
                         }
@@ -53,7 +46,7 @@ class BackgroundRepository {
         }
         awaitClose {  }
     }
-
+    //글 작성할때 나를 구독하고 있는 유저들에게 postId 보내기
     @ExperimentalCoroutinesApi
     fun addContentInSubscribeUserContainer(postThumbnail: ContentDTO.PostThumbnail, subscribeUidList: ArrayList<String>) = callbackFlow<Boolean> {
         subscribeUidList.forEach {subscribeUid ->
@@ -64,36 +57,24 @@ class BackgroundRepository {
                     if (it.result != null) {
                         it.result.documents.forEach { document ->
                             if (document["uid"]!!.equals(subscribeUid)) {
-
                                 val tsDocSubscribing =
                                     db.collection("User").document("UserData").collection("userInfo")
                                         .document(document.id).collection("MySubscribeContentUidList")
                                         .document("list")
-
                                 db.runTransaction {transaction ->
                                     var thumbnail = transaction.get(tsDocSubscribing).toObject(ContentDTO.PostThumbnail::class.java)
-
-                                    println("호에에에에에에엑")
                                     if (thumbnail == null){
-                                        println("없음")
                                         thumbnail = postThumbnail
                                         transaction.set(tsDocSubscribing,thumbnail)
                                         this@callbackFlow.sendBlocking(true)
                                         return@runTransaction
                                     }else {
-
-
-                                        println("있음")
                                         var data = ContentDTO.PostThumbnail.Thumbnail()
-
                                         postThumbnail.thumbnailList.forEach {
                                             data.uid = it.value.uid
                                             data.timestamp = it.value.timestamp
                                             thumbnail.thumbnailList.put(it.key, data)
                                         }
-
-
-
                                         transaction.set(tsDocSubscribing, thumbnail)
                                         this@callbackFlow.sendBlocking(true)
                                         return@runTransaction
@@ -115,7 +96,6 @@ class BackgroundRepository {
             .whereEqualTo("uid",auth.currentUser!!.uid)
         val eventListener = databaseReference.get().addOnCompleteListener {
             if (it.isSuccessful) {
-                println("붙여 넣기 됨?")
                 if (it.result != null) {
                     it.result.documents.forEach { document ->
                         if (document["uid"]!!.equals(auth.currentUser!!.uid)) {
@@ -124,20 +104,15 @@ class BackgroundRepository {
                                 .document(document.id)
                                 .collection("Subscribe")
                                 .document("subscribe")
-
                             val eventListener =  databaseReference2.get().addOnCompleteListener {
                                 if (it.isSuccessful){
-                                    println("붙여넣기 성공")
                                     if (it != null){
                                         var subscribeDTO = SubscribeDTO()
                                         subscribeDTO = it.result.toObject(SubscribeDTO::class.java)!!
                                         var subscribeUidList = arrayListOf<String>()
-
                                         subscribeDTO.subscriberList.forEach {
                                             subscribeUidList.add(it.key)
                                         }
-
-                                        println("붙여넣기 결과 ${it.result.toString()}")
                                         this@callbackFlow.sendBlocking(subscribeUidList)
                                     }
                                 }
@@ -154,29 +129,22 @@ class BackgroundRepository {
     fun pasteUserContentsMyContainer(contentList : Map<String,ContentDTO>) = callbackFlow<Boolean> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid",auth.currentUser!!.uid)
-        println("으어아아아")
         val eventListener = databaseReference.get().addOnCompleteListener {
             if (it.isSuccessful) {
-                println("붙여 넣기 됨?")
                 if (it.result != null) {
                     it.result.documents.forEach { document ->
                         if (document["uid"]!!.equals(auth.currentUser!!.uid)){
-                            println("붙여넣기 시작")
                             contentList.forEach {
                                 val databaseReference2 = db.collection("User").document("UserData")
                                     .collection("userInfo")
                                     .document(document.id)
                                     .collection("MySubscribeContentsUidList")
                                     .document(it.key)
-
                                 val eventListener2 = databaseReference2.set(it.value).addOnCompleteListener {
-                                    println(" 성공성공서공")
                                     this@callbackFlow.sendBlocking(true)
                                 }.addOnFailureListener {
-                                    println("실패임")
                                     this@callbackFlow.sendBlocking(false)
                                 }.addOnCanceledListener {
-                                    println("실패임")
                                     this@callbackFlow.sendBlocking(false)
                                 }
                             }

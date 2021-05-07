@@ -82,12 +82,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     }
 
     fun uploadPhoto(view: View) {
-        /*
-        val photoPickerIntent = Intent(Intent.ACTION_PICK)
-        photoPickerIntent.type = "image/*"
-        activity?.startActivityForResult(photoPickerIntent, PICK_PROFILE_FROM_ALBUM)
-         */
-         */
+   ]
 
         activity?.startActivityForResult(viewModel.openGallery(), PICK_PROFILE_FROM_ALBUM)
     }

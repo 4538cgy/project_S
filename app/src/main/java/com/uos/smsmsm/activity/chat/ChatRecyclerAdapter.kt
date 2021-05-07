@@ -60,8 +60,6 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
                     holder.binding.messageItemTextviewName.text = it
                 }
             }
-
-
             holder.binding.messageItemLinearlayoutDestination.visibility = View.VISIBLE
             holder.binding.messageItemTextViewMessage.setBackgroundResource(R.drawable.background_round_gray)
             holder.binding.messageItemTextViewMessage.text = list.value!![position].message
