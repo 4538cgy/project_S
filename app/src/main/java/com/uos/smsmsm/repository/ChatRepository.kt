@@ -111,7 +111,7 @@ class ChatRepository {
                         val lastMessageKey = commentMap.keys.toTypedArray()[0]
                         if (it.equals(commentMap[lastMessageKey]?.timestamp.toString())){
                             resultChat.add(index,chatDTO)
-                        }else{)
+                        }else{
                             return@forEachIndexed
                         }
                     }

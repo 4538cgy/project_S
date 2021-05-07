@@ -82,7 +82,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     }
 
     fun uploadPhoto(view: View) {
-   ]
+
 
         activity?.startActivityForResult(viewModel.openGallery(), PICK_PROFILE_FROM_ALBUM)
     }

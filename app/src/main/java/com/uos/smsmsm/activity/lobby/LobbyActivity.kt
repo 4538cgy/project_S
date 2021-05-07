@@ -120,22 +120,7 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
 
         if (requestCode == UserFragment.PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
 
-            // var -> val [timestamp, imageFileName, imageUri, storageRef, images]
-            val timestamp = TimeUtil().getTime()
-            val imageFileName = "TEST_IMAGE_" + timestamp + "_.png"
 
-            val imageUri = data?.data
-            var uid = FirebaseAuth.getInstance().currentUser?.uid
-            val storageRef =
-                FirebaseStorage.getInstance().reference.child("TestImage").child(imageFileName)
-            storageRef.putFile(imageUri!!).continueWithTask {
-                return@continueWithTask storageRef.downloadUrl
-            }.addOnSuccessListener { uri ->
-                val images = TestDTO()
-                images.imageUrl = uri.toString()
-                images.timestamp = System.currentTimeMillis()
-                FirebaseFirestore.getInstance().collection("TextImage").document().set(images)
-            }
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val result = CropImage.getActivityResult(data)
