@@ -60,11 +60,19 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                         viewModelScope.launch {
                             contentRepository.getContents(contentId).collect {
                                 contents.putAll(it)
-                                if (contents.size == contentIdList.size) {
-                                    //#3 완성된 게시글 원본 recyclerview에 연결하기
+                                //#3 내 게시글 가져와서 contents에 넣고 timestamp를 기준으로 정렬하기
+                                viewModelScope.launch {
+                                    contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
+                                        contents.putAll(it)
+                                        //#3-1 정렬
+                                        contents.toList().sortedWith(compareBy { it.second.timestamp }).toMap()
+                                        //#4 완성된 게시글 원본 recyclerview에 연결하기
 
-                                    timelineDataList.postValue(contents)
+                                        timelineDataList.postValue(contents)
+                                    }
                                 }
+
+
                             }
                         }
                     }
