@@ -82,25 +82,60 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
 
         //친구 추가가 성공했는지 지켜보기
         viewModel.isSuccessAddFirends.observe(this, Observer {
-            if (it){
-                //친구 추가 성공했으면 뷰변경
-                isFriend(it)
 
-                //친구 추가가 성공했으면 친구의 게시글 싹다 긁어오기
-                //백그라운드 실행
-                var data : MutableMap<String,Any> = HashMap()
-
-                data.put("WORK_STATE" , SubscribeWorker.WORK_COPY_PASTE_CONTENTS)
-                data.put("WORK_DESTINATION_UID",destinationUid.toString())
-
-                val inputData = Data.Builder().putAll(data).build()
-
-                val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
-                WorkManager.getInstance(rootContext).enqueue(uploadManager)
-
-
+            loadingDialogText.show()
+            loadingDialogText.run{
+                when (it) {
+                    "SUBSCRIBE_CREATE" -> {
+                        binding.dialogProgressLoadingTextTextview.text = "친구 추가성공"
+                        dismiss()
+                        isFriend(true)
+                        onSubscribeWorker()
+                    }
+                    "SUBSCRIBER_CREATE" -> {
+                        binding.dialogProgressLoadingTextTextview.text = "사진이 호수에 도착!"
+                        dismiss()
+                        isFriend(true)
+                        onSubscribeWorker()
+                    }
+                    "SUBSCRIBE_UPDATE" -> {
+                        binding.dialogProgressLoadingTextTextview.text = "적은 글을 고이접어 우체통에 넣는중~"
+                        dismiss()
+                        isFriend(true)
+                        onSubscribeWorker()
+                    }
+                    "SUBSCRIBER_UPDATE" -> {
+                        binding.dialogProgressLoadingTextTextview.text = "배달완료!"
+                        dismiss()
+                        isFriend(true)
+                        onSubscribeWorker()
+                    }
+                    else->{
+                        binding.dialogProgressLoadingTextTextview.text = "친구 추가를 요청하는중"
+                    }
+                }
             }
+
+
+
+
+
+
+
         })
+    }
+
+    fun onSubscribeWorker(){
+        println("백그라운드 실행")
+        var data : MutableMap<String,Any> = HashMap()
+
+        data.put("WORK_STATE" , SubscribeWorker.WORK_COPY_PASTE_CONTENTS)
+        data.put("WORK_DESTINATION_UID",destinationUid.toString())
+
+        val inputData = Data.Builder().putAll(data).build()
+
+        val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
+        WorkManager.getInstance(rootContext).enqueue(uploadManager)
     }
 
     fun onClickTimeLine(view : View){

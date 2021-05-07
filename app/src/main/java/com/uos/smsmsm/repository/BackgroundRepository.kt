@@ -17,30 +17,19 @@ class BackgroundRepository {
     //내가 구독한 유저의 contents 모두 긁어오기
     @ExperimentalCoroutinesApi
     fun copyUserContents(uid : String) = callbackFlow<Map<String,ContentDTO>> {
-        val databaseReference = db.collection("User").document("UserData").collection("userInfo")
-            .whereEqualTo("uid",uid)
+        val databaseReference = db.collection("Contents").whereEqualTo("uid",uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
             if (it.isSuccessful) {
                 if (it.result != null) {
-                    it.result.documents.forEach {documentSnapshot ->
-                        if (documentSnapshot["uid"]!!.equals(uid)){
-                            
-                            val databaseReference2 = db.collection("User").document("UserData")
-                                .collection("userInfo")
-                                .document(documentSnapshot.id)
-                                .collection("ContentsContainer")
-                            val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
-                                var map : MutableMap<String,ContentDTO> = HashMap()
-                                value!!.forEach {
-                                    var thumbnail =
-                                    map.put(it.id,it.toObject(ContentDTO::class.java))
-                                }
-                                this@callbackFlow.sendBlocking(map)
-                            }
-                        }
 
+                    var contentDTOs = it.result.toObjects(ContentDTO::class.java)
+                    var map : MutableMap<String,ContentDTO> = HashMap()
+
+                    it.result.forEach { result ->
+                        map.put(result.id, result.toObject(ContentDTO::class.java))
                     }
+                    this@callbackFlow.sendBlocking(map)
                 }
             }
         }
@@ -133,24 +122,38 @@ class BackgroundRepository {
             if (it.isSuccessful) {
                 if (it.result != null) {
                     it.result.documents.forEach { document ->
-                        if (document["uid"]!!.equals(auth.currentUser!!.uid)){
-                            contentList.forEach {
-                                val databaseReference2 = db.collection("User").document("UserData")
-                                    .collection("userInfo")
-                                    .document(document.id)
-                                    .collection("MySubscribeContentsUidList")
-                                    .document(it.key)
-                                val eventListener2 = databaseReference2.set(it.value).addOnCompleteListener {
+                        if (document["uid"]!!.equals(auth.currentUser!!.uid)) {
+                            val tsDocSubscribing =
+                                db.collection("User").document("UserData").collection("userInfo")
+                                    .document(document.id).collection("MySubscribeContentUidList")
+                                    .document("list")
+                            db.runTransaction {transaction ->
+                                var thumbnail = transaction.get(tsDocSubscribing).toObject(ContentDTO.PostThumbnail::class.java)
+                                if (thumbnail == null){
+                                    thumbnail = ContentDTO.PostThumbnail()
+                                    contentList.forEach {
+                                        var data = ContentDTO.PostThumbnail.Thumbnail()
+                                        data.timestamp = it.value.timestamp
+                                        data.uid = it.value.uid
+                                        thumbnail!!.thumbnailList.put(it.key,data)
+                                    }
+                                    transaction.set(tsDocSubscribing,thumbnail)
                                     this@callbackFlow.sendBlocking(true)
-                                }.addOnFailureListener {
-                                    this@callbackFlow.sendBlocking(false)
-                                }.addOnCanceledListener {
-                                    this@callbackFlow.sendBlocking(false)
+                                    return@runTransaction
+                                }else {
+                                    thumbnail = ContentDTO.PostThumbnail()
+                                    contentList.forEach {
+                                        var data = ContentDTO.PostThumbnail.Thumbnail()
+                                        data.timestamp = it.value.timestamp
+                                        data.uid = it.value.uid
+                                        thumbnail.thumbnailList.put(it.key,data)
+                                    }
+                                    transaction.set(tsDocSubscribing, thumbnail)
+                                    this@callbackFlow.sendBlocking(true)
+                                    return@runTransaction
                                 }
                             }
-
                         }
-
                     }
                 }
             }

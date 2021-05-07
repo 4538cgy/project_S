@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.os.StrictMode
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -23,8 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import com.uos.smsmsm.data.ContentDTO
-import com.uos.smsmsm.data.RecyclerDefaultModel
-import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.util.GalleryUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -67,6 +64,14 @@ class ContentUtilViewModel @ViewModelInject constructor(@Assisted private val sa
             type = "image/*"
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
             data = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        }
+    }
+
+    fun uploadComment(comments : ContentDTO.Comment,postUid : String){
+        viewModelScope.launch(Dispatchers.IO){
+            contentRepository.uploadComment(comments,postUid).collect {
+                println("성공입니까 ? $it")
+            }
         }
     }
 

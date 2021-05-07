@@ -25,13 +25,16 @@ data class ContentDTO(
     var viewActionCount : Int ? = 0,
     //조회한 사람 uid
     var viewActioners : MutableMap<String,Boolean> = HashMap(),
+    //댓글 리스트
+    var commentList : MutableMap<String,Comment> = HashMap()
 
 ) {
     data class Comment(
         var uid : String ? = null,
-        var userId : String ? = null,
         var comment : String ? = null,
-        var timestamp : Long ? = null
+        var timestamp : Long ? = null,
+        var replyComment : MutableMap<String,ReplyComment> = HashMap()
+
     ){
         data class ReplyComment(
             var masterCommentUid : String ? = null,

@@ -53,9 +53,12 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
         //#1 내 구독함 가져오기
         viewModelScope.launch(Dispatchers.IO){
+            println("#1 실행")
             contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
+                println("가져온 id list ${contentIdList.toString()}")
                 if (contentIdList != null){
                     //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기
+                    println("#2 실행")
                     contentIdList.forEach { contentId ->
                         viewModelScope.launch {
                             contentRepository.getContents(contentId).collect {
@@ -125,6 +128,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     fun searchUserResultDataConvertRecyclerData(){
 
         var list = arrayListOf<RecyclerDefaultModel>()
+
 
         searchUserResult.value?.forEachIndexed{ index ,it ->
             list.add(RecyclerDefaultModel(RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE,"",searchUserResult.value!![index].uid,null,

@@ -28,9 +28,9 @@ class SubscribeWorker(context: Context, worker : WorkerParameters) : Worker(cont
 
                 mainScope.launch {
                     repository.copyUserContents(uid = destinationUid).collect {
-
+                        println("카피 완료 ${it.values.toString()}")
                         repository.pasteUserContentsMyContainer(it).collect{
-
+                        println("붙여넣기 완료")
                         }
                     }
                 }
