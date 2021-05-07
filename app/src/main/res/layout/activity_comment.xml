@@ -92,6 +92,7 @@
                 android:hint="댓글 작성...."
                 android:layout_marginLeft="8dp"
                 android:background="@android:color/transparent"
+                android:addTextChangedListener="@{snsviewmodel.textWatcher()}"
                 />
             <Button
                 android:id="@+id/activity_comment_button_upload"

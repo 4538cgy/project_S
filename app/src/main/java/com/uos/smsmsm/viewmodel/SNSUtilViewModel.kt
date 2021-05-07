@@ -66,8 +66,10 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
                                 if (contentIdList.size == contents.size){
                                     //#3 내 게시글 가져와서 contents에 넣고 timestamp를 기준으로 정렬하기
+                                    println("#3 오오")
                                     viewModelScope.launch {
                                         contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
+                                            println("내 포스트도 가져오기 ${it.values.toString()}")
                                             contents.putAll(it)
 
                                             //#3-1 정렬
@@ -94,6 +96,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         //MySubscribeContentsUidList에 데이터 가져와서 timelineDataList에 꽂기
         //
     }
+
 
     //유저 검색 서치 뷰 리스너
     fun searchUserQueryTextListener() = object : SearchView.OnQueryTextListener{

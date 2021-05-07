@@ -54,6 +54,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
         //타임라인 게시글 리스트 완성을 위해 내가 구독하고있는 유저들의 timeline data 가져오기
+        //내 게시글도 가져오기
         println("데이터 가져오기")
         snsViewModel.getTimeLineData()
         initRecyclerViewAdapter()
