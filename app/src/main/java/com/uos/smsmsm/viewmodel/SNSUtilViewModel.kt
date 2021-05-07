@@ -91,10 +91,13 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                 }
             }
         }
-
-        //MySubscribeContentsUidList에 담길 정보를 게시글 전체 정보로 수정
-        //MySubscribeContentsUidList에 데이터 가져와서 timelineDataList에 꽂기
-        //
+        /*
+         다음과 같이 수정해야함.
+         #1. 리사이클러뷰에 꽂아넣어야할 list가 존재함.
+         #2. list에 구독하고 있는 PostId의 원본을 넣어줌.
+         #3. 원본을 넣어줬으면 내가 작성한 게시글을 넣어줌.
+         #4. 정렬 함.
+         */
     }
 
 
