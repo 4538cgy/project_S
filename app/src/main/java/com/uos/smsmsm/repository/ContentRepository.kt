@@ -10,8 +10,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import javax.inject.Inject
 
-class ContentRepository {
+class ContentRepository  @Inject constructor(){
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()

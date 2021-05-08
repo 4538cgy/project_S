@@ -10,9 +10,10 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class ChatRepository {
+class ChatRepository @Inject constructor() {
 
     private val db = FirebaseFirestore.getInstance()
     private val rdb = FirebaseDatabase.getInstance()
