@@ -85,11 +85,12 @@ class ContentRepository {
 
     //내 구독함과 내 컨텐츠 리스트 가져오기
     @ExperimentalCoroutinesApi
-    fun getSubscribeContentsWithMyContents(uid: String) = callbackFlow<ArrayList<String>> {
+    fun getSubscribeContentsWithMyContents(uid: String) = callbackFlow<ArrayList<String>?> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid", uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
+            println("aaaaaaaa4")
             if (it.isSuccessful) {
                 if (it.result != null) {
                     it.result.documents.forEach {
@@ -110,6 +111,9 @@ class ContentRepository {
                                                 contentIdList.add(it.key)
                                             }
                                             this@callbackFlow.sendBlocking(contentIdList)
+                                        }else
+                                        {
+                                            this@callbackFlow.sendBlocking(null)
                                         }
                                     }
                                 }
