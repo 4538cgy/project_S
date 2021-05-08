@@ -1,6 +1,7 @@
 package com.uos.smsmsm.ui.bottomsheet
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.content.AddContentActivity
+import com.uos.smsmsm.activity.friendfind.FriendFindByIdActivity
 import com.uos.smsmsm.databinding.BottomSheetDialogAddFriendsLayoutBinding
 import java.lang.ClassCastException
 
@@ -46,6 +49,7 @@ class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
             //id 로 추가
             binding.bottomSheetDialogAddFriendsLayoutButtonId.id ->{
                 println("click id")
+                startActivity(Intent(context, FriendFindByIdActivity::class.java))
             }
             //연락처로 추가
             binding.bottomSheetDialogAddFriendsLayoutButtonPhoneNumber.id ->{

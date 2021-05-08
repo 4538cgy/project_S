@@ -2,6 +2,7 @@ package com.uos.smsmsm.viewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.appcompat.widget.SearchView
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -15,12 +16,19 @@ import com.uos.smsmsm.repository.BackgroundRepository
 import com.uos.smsmsm.repository.ChatRepository
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 // 채팅 / Timeline / 친구 찾기등 소셜 네트워크 기능 viewmodel
-class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle) : ViewModel(){
+class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle,
+                                                    var userRepository : UserRepository,
+                                                    var chatRepository : ChatRepository,
+                                                    var contentRepository : ContentRepository
+) : ViewModel(){
 
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var edittextText : MutableLiveData<String> = MutableLiveData()
@@ -38,14 +46,11 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     //친구 목록 리스트의 상태
     var friendsListState : MutableLiveData<String> = MutableLiveData()
 
-    val userRepository = UserRepository()
-    val chatRepository = ChatRepository()
-    val contentRepository = ContentRepository()
-
-
     val auth = FirebaseAuth.getInstance()
 
     var timelineDataList = MutableLiveData<Map<String,ContentDTO>>()
+
+    val findUserByUserName : MutableLiveData<List<UserDTO?>> by lazy { MutableLiveData<List<UserDTO?>>() }
 
     fun getTimeLineData(){
 
@@ -387,6 +392,14 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             }
         }
     }
+    @ExperimentalCoroutinesApi
+    fun getUserByUserName(userName: String){
 
+        viewModelScope.launch(Dispatchers.IO){
+            userRepository.getUserByUserName(userName).collect {
+                findUserByUserName.postValue(it)
+            }
+        }
+    }
 
 }

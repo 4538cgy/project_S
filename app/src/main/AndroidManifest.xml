@@ -29,13 +29,13 @@
         <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />
+        <activity android:name=".activity.friendfind.FriendFindByIdActivity"/>
         <activity
             android:name=".activity.content.AddContentActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".activity.chat.ChatActivity"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".testactivity.AddTestUser" />
         <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity" />
         <activity android:name=".activity.search.SearchFriendActivity" />
         <activity android:name=".activity.setting.SettingActivity" />

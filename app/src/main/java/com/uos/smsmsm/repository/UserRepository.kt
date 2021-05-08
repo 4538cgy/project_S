@@ -3,14 +3,16 @@ package com.uos.smsmsm.repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import com.uos.smsmsm.data.SubscribeDTO
 import com.uos.smsmsm.data.UserDTO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import javax.inject.Inject
 
-class UserRepository {
+class UserRepository @Inject constructor() {
 
     private val db = FirebaseFirestore.getInstance()
     private val rdb = FirebaseDatabase.getInstance()
@@ -72,6 +74,21 @@ class UserRepository {
 
                 this@callbackFlow.sendBlocking(user)
             }
+        }
+
+        awaitClose { eventListener }
+    }
+    @ExperimentalCoroutinesApi
+    fun getUserByUserName(userName : String) = callbackFlow< List<UserDTO?>> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("userName", userName)
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            value?.let {
+                val user: List<UserDTO?> = value.toObjects(UserDTO::class.java)
+                this@callbackFlow.sendBlocking(user)
+            }?:{
+                val user: List<UserDTO?> = mutableListOf<UserDTO?>()
+                this@callbackFlow.sendBlocking(user)
+            }()
         }
 
         awaitClose { eventListener }
