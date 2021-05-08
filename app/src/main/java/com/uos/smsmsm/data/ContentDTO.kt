@@ -58,4 +58,8 @@ data class ContentDTO(
             var timestamp: Long ? = null
         )
     }
+
+    data class FavoriteList(
+        var favoriteList: MutableMap<String,Long> = HashMap()
+    )
 }

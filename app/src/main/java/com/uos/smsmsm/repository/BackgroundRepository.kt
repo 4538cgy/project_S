@@ -96,13 +96,16 @@ class BackgroundRepository {
                             val eventListener =  databaseReference2.get().addOnCompleteListener {
                                 if (it.isSuccessful){
                                     if (it != null){
-                                        var subscribeDTO = SubscribeDTO()
-                                        subscribeDTO = it.result.toObject(SubscribeDTO::class.java)!!
-                                        var subscribeUidList = arrayListOf<String>()
-                                        subscribeDTO.subscriberList.forEach {
-                                            subscribeUidList.add(it.key)
+                                        if (it.result.exists()) {
+                                            var subscribeDTO = SubscribeDTO()
+                                            subscribeDTO =
+                                                it.result.toObject(SubscribeDTO::class.java)!!
+                                            var subscribeUidList = arrayListOf<String>()
+                                            subscribeDTO.subscriberList.forEach {
+                                                subscribeUidList.add(it.key)
+                                            }
+                                            this@callbackFlow.sendBlocking(subscribeUidList)
                                         }
-                                        this@callbackFlow.sendBlocking(subscribeUidList)
                                     }
                                 }
                             }

@@ -85,11 +85,12 @@ class ContentRepository {
 
     //내 구독함과 내 컨텐츠 리스트 가져오기
     @ExperimentalCoroutinesApi
-    fun getSubscribeContentsWithMyContents(uid: String) = callbackFlow<ArrayList<String>> {
+    fun getSubscribeContentsWithMyContents(uid: String) = callbackFlow<ArrayList<String>?> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid", uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
+            println("aaaaaaaa4")
             if (it.isSuccessful) {
                 if (it.result != null) {
                     it.result.documents.forEach {
@@ -110,6 +111,9 @@ class ContentRepository {
                                                 contentIdList.add(it.key)
                                             }
                                             this@callbackFlow.sendBlocking(contentIdList)
+                                        }else
+                                        {
+                                            this@callbackFlow.sendBlocking(null)
                                         }
                                     }
                                 }
@@ -173,6 +177,89 @@ class ContentRepository {
             }
         }
         awaitClose { }
+    }
+    //좋아요 이벤트
+    @ExperimentalCoroutinesApi
+    fun favoriteEvent(contentId: String) = callbackFlow<Boolean> {
+        var tsDoc=  db.collection("Contents").document(contentId)
+
+        db.runTransaction {
+            transaction ->
+            var contentDTO = transaction.get(tsDoc).toObject(ContentDTO::class.java)
+
+            if (contentDTO!!.favorites.containsKey(auth.currentUser!!.uid))
+            {
+                contentDTO.favoriteCount = contentDTO.favoriteCount!! - 1
+                contentDTO.favorites.remove(auth.currentUser!!.uid)
+                //내가 좋아하는 게시글 리스트에서 해당 contentId 제거
+                addFavoriteContent(contentId,false)
+                transaction.set(tsDoc,contentDTO)
+                this@callbackFlow.sendBlocking(true)
+            }else{
+                contentDTO.favoriteCount = contentDTO.favoriteCount!! + 1
+                contentDTO.favorites[auth.currentUser!!.uid] = true
+                //내가 좋아하는 게시글 리스트에서 해당 contentId 추가
+                addFavoriteContent(contentId,true)
+                transaction.set(tsDoc,contentDTO)
+                this@callbackFlow.sendBlocking(true)
+            }
+
+        }
+        awaitClose {  }
+    }
+
+    fun addFavoriteContent(contentId: String,type : Boolean){
+
+        println("리스트 추가하기")
+        var databaseReference = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid",auth.currentUser!!.uid)
+        var eventListener = databaseReference.get().addOnCompleteListener {
+            if (it.isSuccessful){
+                if (it != null){
+                    if (it.result != null){
+                        if (!it.result.isEmpty){
+                            it.result.forEach {
+                                if (it["uid"] == auth.currentUser!!.uid){
+
+                                    var addFavoriteReference = db.collection("User").document("UserData").collection("userInfo").document(it.id).collection("favoriteContents").document("list")
+                                    println("업데이트 시작하기 ${it.id}")
+                                    db.runTransaction {transaction ->
+                                        var favoriteList = transaction.get(addFavoriteReference).toObject(ContentDTO.FavoriteList::class.java)
+                                        println("으어어어 $favoriteList")
+                                        if (favoriteList == null){
+                                            favoriteList = ContentDTO.FavoriteList()
+                                            transaction.set(addFavoriteReference,favoriteList)
+                                        }
+                                        if (type) {
+                                            //추가
+                                            println("추가")
+                                            favoriteList!!.favoriteList.put(
+                                                contentId,
+                                                System.currentTimeMillis()
+                                            )
+                                            println("??????????")
+                                            println("으어어어222 $favoriteList")
+                                            transaction.set(addFavoriteReference, favoriteList)
+                                        }else{
+                                            //제거
+                                            println("제거")
+                                            if(favoriteList!!.favoriteList.containsKey(contentId)){
+                                                favoriteList.favoriteList.remove(contentId)
+                                                println("??????????")
+
+                                                println("으어어어2222 $favoriteList")
+                                                transaction.set(addFavoriteReference,favoriteList)
+                                            }else{
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @ExperimentalCoroutinesApi

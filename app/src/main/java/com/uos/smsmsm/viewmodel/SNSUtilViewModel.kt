@@ -17,6 +17,9 @@ import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
 
 // 채팅 / Timeline / 친구 찾기등 소셜 네트워크 기능 viewmodel
@@ -51,9 +54,10 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
         var contents : MutableMap<String,ContentDTO> = HashMap()
 
-        //#1 내 구독함 가져오기
+        //#1 내 구독함과 내가 작성한 글 가져오기
         viewModelScope.launch(Dispatchers.IO){
-            println("#1 실행")
+
+
             contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
                 println("가져온 id list ${contentIdList.toString()}")
                 if (contentIdList != null){
@@ -83,11 +87,19 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                         }
 
                     }
-
-
-
                 }else{
-                    //#2 데이터가 음슴
+                    println("#3 오오")
+                    viewModelScope.launch {
+                        contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
+                            println("내 포스트도 가져오기 ${it.values.toString()}")
+                            contents.putAll(it)
+
+                            //#3-1 정렬
+                            var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
+                            //#4 완성된 게시글 원본 recyclerview에 연결하기
+                            timelineDataList.postValue(result)
+                        }
+                    }
                 }
             }
         }
@@ -99,6 +111,8 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
          #4. 정렬 함.
          */
     }
+
+
 
 
     //유저 검색 서치 뷰 리스너
