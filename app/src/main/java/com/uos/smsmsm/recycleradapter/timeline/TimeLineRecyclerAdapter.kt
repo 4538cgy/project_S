@@ -17,6 +17,7 @@ import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemTimelinePostBinding
 import com.uos.smsmsm.recycleradapter.viewpager.PhotoAdapter
+import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.repository.UtilRepository
 import com.uos.smsmsm.util.time.TimeUtil
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 class TimeLineRecyclerAdapter(private val context : Context, private val list : LiveData<ArrayList<TimeLineDTO>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val userRepository = UserRepository()
+    private val contentRepository = ContentRepository()
     private val utilRepository = UtilRepository()
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private val auth  = FirebaseAuth.getInstance()
@@ -98,7 +100,8 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         //조회수 연결
         holder.binding.itemTimelinePostTextviewViewCounts.text = list.value!![position].content!!.viewCount.toString()
         //좋아요 액션
-        favoriteEvent()
+        holder.binding.itemTimelineImagebuttonFavorite.setOnClickListener { favoriteEvent(position) }
+
         //북마크 액션
         addBookMark()
 
@@ -152,8 +155,12 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         }
     }
 
-    fun favoriteEvent(){
-
+    fun favoriteEvent(position: Int){
+        mainScope.launch {
+            contentRepository.favoriteEvent(list.value!![position].contentId!!).collect {
+                println("이벤트 성공함? $it")
+            }
+        }
     }
 
     fun addBookMark(){
