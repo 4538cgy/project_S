@@ -32,7 +32,7 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
         overridePendingTransition(R.anim.slide_up, R.anim.slide_up_out)
         binding.apply {
             activity = this@FriendFindByIdActivity
-            recyclerFindFriendById.adapter = FindFriendAdapter(this@FriendFindByIdActivity,addFriendClickListener)
+            recyclerFindFriendById.adapter = FindFriendAdapter(this@FriendFindByIdActivity,userUtilViewModel)
             friendlist = findFriendsList
         }
         snsViewModel.findUserByUserName.observe(this, Observer {
@@ -66,16 +66,7 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
     private fun searchUserByUserName(){
         snsViewModel.getUserByUserName(binding.editFindFriendById.text.toString())
     }
-    private val addFriendClickListener = object : View.OnClickListener{
-        override fun onClick(v: View?) {
-            v?.let {
-                val clickViewHolder =
-                    binding.recyclerFindFriendById.getChildViewHolder(it) as FindFriendViewHolder
-                userUtilViewModel.addFriend(clickViewHolder.getItem().uid!!)
-            }
-        }
 
-    }
     override fun finish() {
         super.finish()
 
