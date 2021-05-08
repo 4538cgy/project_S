@@ -1,10 +1,13 @@
 package com.uos.smsmsm.recycleradapter
 
+import android.util.Log
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.uos.smsmsm.R
 import java.util.*
 //Adapter들 관련
 object BindingAdapter  {
@@ -20,4 +23,6 @@ object BindingAdapter  {
     fun headerText(textView : TextView, date : Date){
         textView.text = "오늘"
     }
+
+
 }

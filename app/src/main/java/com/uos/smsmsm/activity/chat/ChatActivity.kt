@@ -1,44 +1,73 @@
 package com.uos.smsmsm.activity.chat
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
-import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
+import com.uos.smsmsm.base.BaseActivity
+import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.ActivityChatBinding
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
 
-    lateinit var binding : ActivityChatBinding
-    private val viewmodel : SNSUtilViewModel by viewModels()
+    private val viewModel : SNSUtilViewModel by viewModels()
 
-    var destinationUid = ""
+    var recyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
+
+    var destinationUid : String = ""
+    var chatRecyclerAdapterInitChecker = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this,R.layout.activity_chat)
-        binding.lifecycleOwner = this
-        binding.viewmodel = viewmodel
-
         destinationUid = intent.getStringExtra("destinationUid")
-        //액션바 Toolbar에 바인딩
-        setSupportActionBar(binding.activityChatToolbar)
+        binding.apply {
+            viewmodel = viewModel
+            chat = this@ChatActivity
+            //액션바 Toolbar에 바인딩
+            setSupportActionBar(activityChatToolbar)
+            //채팅 보내기
+            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid) }
+        }
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        //채팅 보내기
-        binding.activityChatImagebuttonSendmessage.setOnClickListener { viewmodel.sendMessage(destinationUid) }
-
-        viewmodel.checkChatRoom(destinationUid)
+        viewModel.apply {
+            checkChatRoom(destinationUid)
+            chatRoomUid.observe(this@ChatActivity, Observer { uid ->
+                //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
+                getMessageList()
+                chatList.observe(this@ChatActivity, Observer { livedata ->
+                    this@ChatActivity.recyclerData.value = livedata
+                    if (!chatRecyclerAdapterInitChecker) {
+                        initRecyclerAdapter()
+                    } else {
+                        binding.activityChatRecyclerview.adapter?.notifyDataSetChanged()
+                        binding.activityChatRecyclerview.scrollToPosition(livedata.size - 1)
+                    }
+                })
+            })
+        }
     }
 
+    fun backPressed(view : View){ finish() }
 
+    fun initRecyclerAdapter(){
+        chatRecyclerAdapterInitChecker = true
+        with(binding) {
+            activityChatRecyclerview.adapter = ChatRecyclerAdapter(rootContext,recyclerData,destinationUid)
+            activityChatRecyclerview.layoutManager = LinearLayoutManager(rootContext,
+                LinearLayoutManager.VERTICAL,false)
+            activityChatRecyclerview.scrollToPosition(recyclerData.value!!.size - 1)
+        }
+
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater = menuInflater

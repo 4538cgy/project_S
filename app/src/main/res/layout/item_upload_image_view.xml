@@ -15,7 +15,7 @@
             android:id="@+id/item_upload_image_view_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/background_rect_black_radius_16"
+            android:background="@drawable/background_rect_black"
             android:padding="1dp"/>
 
         <ImageButton
@@ -29,6 +29,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-
+        <ImageButton
+            android:id="@+id/item_upload_image_view_play_btn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/ic_baseline_play_circle_outline_24"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

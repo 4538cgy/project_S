@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.welcome.WelcomeMainActivity">
+
+    <data>
+        <variable
+            name="activitywelcomemain"
+            type="com.uos.smsmsm.activity.welcome.WelcomeMainActivity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/activity_welcome_page_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <me.relex.circleindicator.CircleIndicator3
+            android:id="@+id/activity_welcome_main_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp"
+            app:ci_height="7dp"
+            app:ci_width="7dp"
+            app:ci_margin="4dp"
+            app:ci_drawable="@drawable/point_black_circle"
+            />
+
+        <Button
+            android:id="@+id/activity_welcome_main_button_adult_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="동의하고 시작하기"
+            android:background="@drawable/background_edittext_round_gray_16dp"
+            android:padding="12dp"
+            android:layout_margin="12dp"
+            app:layout_constraintBottom_toTopOf="@+id/activity_welcome_main_indicator"
+            app:layout_constraintLeft_toLeftOf="@+id/activity_welcome_main_indicator"
+            app:layout_constraintRight_toRightOf="@+id/activity_welcome_main_indicator"
+            android:visibility="gone"
+            android:onClick="@{activitywelcomemain.onClickAccept}"
+            />
+        <Button
+            android:id="@+id/activity_welcome_main_button_permission_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_margin="12dp"
+            android:background="@drawable/background_edittext_round_gray_16dp"
+            android:orientation="horizontal"
+            android:text="@string/approve"
+            android:visibility="gone"
+            android:onClick="@{activitywelcomemain.onRequestPermission}"
+            app:layout_constraintBottom_toTopOf="@+id/activity_welcome_main_indicator"
+            app:layout_constraintLeft_toLeftOf="@+id/activity_welcome_main_indicator"
+            app:layout_constraintRight_toRightOf="@+id/activity_welcome_main_indicator" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

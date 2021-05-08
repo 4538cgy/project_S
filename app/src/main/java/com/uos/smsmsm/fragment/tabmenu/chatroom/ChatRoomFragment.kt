@@ -1,5 +1,7 @@
 package com.uos.smsmsm.fragment.tabmenu.chatroom
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -8,52 +10,53 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
-import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.base.BaseFragment
+import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.FragmentChatRoomBinding
-import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.recycleradapter.chatroomlist.ChatRoomListRecyclerAdapter
+import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class ChatRoomFragment : Fragment() {
+class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragment_chat_room) {
 
-    lateinit var binding: FragmentChatRoomBinding
     private val viewmodel: SNSUtilViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_room, container, false)
+    private val auth = FirebaseAuth.getInstance()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.fragmentchatroom = this
         setHasOptionsMenu(true)
+
         (activity as AppCompatActivity).setSupportActionBar(binding.fragmentChatRoomToolbar)
-        var actionBar = (activity as AppCompatActivity).supportActionBar
+        val actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.setDisplayShowTitleEnabled(false)
 
-        viewmodel.initChatRoomList()
-        initRecyclerViewAdapter()
-
-        return binding.root
+        loadingDialog.show()
+        viewmodel.initMyChatRoomList(auth.currentUser!!.uid)
+        initRecyclerView()
     }
-
-    fun initRecyclerViewAdapter(){
-        var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
-
-        val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
+    fun initRecyclerView(){
+        var data = MutableLiveData<ArrayList<ChatDTO>>()
+        val recyclerObserver : Observer<ArrayList<ChatDTO>>
             = Observer { livedata ->
             data.value = livedata
-            binding.fragmentChatRoomRecyclerview.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
+            binding.fragmentChatRoomRecyclerview.adapter =
+                ChatRoomListRecyclerAdapter(
+                    binding.root.context,
+                    data
+                )
             binding.fragmentChatRoomRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
+            loadingDialog.dismiss()
         }
 
-        viewmodel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
-
+        viewmodel.chatRoomList.observe(viewLifecycleOwner, recyclerObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

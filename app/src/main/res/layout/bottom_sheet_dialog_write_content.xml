@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="bottomsheetdialogwritecontent"
+            type="com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogWriteContent" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:id="@+id/bottom_sheet_dialog_write_content_textview_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="게시글 옵션"
+            android:layout_margin="12dp"
+            android:textSize="14dp"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold"
+            />
+
+        <Button
+            android:id="@+id/bottom_sheet_dialog_write_content_button_close"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="확인"
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:onClick="@{bottomsheetdialogwritecontent.groupClick}"
+            />
+
+        <View
+            android:id="@+id/bottom_sheet_dialog_write_content_view_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorLightGray"
+            app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_dialog_write_content_textview_title"
+            android:layout_marginTop="12dp"
+            />
+
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_dialog_write_content_view_line"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bottom_sheet_dialog_write_content_const_public"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{bottomsheetdialogwritecontent.groupClick}"
+                >
+                <ImageButton
+                    android:id="@+id/bottom_sheet_dialog_write_content_imagebutton_public"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_public_24"
+                    android:background="@drawable/circle_bg_light_gray"
+                    android:padding="12dp"
+                    android:layout_margin="12dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_dialog_write_content_textview_public_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@+id/bottom_sheet_dialog_write_content_imagebutton_public"
+                    app:layout_constraintTop_toTopOf="@+id/bottom_sheet_dialog_write_content_imagebutton_public"
+                    app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_dialog_write_content_textview_public_explain"
+                    android:text="전체 공개"
+                    android:textSize="14dp"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="12dp"
+                    />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_dialog_write_content_textview_public_explain"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="전체 공개로 설정하면 모든 유저가 글을 확인할 수 있어요."
+                    android:textSize="10dp"
+                    app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_dialog_write_content_textview_public_title"
+                    app:layout_constraintLeft_toRightOf="@+id/bottom_sheet_dialog_write_content_imagebutton_public"
+                    app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_dialog_write_content_imagebutton_public"
+                    android:layout_marginLeft="12dp"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bottom_sheet_dialog_write_content_const_only_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{bottomsheetdialogwritecontent.groupClick}"
+                >
+                <ImageButton
+                    android:id="@+id/bottom_sheet_dialog_write_content_imagebutton_only_friends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_emoji_people_24"
+                    android:background="@drawable/circle_bg_light_gray"
+                    android:padding="12dp"
+                    android:layout_margin="12dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_dialog_write_content_textview_friends_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="팔로워 우선 공개"
+                   android:textSize="14dp"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="12dp"
+                    app:layout_constraintLeft_toRightOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_friends"
+                    app:layout_constraintTop_toTopOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_friends"
+                    app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_dialog_write_content_textview_friends_explain"
+                    />
+                <TextView
+                    android:id="@+id/bottom_sheet_dialog_write_content_textview_friends_explain"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="나를 구독한 사용자에게만 공개됩니다."
+                    android:textSize="10dp"
+                    app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_dialog_write_content_textview_friends_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_friends"
+                    app:layout_constraintLeft_toRightOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_friends"
+                    android:layout_marginLeft="12dp"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bottom_sheet_dialog_write_content_const_only_me"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{bottomsheetdialogwritecontent.groupClick}"
+                >
+                <ImageButton
+                    android:id="@+id/bottom_sheet_dialog_write_content_imagebutton_only_me"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_lock_24"
+                    android:background="@drawable/circle_bg_light_gray"
+                    android:padding="12dp"
+                    android:layout_margin="12dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_dialog_write_content_textview_only_me_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="나만 보기"
+                    android:textSize="14dp"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="12dp"
+                    app:layout_constraintLeft_toRightOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_me"
+                    app:layout_constraintTop_toTopOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_me"
+                    app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_dialog_write_content_textview_only_me_explain"
+                    />
+                <TextView
+                    android:id="@+id/bottom_sheet_dialog_write_content_textview_only_me_explain"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="나만 볼 수 있게 등록합니다."
+                    android:textSize="10dp"
+                    app:layout_constraintTop_toBottomOf="@+id/bottom_sheet_dialog_write_content_textview_only_me_title"
+                    app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_me"
+                    app:layout_constraintLeft_toRightOf="@+id/bottom_sheet_dialog_write_content_imagebutton_only_me"
+                    android:layout_marginLeft="12dp"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

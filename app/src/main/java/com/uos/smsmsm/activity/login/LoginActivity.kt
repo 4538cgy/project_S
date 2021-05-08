@@ -4,33 +4,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.signup.SignUpActivity
 import com.uos.smsmsm.activity.signup.SignUpWithPhoneActivity
+import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityLoginBinding
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.extensions.toast
 import java.util.concurrent.TimeUnit
 
-class LoginActivity : AppCompatActivity() {
-
-    lateinit var binding: ActivityLoginBinding
+class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
 
     // Make private [auth, googleSignInClient, GOOGLE_LOGIN_CODE]
     private var auth = FirebaseAuth.getInstance()
@@ -40,8 +32,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        binding.activitylogin = this@LoginActivity
 
         // 구글 로그인 옵션 활성화
         // var -> val
@@ -50,20 +40,20 @@ class LoginActivity : AppCompatActivity() {
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        // 폰번호 로그인
-        binding.activityLoginButtonLoginWithPhonenumber.setOnClickListener {
-            signinPhone()
-        }
-
-        // 구글 로그인
-        binding.activityLoginButtonGoogle.setOnClickListener {
-            googleLogin()
-        }
-
-        // 회원 가입으로 이동
-        binding.activityLoginTextviewSignup.setOnClickListener {
-            startActivity(Intent(binding.root.context, SignUpWithPhoneActivity::class.java))
+        binding.apply {
+            activitylogin = this@LoginActivity
+            // 폰번호 로그인
+            activityLoginButtonLoginWithPhonenumber.setOnClickListener {
+                signinPhone()
+            }
+            // 구글 로그인
+            activityLoginButtonGoogle.setOnClickListener {
+                googleLogin()
+            }
+            // 회원 가입으로 이동
+            activityLoginTextviewSignup.setOnClickListener {
+                startActivity(Intent(root.context, SignUpWithPhoneActivity::class.java))
+            }
         }
     }
 

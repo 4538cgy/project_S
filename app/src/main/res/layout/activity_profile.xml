@@ -6,9 +6,11 @@
 
 
     <data>
+
         <variable
             name="activityprofile"
             type="com.uos.smsmsm.activity.profile.ProfileActivity" />
+
         <variable
             name="viewmodel"
             type="com.uos.smsmsm.viewmodel.UserUtilViewModel" />
@@ -16,18 +18,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/activity_profile_imageview_background"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/activity_profile_const_bottom_bar"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/activity_profile_const_top_bar" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/activity_profile_const_top_bar"
@@ -35,28 +35,42 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/activity_profile_const_top_bar"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/activity_profile_update_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:drawableLeft="@drawable/ic_baseline_chevron_left_24"
+                android:background="@android:color/transparent"
+                android:text="프로필 편집"
+                android:textColor="@color/colorBlack"
+                android:textSize="16dp"
+                android:visibility="gone"
+                android:onClick="@{activityprofile.onClickUpdateProfile}"
+                />
 
             <ImageButton
                 android:id="@+id/activity_profile_imagebutton_option"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_baseline_more_vert_24"
                 android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:onClick="@{activityprofile.showOptionPopup}"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/activity_profile_imagebutton_favorite"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_baseline_star_outline_24"
                 android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_star_outline_24"
                 app:layout_constraintRight_toLeftOf="@+id/activity_profile_imagebutton_option"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -65,32 +79,115 @@
             android:id="@+id/activity_profile_const_middle_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/activity_profile_const_bottom_bar"
-            >
+            app:layout_constraintBottom_toTopOf="@+id/activity_profile_const_bottom_bar">
+
             <ImageView
                 android:id="@+id/activity_profile_imageview_profile"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:onClick="@{activityprofile.onClickProfileImage}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/activity_profile_imageview_profile_image_update"
+                app:layout_constraintRight_toRightOf="@+id/activity_profile_imageview_profile"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_profile_imageview_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_photo_camera_24"
+                android:background="@drawable/circle_bg_gray"
+                android:padding="6dp"
+                android:visibility="gone"
+                />
+
+            <View
+                app:layout_constraintTop_toBottomOf="@+id/activity_profile_imageview_profile"
+                app:layout_constraintBottom_toTopOf="@+id/activity_profile_textview_nickname"
+                android:id="@+id/activity_profile_line3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray"
+                android:visibility="gone"
+                android:layout_marginHorizontal="16dp"
                 />
 
             <TextView
-                android:layout_marginTop="12dp"
                 android:id="@+id/activity_profile_textview_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/activity_profile_imageview_profile"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="40dp"
+                android:text="닉네임"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_profile_imageview_profile" />
+
+            <ImageView
+                android:id="@+id/activity_profile_imageview_edit_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_create_24"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/activity_profile_textview_nickname"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_profile_textview_nickname"
+                android:layout_marginRight="12dp"
+                android:visibility="gone"
+                />
+
+            <View
+                app:layout_constraintTop_toBottomOf="@+id/activity_profile_textview_nickname"
+                app:layout_constraintBottom_toTopOf="@+id/activity_profile_intro"
+                android:id="@+id/activity_profile_line1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray"
+                android:visibility="gone"
+                android:layout_marginHorizontal="16dp"
+                />
+
+            <TextView
+                android:id="@+id/activity_profile_intro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/activity_profile_textview_nickname"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="40dp"
-                android:text="닉네임"
+                android:layout_marginTop="8dp"
+                android:text="프로필 한줄 소개"
+                android:layout_marginBottom="8dp"
+
+                />
+
+            <ImageView
+                android:id="@+id/activity_profile_imageview_edit_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_create_24"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/activity_profile_intro"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_profile_intro"
+                android:layout_marginRight="12dp"
+                android:visibility="gone"
+                />
+
+            <View
+                app:layout_constraintTop_toBottomOf="@+id/activity_profile_intro"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/activity_profile_line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray"
+                android:visibility="gone"
+                android:layout_marginHorizontal="16dp"
                 />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/activity_profile_const_bottom_bar"
@@ -98,43 +195,43 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            >
+            app:layout_constraintRight_toRightOf="parent">
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/activity_profile_const_bottom_bar_isfriend_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:visibility="visible"
                 android:layout_marginHorizontal="60dp"
                 android:layout_marginBottom="24dp"
-                >
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
                 <Button
                     android:id="@+id/activity_profile_button_chat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/ic_baseline_chat_24"
-                    android:text="대화"
                     android:background="@android:color/transparent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:drawableTop="@drawable/ic_baseline_chat_24"
                     android:onClick="@{activityprofile::openChat}"
-                    />
+                    android:text="대화"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
+
+                    android:onClick="@{activityprofile.onClickTimeLine}"
                     android:id="@+id/activity_profile_button_timeline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableTop="@drawable/ic_baseline_home_24"
-                    android:text="대화"
                     android:background="@android:color/transparent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:drawableTop="@drawable/ic_baseline_home_24"
+                    android:text="타임라인"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    />
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -143,19 +240,71 @@
                 android:id="@+id/activity_profile_const_bottom_bar_isnotfriend_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginBottom="24dp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:visibility="invisible"
-                >
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:drawableTop="@drawable/ic_baseline_person_add_alt_1_24"
+                    android:text="추가"
+                    android:onClick="@{activityprofile::addFriend}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:drawableTop="@drawable/ic_baseline_assistant_photo_24"
+                    android:text="신고"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/activity_profile_const_bottom_bar_isme_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginBottom="24dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
 
+                <Button
+                    android:onClick="@{activityprofile.onClickUpdateProfile}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:drawableTop="@drawable/ic_baseline_person_add_alt_1_24"
+                    android:text="프로필 편집"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:onClick="@{activityprofile.onClickTimeLine}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:drawableTop="@drawable/ic_baseline_assistant_photo_24"
+                    android:text="타임라인"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

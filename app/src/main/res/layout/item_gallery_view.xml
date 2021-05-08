@@ -8,14 +8,16 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_edittext_round_black_4dp"
+        android:padding="2dp">
 
 
         <ImageView
             android:id="@+id/item_gallery_view_img"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
         <ImageButton
             android:id="@+id/item_gallery_view_selector_img_btn"
             android:layout_width="30dp"

@@ -10,6 +10,7 @@ data class RecyclerDefaultModel(
     val content: String? // content
 
 ) {
+
     // 친구 목록 모델
     data class FirendsRecyclerModel(
         val type: Int, // type
@@ -70,6 +71,7 @@ data class RecyclerDefaultModel(
     }
 
     companion object {
+        //view type
         const val TEXT_TYPE = 10 // 타이틀 한가지만 있는 경우
         const val TEXT_TYPE_2 = 11 // 타이틀과 내용이 같이 있는 경우
         const val IMAGE_TYPE = 21 // 이미지와 타이틀이 같이 있는 경우
@@ -77,4 +79,6 @@ data class RecyclerDefaultModel(
         const val FRIENDS_LIST_TYPE_TITLE = 31 // 카톡과 같은 기본 친구 목록의 뷰
         const val FRIENDS_LIST_TYPE_TITLE_CONTENT = 32
     }
+
+
 }

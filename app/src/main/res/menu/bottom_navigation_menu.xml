@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_home"
+        android:id="@+id/action_friendslist"
+        android:icon="@drawable/ic_baseline_groups_24"
+        android:enabled="true"
+        android:title="@string/friendsList"
+        />
+    <item
+        android:id="@+id/action_timeline"
         android:icon="@drawable/ic_home"
         android:enabled="true"
-        android:title="@string/home"
+        android:title="@string/timelist"
         />
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search"
-        android:enabled="true"
-        android:title="@string/search"
-        />
-    <item
-        android:id="@+id/action_photo"
-        android:icon="@drawable/ic_edit"
-        android:enabled="true"
-        android:title="@string/upload_image"
-        />
-    <item
-        android:id="@+id/action_favorite_alarm"
+        android:id="@+id/action_chat"
         android:icon="@drawable/ic_baseline_chat_24"
         android:enabled="true"
-        android:title="@string/favorite"
+        android:title="@string/chat"
         />
+
     <item
         android:id="@+id/action_more"
         android:icon="@drawable/ic_baseline_more_horiz_24"

@@ -9,15 +9,16 @@ import androidx.databinding.DataBindingUtil
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.login.LoginActivity
+import com.uos.smsmsm.activity.welcome.WelcomeMainActivity
+import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivitySplashBinding
+import com.uos.smsmsm.util.shareddate.PreferenceUtil
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_splash) {
 
-    lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_splash)
         binding.splash = this@SplashActivity
 
         val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
@@ -67,7 +68,11 @@ class SplashActivity : AppCompatActivity() {
                         this.finish()
                     }.show()
             } else {
-                startActivity(Intent(this, LoginActivity::class.java))
+                if(PreferenceUtil(binding.root.context).getString("adultCheck","") == "true") {
+                    startActivity(Intent(this, LoginActivity::class.java))
+                }else{
+                    startActivity(Intent(this,WelcomeMainActivity::class.java))
+                }
                 this.finish()
             }
         }
