@@ -40,6 +40,8 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     private var isOpenFAB = false
     private val viewModel: ContentUtilViewModel by viewModels()
     private val snsViewModel : SNSUtilViewModel by viewModels()
+
+    private var data = MutableLiveData<ArrayList<TimeLineDTO>>()
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
         const val REQUEST_IMAGE_CAPTURE = 102
@@ -56,30 +58,34 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         //타임라인 게시글 리스트 완성을 위해 내가 구독하고있는 유저들의 timeline data 가져오기
         //내 게시글도 가져오기
         println("데이터 가져오기")
+        binding.fragmentTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)
+        binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,
+            LinearLayoutManager.VERTICAL,false)
         snsViewModel.getTimeLineData()
         initRecyclerViewAdapter()
+
         viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this.currentPhotoPath = it
         })
     }
 
     fun initRecyclerViewAdapter(){
-        var data = MutableLiveData<ArrayList<TimeLineDTO>>()
+
         var timelineData = arrayListOf<TimeLineDTO>()
         val recyclerObserver : Observer<Map<String, ContentDTO>>
                 = Observer { livedata ->
             println("변경된 데이터 ${livedata.toString()}")
+            timelineData.clear()
             livedata.forEach {
                 timelineData.add(TimeLineDTO(it.value,it.key))
             }
             data.value = timelineData
 
-            //데이터 변동되면 리사이클러뷰에 넣기
-            binding.fragmentTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)
-            binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,
-                LinearLayoutManager.VERTICAL,false)
+            //데이터 변동되면 리사이클러뷰 업데이트
+            binding.fragmentTimeLineRecycler.adapter!!.notifyDataSetChanged()
 
         }
+
         snsViewModel.timelineDataList.observe(viewLifecycleOwner, recyclerObserver)
     }
 

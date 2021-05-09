@@ -35,6 +35,7 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private val auth  = FirebaseAuth.getInstance()
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemTimelinePostBinding.inflate(
             LayoutInflater.from(context),
@@ -44,8 +45,14 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         return TimeLinePostViewHolder(binding = binding)
     }
 
-
-    override fun getItemCount(): Int = list.value!!.size
+//override fun getItemCount(): Int = list.value!!.size
+    override fun getItemCount(): Int {
+    return if (list.value == null){
+        0
+    }else {
+        list!!.value!!.size
+    }
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as TimeLinePostViewHolder).onBind(list.value!![position])
@@ -180,7 +187,6 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
     fun favoriteEvent(holder: TimeLinePostViewHolder,position: Int){
         mainScope.launch {
             contentRepository.favoriteEvent(list.value!![position].contentId!!).collect {
-                println("이벤트 성공함? $it")
                 if (it) isFavorite(holder,position)
             }
         }
