@@ -207,8 +207,6 @@ class ContentRepository {
     }
 
     fun addFavoriteContent(contentId: String, type: Boolean) {
-
-        println("리스트 추가하기")
         var databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid", auth.currentUser!!.uid)
         var eventListener = databaseReference.get().addOnCompleteListener {
@@ -218,38 +216,28 @@ class ContentRepository {
                         if (!it.result.isEmpty) {
                             it.result.forEach {
                                 if (it["uid"] == auth.currentUser!!.uid) {
-
                                     var addFavoriteReference =
                                         db.collection("User").document("UserData")
                                             .collection("userInfo").document(it.id)
                                             .collection("favoriteContents").document("list")
-                                    println("업데이트 시작하기 ${it.id}")
                                     db.runTransaction { transaction ->
                                         var favoriteList = transaction.get(addFavoriteReference)
                                             .toObject(ContentDTO.FavoriteList::class.java)
-                                        println("으어어어 $favoriteList")
                                         if (favoriteList == null) {
                                             favoriteList = ContentDTO.FavoriteList()
                                             transaction.set(addFavoriteReference, favoriteList)
                                         }
                                         if (type) {
                                             //추가
-                                            println("추가")
                                             favoriteList!!.favoriteList.put(
                                                 contentId,
                                                 System.currentTimeMillis()
                                             )
-                                            println("??????????")
-                                            println("으어어어222 $favoriteList")
                                             transaction.set(addFavoriteReference, favoriteList)
                                         } else {
                                             //제거
-                                            println("제거")
                                             if (favoriteList!!.favoriteList.containsKey(contentId)) {
                                                 favoriteList.favoriteList.remove(contentId)
-                                                println("??????????")
-
-                                                println("으어어어2222 $favoriteList")
                                                 transaction.set(addFavoriteReference, favoriteList)
                                             } else {
 
@@ -267,19 +255,14 @@ class ContentRepository {
 
     @ExperimentalCoroutinesApi
     fun isFavorite(contentId: String) = callbackFlow<Boolean> {
-        println("isFavorite 실행~~")
         val databaseReference = db.collection("Contents").document(contentId)
         val eventListener = databaseReference.addSnapshotListener { value, error ->
             if (value != null) {
-                println("value가 null이지않음")
                 if (value.exists()) {
-                    println("value가 존재함")
                     var content = value.toObject(ContentDTO::class.java)
                     if (content!!.favorites.containsKey(auth.currentUser!!.uid)) {
-                        println("이미 좋아요를 눌러뒀습니다.")
                         this@callbackFlow.sendBlocking(true)
                     } else {
-                        println("좋아요를 눌러두지않았습니다.")
                         this@callbackFlow.sendBlocking(false)
                     }
                 }
@@ -320,9 +303,6 @@ class ContentRepository {
     }
 
     fun getUserPostContent(uid: String) = callbackFlow<Map<String, ContentDTO>> {
-
-        println("자기 post 가져오기 실행")
-
         val databaseReference = db.collection("Contents")
             .whereEqualTo("uid", uid)
 
