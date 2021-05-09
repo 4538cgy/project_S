@@ -105,7 +105,8 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
             }
             println("완성된 list ${list.toString()}")
             adapter.submitList(list)
-            adapter.notifyItemInserted(list.lastIndex)
+            //notify 안해주면 왜 안될까?
+            //adapter.notifyItemInserted(list.lastIndex)
         })
         //initRecyclerViewAdapter()
 
