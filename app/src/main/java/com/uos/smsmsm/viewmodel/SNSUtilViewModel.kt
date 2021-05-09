@@ -19,17 +19,22 @@ import com.uos.smsmsm.repository.UserRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
 // 채팅 / Timeline / 친구 찾기등 소셜 네트워크 기능 viewmodel
+@Singleton
 class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle,
                                                     var userRepository : UserRepository,
                                                     var chatRepository : ChatRepository,
                                                     var contentRepository : ContentRepository
 ) : ViewModel(){
-
+    companion object{
+        var friendsUidList : ArrayList<String> = ArrayList<String>()
+    }
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var edittextText : MutableLiveData<String> = MutableLiveData()
     var chatRoomUid : MutableLiveData<String> = MutableLiveData()
@@ -338,6 +343,8 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         viewModelScope.launch(Dispatchers.IO){
             userRepository.getFriendsList(uid).collect{
                 println("가져온 친구 목록 = ${it.toString()}")
+                friendsUidList.clear()
+                friendsUidList.addAll(it)
                 it.forEach {
                     getUserData(it)
                 }
@@ -393,13 +400,12 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         }
     }
     @ExperimentalCoroutinesApi
-    fun getUserByUserName(userName: String){
-
+    fun getUserByUserName(userName: String) : Job =
         viewModelScope.launch(Dispatchers.IO){
             userRepository.getUserByUserName(userName).collect {
                 findUserByUserName.postValue(it)
             }
         }
-    }
+
 
 }

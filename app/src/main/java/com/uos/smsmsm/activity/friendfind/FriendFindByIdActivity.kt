@@ -17,6 +17,7 @@ import com.uos.smsmsm.recycleradapter.friends.FindFriendViewHolder
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 
 @AndroidEntryPoint
 class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.layout.activity_find_friends_by_id){
@@ -26,6 +27,7 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
     private val findFriendsList: ObservableArrayList<UserDTO> by lazy {
         ObservableArrayList<UserDTO>()
     }
+    private var getUserByUserNameJob : Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +37,7 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
             recyclerFindFriendById.adapter = FindFriendAdapter(this@FriendFindByIdActivity,userUtilViewModel)
             friendlist = findFriendsList
         }
+
         snsViewModel.findUserByUserName.observe(this, Observer {
             it?.let {list ->
                 if(list.isNotEmpty()) {
@@ -64,7 +67,16 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
 
     }
     private fun searchUserByUserName(){
-        snsViewModel.getUserByUserName(binding.editFindFriendById.text.toString())
+        getUserByUserNameJob = snsViewModel.getUserByUserName(binding.editFindFriendById.text.toString())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        getUserByUserNameJob?.let{
+            if(!it.isCompleted){
+                it.cancel()
+            }
+        }
     }
 
     override fun finish() {
