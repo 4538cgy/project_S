@@ -27,13 +27,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class TimeLineRecyclerAdapter(private val context : Context, private val list : LiveData<ArrayList<TimeLineDTO>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TimeLineRecyclerAdapter(
+    private val context: Context,
+    private val list: LiveData<ArrayList<TimeLineDTO>>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val userRepository = UserRepository()
     private val contentRepository = ContentRepository()
     private val utilRepository = UtilRepository()
     private val mainScope = CoroutineScope(Dispatchers.Main)
-    private val auth  = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -45,13 +48,13 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         return TimeLinePostViewHolder(binding = binding)
     }
 
-//override fun getItemCount(): Int = list.value!!.size
+    //override fun getItemCount(): Int = list.value!!.size
     override fun getItemCount(): Int {
-    return if (list.value == null){
-        0
-    }else {
-        list!!.value!!.size
-    }
+        return if (list.value == null) {
+            0
+        } else {
+            list!!.value!!.size
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -59,9 +62,11 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
 
         //글쓴 유저의 uid를 가져온뒤 프로필 이미지
         mainScope.launch {
-            userRepository.getUserProfileImage(list.value!![position].content!!.uid!!).collect{
+            userRepository.getUserProfileImage(list.value!![position].content!!.uid!!).collect {
 
-                Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemTimelinePostImageviewProfileImage)
+                Glide.with(holder.binding.root.context).load(it)
+                    .apply(RequestOptions().circleCrop())
+                    .into(holder.binding.itemTimelinePostImageviewProfileImage)
             }
         }
         //글쓴 유저의 닉네임
@@ -80,57 +85,51 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
                         list.value!![position].content!!.imageDownLoadUrlList!!
                     )
 
-            }else{
+            } else {
                 holder.binding.itemTimelinePostViewpagerPhotoList.visibility = View.GONE
 
             }
         }
         //시간 표시
-        holder.binding.itemTimelinePostTextviewTimestamp.text = TimeUtil().formatTimeString(list.value!![position].content!!.timestamp!!)
+        holder.binding.itemTimelinePostTextviewTimestamp.text =
+            TimeUtil().formatTimeString(list.value!![position].content!!.timestamp!!)
 
         //댓글창이 3개 이하면 댓글 리사이클러뷰 연결 
         //보류
-        if (list.value!![position].content!!.commentCount!!.toInt() < 3){
+        if (list.value!![position].content!!.commentCount!!.toInt() < 3) {
             holder.binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.VISIBLE
             holder.binding.itemTimelinePostRecyclerviewFriendscomments.adapter
-        }else{
+        } else {
             holder.binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.GONE
         }
         //게시글이 친구면 댓글창 보여주기
 
 
         //댓글이 0개 이상이면 갯수 연결
-        if(list.value!![position].content!!.commentCount!!.toInt() > 0){
-            holder.binding.itemTimelinePostTextviewCommentsCount.text = list.value!![position].content!!.commentCount.toString()
-        }else{
+        if (list.value!![position].content!!.commentCount!!.toInt() > 0) {
+            holder.binding.itemTimelinePostTextviewCommentsCount.text =
+                list.value!![position].content!!.commentCount.toString()
+        } else {
             holder.binding.itemTimelinePostTextviewCommentsCount.visibility = View.GONE
         }
         //조회수 연결
-        holder.binding.itemTimelinePostTextviewViewCounts.text = list.value!![position].content!!.viewCount.toString()
+        holder.binding.itemTimelinePostTextviewViewCounts.text =
+            list.value!![position].content!!.viewCount.toString()
         //좋아요 액션
-        holder.binding.itemTimelineImagebuttonFavorite.setOnClickListener { favoriteEvent(holder,position) }
-
-        //좋아요 갯수 표시
-        holder.binding.itemTimelinePostTextviewFavoriteCount.text = "좋아요 " + list.value!![position].content!!.favoriteCount.toString() + "개"
-
-        //이미 좋아요를 했는지 판별
-        isFavorite(holder,position)
-        /*
-        mainScope.launch {
-            println("쿠오오앙 ")
-            contentRepository.isFavorite(list.value!![position].contentId!!).collect {
-                println("쿠오오오 $it")
-                if (it){
-                    //채워진 하트
-                    holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_36)
-                }else{
-                    //빈 하트
-                    holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_36)
-                }
-            }
+        holder.binding.itemTimelineImagebuttonFavorite.setOnClickListener {
+            favoriteEvent(
+                holder,
+                position
+            )
         }
 
-         */
+        //좋아요 갯수 표시
+        holder.binding.itemTimelinePostTextviewFavoriteCount.text =
+            "좋아요 " + list.value!![position].content!!.favoriteCount.toString() + "개"
+
+        //이미 좋아요를 했는지 판별
+        isFavorite(holder, position)
+
         //북마크 액션
         addBookMark()
 
@@ -143,22 +142,39 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
             }
         }
         //댓글 액션 = 댓글 activity로 이동 + 댓글 edittext 클릭시 이동 + 댓글 버튼 클릭시 이동
-        holder.binding.itemTimelineImagebuttonComments.setOnClickListener {comment(holder.binding.root.context, position)}
-        holder.binding.itemTimelinePostConstNoneComment.setOnClickListener {comment(holder.binding.root.context, position)}
-        holder.binding.itemTimelinePostButtonWriteComment.setOnClickListener {comment(holder.binding.root.context, position)}
+        holder.binding.itemTimelineImagebuttonComments.setOnClickListener {
+            comment(
+                holder.binding.root.context,
+                position
+            )
+        }
+        holder.binding.itemTimelinePostConstNoneComment.setOnClickListener {
+            comment(
+                holder.binding.root.context,
+                position
+            )
+        }
+        holder.binding.itemTimelinePostButtonWriteComment.setOnClickListener {
+            comment(
+                holder.binding.root.context,
+                position
+            )
+        }
 
         //게시글 내용
-        holder.binding.itemTimelinePostTextviewExplain.text = list.value!![position].content!!.explain.toString()
-
+        holder.binding.itemTimelinePostTextviewExplain.text =
+            list.value!![position].content!!.explain.toString()
 
 
         //이모티콘 액션 연결
         openEmoticonBar()
         //댓글 작성하기 좌측에 보고있는 유저의 프로필 연결
         mainScope.launch {
-            userRepository.getUserProfileImage(auth.currentUser!!.uid.toString()).collect{
+            userRepository.getUserProfileImage(auth.currentUser!!.uid.toString()).collect {
 
-                Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemTimelinePostImageviewCommentProfile)
+                Glide.with(holder.binding.root.context).load(it)
+                    .apply(RequestOptions().circleCrop())
+                    .into(holder.binding.itemTimelinePostImageviewCommentProfile)
             }
         }
         //옵션 버튼 클릭시 팝업 박스 표시
@@ -173,94 +189,97 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
             }
             holder.binding.root.context.startActivity(intent)
         }
-        
+
     }
 
-    fun comment(context: Context , position: Int){
-        var intentComment = Intent(context,CommentActivity::class.java)
+    fun comment(context: Context, position: Int) {
+        var intentComment = Intent(context, CommentActivity::class.java)
         intentComment.apply {
-            putExtra("postId",list.value!![position].contentId.toString())
+            putExtra("postId", list.value!![position].contentId.toString())
             context.startActivity(intentComment)
         }
     }
 
-    fun favoriteEvent(holder: TimeLinePostViewHolder,position: Int){
+    fun favoriteEvent(holder: TimeLinePostViewHolder, position: Int) {
         mainScope.launch {
             contentRepository.favoriteEvent(list.value!![position].contentId!!).collect {
-                if (it) isFavorite(holder,position)
+                if (it) isFavorite(holder, position)
             }
         }
     }
-    
+
     //좋아요를 이미 눌렀는지 체크
-    fun isFavorite(holder: TimeLinePostViewHolder, position: Int){
+    fun isFavorite(holder: TimeLinePostViewHolder, position: Int) {
         mainScope.launch {
             //로딩 시작 넣어주기
             contentRepository.isFavorite(list.value!![position].contentId!!).collect {
-                if (it){
+                if (it) {
                     //채워진 하트
                     holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_36)
-                    updateFavoriteCount(holder,position)
+                    updateFavoriteCount(holder, position)
                     //로딩 끝내기 넣어주기
-                }else{
+                } else {
                     //빈 하트
                     holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_36)
-                    updateFavoriteCount(holder,position)
+                    updateFavoriteCount(holder, position)
                     //로딩 끝내기 넣어주기
                 }
             }
         }
     }
-    
+
     //좋아요 갯수 업데이트
-    fun updateFavoriteCount(holder: TimeLinePostViewHolder, position: Int){
-        mainScope.launch{
+    fun updateFavoriteCount(holder: TimeLinePostViewHolder, position: Int) {
+        mainScope.launch {
             //로딩 시작 넣어주기
-            contentRepository.getFavoriteCountByContentId(list.value!![position].contentId!!).collect {
-                holder.binding.itemTimelinePostTextviewFavoriteCount.text = "좋아요 " + it.toString() + "개"
-                //로딩 끝내기 넣어주기
-            }
+            contentRepository.getFavoriteCountByContentId(list.value!![position].contentId!!)
+                .collect {
+                    holder.binding.itemTimelinePostTextviewFavoriteCount.text =
+                        "좋아요 " + it.toString() + "개"
+                    //로딩 끝내기 넣어주기
+                }
         }
 
     }
 
-    fun addBookMark(){
+    fun addBookMark() {
 
     }
 
-    fun openOption(){
+    fun openOption() {
 
     }
 
-    fun openEmoticonBar(){
+    fun openEmoticonBar() {
 
     }
 
-    inner class TimeLinePostViewHolder(val binding : ItemTimelinePostBinding) : RecyclerView.ViewHolder(binding.root){
-        fun onBind(data : TimeLineDTO){
-            when(data.content!!.postState){
+    inner class TimeLinePostViewHolder(val binding: ItemTimelinePostBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun onBind(data: TimeLineDTO) {
+            when (data.content!!.postState) {
                 //애드몹 광고면
-                TimeLineDTO.POST_STATE_ADMOB.toString() ->{
+                TimeLineDTO.POST_STATE_ADMOB.toString() -> {
                     binding.itemTimelinePostConstNoticeBar.visibility = View.VISIBLE
                 }
                 //삭제된 상태면
-                TimeLineDTO.POST_STATE_DELETE.toString() ->{
+                TimeLineDTO.POST_STATE_DELETE.toString() -> {
 
                 }
                 //페이스북 오디언스면
-                TimeLineDTO.POST_STATE_FACEBOOK_AUDIANCE.toString() ->{
+                TimeLineDTO.POST_STATE_FACEBOOK_AUDIANCE.toString() -> {
                     binding.itemTimelinePostConstNoticeBar.visibility = View.VISIBLE
                 }
                 //친구 전용이면
-                TimeLineDTO.POST_STATE_ONLYFRIENDS.toString() ->{
+                TimeLineDTO.POST_STATE_ONLYFRIENDS.toString() -> {
 
                 }
                 //비공개 글이면
-                TimeLineDTO.POST_STATE_PRIVATE.toString() ->{
+                TimeLineDTO.POST_STATE_PRIVATE.toString() -> {
 
                 }
                 //전체 공개글이면
-                TimeLineDTO.POST_STATE_PUBLIC.toString() ->{
+                TimeLineDTO.POST_STATE_PUBLIC.toString() -> {
 
                 }
             }

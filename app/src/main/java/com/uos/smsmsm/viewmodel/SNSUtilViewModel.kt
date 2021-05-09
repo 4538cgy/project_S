@@ -80,7 +80,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                                             //#3-1 정렬
                                             var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
                                             //#4 완성된 게시글 원본 recyclerview에 연결하기
-
+                                            println("뀨")
                                             timelineDataList.postValue(result)
                                         }
                                     }
@@ -96,6 +96,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                             //#3-1 정렬
                             var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
                             //#4 완성된 게시글 원본 recyclerview에 연결하기
+                            println("꺄")
                             timelineDataList.postValue(result)
                         }
                     }
