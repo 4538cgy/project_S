@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.comment.CommentActivity
 import com.uos.smsmsm.activity.profile.ProfileActivity
@@ -100,11 +101,29 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         //조회수 연결
         holder.binding.itemTimelinePostTextviewViewCounts.text = list.value!![position].content!!.viewCount.toString()
         //좋아요 액션
-        holder.binding.itemTimelineImagebuttonFavorite.setOnClickListener { favoriteEvent(position) }
+        holder.binding.itemTimelineImagebuttonFavorite.setOnClickListener { favoriteEvent(holder,position) }
 
         //좋아요 갯수 표시
         holder.binding.itemTimelinePostTextviewFavoriteCount.text = "좋아요 " + list.value!![position].content!!.favoriteCount.toString() + "개"
 
+        //이미 좋아요를 했는지 판별
+        isFavorite(holder,position)
+        /*
+        mainScope.launch {
+            println("쿠오오앙 ")
+            contentRepository.isFavorite(list.value!![position].contentId!!).collect {
+                println("쿠오오오 $it")
+                if (it){
+                    //채워진 하트
+                    holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_36)
+                }else{
+                    //빈 하트
+                    holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_36)
+                }
+            }
+        }
+
+         */
         //북마크 액션
         addBookMark()
 
@@ -158,12 +177,45 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         }
     }
 
-    fun favoriteEvent(position: Int){
+    fun favoriteEvent(holder: TimeLinePostViewHolder,position: Int){
         mainScope.launch {
             contentRepository.favoriteEvent(list.value!![position].contentId!!).collect {
                 println("이벤트 성공함? $it")
+                if (it) isFavorite(holder,position)
             }
         }
+    }
+    
+    //좋아요를 이미 눌렀는지 체크
+    fun isFavorite(holder: TimeLinePostViewHolder, position: Int){
+        mainScope.launch {
+            //로딩 시작 넣어주기
+            contentRepository.isFavorite(list.value!![position].contentId!!).collect {
+                if (it){
+                    //채워진 하트
+                    holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_36)
+                    updateFavoriteCount(holder,position)
+                    //로딩 끝내기 넣어주기
+                }else{
+                    //빈 하트
+                    holder.binding.itemTimelineImagebuttonFavorite.setBackgroundResource(R.drawable.ic_baseline_favorite_border_36)
+                    updateFavoriteCount(holder,position)
+                    //로딩 끝내기 넣어주기
+                }
+            }
+        }
+    }
+    
+    //좋아요 갯수 업데이트
+    fun updateFavoriteCount(holder: TimeLinePostViewHolder, position: Int){
+        mainScope.launch{
+            //로딩 시작 넣어주기
+            contentRepository.getFavoriteCountByContentId(list.value!![position].contentId!!).collect {
+                holder.binding.itemTimelinePostTextviewFavoriteCount.text = "좋아요 " + it.toString() + "개"
+                //로딩 끝내기 넣어주기
+            }
+        }
+
     }
 
     fun addBookMark(){
