@@ -56,7 +56,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     val findUserByUserName : MutableLiveData<List<UserDTO?>> by lazy { MutableLiveData<List<UserDTO?>>() }
 
     fun getTimeLineData(){
-
+        println("으어어")
         var contents : MutableMap<String,ContentDTO> = HashMap()
 
         //#1 내 구독함과 내가 작성한 글 가져오기
