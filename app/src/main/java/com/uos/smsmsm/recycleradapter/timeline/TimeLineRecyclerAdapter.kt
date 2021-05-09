@@ -102,6 +102,9 @@ class TimeLineRecyclerAdapter(private val context : Context, private val list : 
         //좋아요 액션
         holder.binding.itemTimelineImagebuttonFavorite.setOnClickListener { favoriteEvent(position) }
 
+        //좋아요 갯수 표시
+        holder.binding.itemTimelinePostTextviewFavoriteCount.text = "좋아요 " + list.value!![position].content!!.favoriteCount.toString() + "개"
+
         //북마크 액션
         addBookMark()
 
