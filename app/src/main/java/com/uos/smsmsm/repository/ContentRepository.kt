@@ -255,6 +255,7 @@ class ContentRepository {
 
     @ExperimentalCoroutinesApi
     fun isFavorite(contentId: String) = callbackFlow<Boolean> {
+        println("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
         val databaseReference = db.collection("Contents").document(contentId)
         val eventListener = databaseReference.addSnapshotListener { value, error ->
             if (value != null) {

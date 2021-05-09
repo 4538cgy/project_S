@@ -61,6 +61,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         binding.fragmentTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)
         binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,
             LinearLayoutManager.VERTICAL,false)
+
         snsViewModel.getTimeLineData()
         initRecyclerViewAdapter()
 
