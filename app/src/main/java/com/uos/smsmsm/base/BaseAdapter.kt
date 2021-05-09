@@ -8,4 +8,9 @@ abstract class BaseAdapter<E: Any> (diffCallback : DiffUtil.ItemCallback<E>) : L
     override fun onBindViewHolder(holder: BaseHolder<out ViewDataBinding, E>, position: Int) {
         holder.bind(getItem(position))
     }
+
+    override fun onBindViewHolder(holder: BaseHolder<out ViewDataBinding, E>, position: Int, payloads: MutableList<Any>) {
+        super.onBindViewHolder(holder, position, payloads)
+        holder.bind(getItem(position), payloads)
+    }
 }

@@ -38,8 +38,6 @@ class TimeLineAdapter : BaseAdapter<TimeLineDTO>(TimeLineDiffCallback()) {
         position: Int
     ) {
         holder.bind(getItem(position))
-        println("으어어어 ${holder.bind(getItem(position))}")
-        println("aaaaaa?????????")
     }
 
     override fun getItemId(position: Int): Long {
@@ -53,13 +51,13 @@ class TimeLineAdapter : BaseAdapter<TimeLineDTO>(TimeLineDiffCallback()) {
         override fun areItemsTheSame(oldItem: TimeLineDTO, newItem: TimeLineDTO): Boolean {
             println("oldItem $oldItem")
             println("newItem $newItem")
-            return oldItem.contentId!!.toLong() == newItem.contentId!!.toLong()
+            return oldItem.contentId!! == newItem.contentId!!
         }
 
         override fun areContentsTheSame(oldItem: TimeLineDTO, newItem: TimeLineDTO): Boolean {
             println("oldItem2 $oldItem")
             println("newItem2 $newItem")
-            return oldItem.contentId!!.toLong() == newItem.contentId!!.toLong()
+            return oldItem.contentId!! == newItem.contentId!!
         }
 
     }
