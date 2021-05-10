@@ -107,9 +107,15 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
         //조회수
         binding.itemTimelinePostTextviewViewCounts.text = "조회수 " + element.content!!.viewCount.toString() + "개"
 
+
+
         //댓글이 0개 이상이면 갯수 연결
         if (element.content!!.commentCount!!.toInt() > 0) {
-            binding.itemTimelinePostTextviewCommentsCount.text = "댓글 " +element.content!!.commentCount.toString() + "개"
+            if (element.content!!.commentCount!!.toInt() == 1){
+                binding.itemTimelinePostTextviewCommentsCount.text = "댓글 " +element.content!!.commentCount.toString() + "개 보기"
+            }else{
+                binding.itemTimelinePostTextviewCommentsCount.text = "댓글 " +element.content!!.commentCount.toString() + "개 모두 보기"
+            }
         } else {
             binding.itemTimelinePostTextviewCommentsCount.visibility = View.GONE
         }
@@ -127,6 +133,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
         binding.itemTimelinePostConstNoneComment.setOnClickListener { comment() }
         binding.itemTimelinePostButtonWriteComment.setOnClickListener { comment() }
         binding.itemTimelinePostRecyclerviewFriendscomments.setOnClickListener { comment() }
+        binding.itemTimelinePostTextviewCommentsCount.setOnClickListener { comment() }
 
         //댓글 작성하기 좌측에 보고있는 유저의 프로필 연결
         mainScope.launch {

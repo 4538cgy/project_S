@@ -18,7 +18,6 @@ class TimeLineAdapter : BaseAdapter<TimeLineDTO>(TimeLineDiffCallback()) {
 
     init {
         setHasStableIds(true)
-        println("으아아아아아아 $itemCount")
     }
 
     override fun onCreateViewHolder(
