@@ -43,6 +43,12 @@ class TimeLineAdapter : BaseAdapter<TimeLineDTO>(TimeLineDiffCallback()) {
         return getItem(position).content!!.timestamp!!.toLong()
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemCount(): Int = currentList.size
+
 
 
 

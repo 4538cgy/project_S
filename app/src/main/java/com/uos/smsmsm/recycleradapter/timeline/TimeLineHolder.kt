@@ -47,6 +47,8 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
 
         Glide.with(binding.root.context).clear(binding.itemTimelinePostImageviewProfileImage)
 
+        //setIsRecyclable(false)
+
         //글쓴 유저의 uid를 가져온뒤 프로필 이미지 삽입
         mainScope.launch {
             userRepository.getUserProfileImage(element.content!!.uid.toString()).collect {

@@ -32,7 +32,13 @@ class PhotoAdapter(private val context : Context, private val photoList : ArrayL
 
     override fun getItemCount(): Int = photoList.size
 
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+
 
         //프로그레스 초기화
         loadingDialog = LoadingDialog(context).apply {
@@ -86,6 +92,7 @@ class PhotoAdapter(private val context : Context, private val photoList : ArrayL
 
     class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val image : ImageView = view.findViewById(R.id.item_content_photo_imageview)
+
     }
 
 
