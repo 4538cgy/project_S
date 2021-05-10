@@ -72,7 +72,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
                         context,
                         element.content!!.imageDownLoadUrlList!!
                     )
-
+                (binding.itemTimelinePostViewpagerPhotoList.adapter as PhotoAdapter).notifyDataSetChanged()
             } else {
                 binding.itemTimelinePostViewpagerPhotoList.visibility = View.GONE
 
