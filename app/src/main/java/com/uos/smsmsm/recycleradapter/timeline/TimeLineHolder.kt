@@ -144,6 +144,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
                     .into(binding.itemTimelinePostImageviewCommentProfile)
             }
         }
+
         //옵션 버튼 클릭시 팝업 박스 표시
 
         //사진 더블 클릭시 좋아요 액션
