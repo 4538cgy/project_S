@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="bottomsheetdialogpostmoreoption"
+            type="com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogPostMoreOption" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:id="@+id/bottom_sheet_dialog_post_more_option_linearlayout_isme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="12dp"
+            android:visibility="gone"
+            >
+            <TextView
+                android:id="@+id/bottom_sheet_dialog_post_more_option_textview_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="삭제"
+                android:layout_marginVertical="8dp"
+                android:textSize="18dp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_sheet_dialog_post_more_option_linearlayout_isnotme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="12dp"
+            >
+            <TextView
+                android:id="@+id/bottom_sheet_dialog_post_more_option_textview_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="신고하기"
+                android:layout_marginVertical="8dp"
+                android:textSize="18dp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/bottom_sheet_dialog_post_more_option_textview_hide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="숨기기"
+                android:layout_marginVertical="8dp"
+                android:textSize="18dp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/bottom_sheet_dialog_post_more_option_textview_delete_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="해당 게시자 친구 삭제"
+                android:layout_marginVertical="8dp"
+                android:textSize="18dp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/bottom_sheet_dialog_post_more_option_textview_save_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="게시글 저장"
+                android:layout_marginVertical="8dp"
+                android:textSize="18dp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                />
+
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

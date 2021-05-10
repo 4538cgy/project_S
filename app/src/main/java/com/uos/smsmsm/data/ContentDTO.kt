@@ -33,6 +33,7 @@ data class ContentDTO(
         var uid : String ? = null,
         var comment : String ? = null,
         var timestamp : Long ? = null,
+        var favorites : MutableMap<String,Boolean> = HashMap(),
         var replyComment : MutableMap<String,ReplyComment> = HashMap()
 
     ){

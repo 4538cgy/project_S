@@ -189,7 +189,7 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawableTop="@drawable/ic_baseline_groups_24"
-                            android:text="메일"
+                            android:text="업적"
                             />
                         <Button
                             android:layout_width="50dp"

@@ -1,16 +1,28 @@
 package com.uos.smsmsm.recycleradapter.viewpager
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.uos.smsmsm.R
+import com.uos.smsmsm.data.TimeLineDTO
+import com.uos.smsmsm.util.dialog.LoadingDialog
 
 class PhotoAdapter(private val context : Context, private val photoList : ArrayList<String> ) : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             LayoutInflater.from(context).inflate(
@@ -20,13 +32,20 @@ class PhotoAdapter(private val context : Context, private val photoList : ArrayL
 
     override fun getItemCount(): Int = photoList.size
 
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+
         Glide.with(context)
             .load(photoList[position])
+            .fitCenter()
+            .dontAnimate()
+            .dontTransform()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .thumbnail(
-                Glide.with(context).load(photoList[position]).fitCenter()
-            )
+            .thumbnail(0.01f)
             .into(holder.image)
 
         holder.itemView.setOnClickListener {
@@ -36,6 +55,9 @@ class PhotoAdapter(private val context : Context, private val photoList : ArrayL
 
     class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
         val image : ImageView = view.findViewById(R.id.item_content_photo_imageview)
+
     }
+
+
 
 }
