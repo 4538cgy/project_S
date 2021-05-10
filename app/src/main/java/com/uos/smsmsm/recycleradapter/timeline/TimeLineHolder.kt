@@ -44,6 +44,9 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
     override fun bind(element: TimeLineDTO) {
         super.bind(element)
         binding.itemtimelinepost = element
+
+        Glide.with(binding.root.context).clear(binding.itemTimelinePostImageviewProfileImage)
+
         //글쓴 유저의 uid를 가져온뒤 프로필 이미지 삽입
         mainScope.launch {
             userRepository.getUserProfileImage(element.content!!.uid.toString()).collect {
@@ -66,7 +69,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
                 binding.itemTimelinePostViewpagerPhotoList.visibility = View.VISIBLE
                 binding.itemTimelinePostViewpagerPhotoList.adapter =
                     PhotoAdapter(
-                        binding.root.context,
+                        context,
                         element.content!!.imageDownLoadUrlList!!
                     )
 
@@ -101,10 +104,12 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
         //게시글이 친구면 댓글창 보여주기
 
 
+        //조회수
+        binding.itemTimelinePostTextviewViewCounts.text = "조회수 " + element.content!!.viewCount.toString() + "개"
+
         //댓글이 0개 이상이면 갯수 연결
         if (element.content!!.commentCount!!.toInt() > 0) {
-            binding.itemTimelinePostTextviewCommentsCount.text =
-                element.content!!.commentCount.toString()
+            binding.itemTimelinePostTextviewCommentsCount.text = "댓글 " +element.content!!.commentCount.toString() + "개"
         } else {
             binding.itemTimelinePostTextviewCommentsCount.visibility = View.GONE
         }
