@@ -3,6 +3,7 @@ package com.uos.smsmsm.recycleradapter.timeline
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -11,8 +12,10 @@ import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.comment.CommentActivity
 import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.base.BaseHolder
+import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemTimelinePostBinding
+import com.uos.smsmsm.recycleradapter.comment.CommentAdapter
 import com.uos.smsmsm.recycleradapter.viewpager.PhotoAdapter
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
@@ -29,6 +32,14 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
     private val contentRepository = ContentRepository()
     private val userRepository = UserRepository()
     private val auth = FirebaseAuth.getInstance()
+
+    private val list by lazy { ArrayList<ContentDTO.Comment>().apply {
+
+    }}
+
+    private val commentAdapter by lazy { CommentAdapter().apply {
+        submitList(list)
+    }}
 
     override fun bind(element: TimeLineDTO) {
         super.bind(element)
@@ -64,6 +75,10 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
 
             }
         }
+
+        //인디케이터 초기화
+        binding.itemTimelinePostIndicator.setViewPager(binding.itemTimelinePostViewpagerPhotoList)
+
         //시간 표시
         binding.itemTimelinePostTextviewTimestamp.text =
             TimeUtil().formatTimeString(element.content!!.timestamp!!)
@@ -72,7 +87,13 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
         //보류
         if (element.content!!.commentCount!!.toInt() < 3) {
             binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.VISIBLE
-            binding.itemTimelinePostRecyclerviewFriendscomments.adapter
+            //댓글 연결
+            element.content!!.commentList.forEach {
+                list.add(it.value)
+                if (list.size > 3) { return@forEach }
+                commentAdapter.notifyItemInserted(list.lastIndex)
+            }
+            initCommentRecyclerView()
         } else {
             binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.GONE
         }
@@ -100,6 +121,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
         binding.itemTimelineImagebuttonComments.setOnClickListener { comment() }
         binding.itemTimelinePostConstNoneComment.setOnClickListener { comment() }
         binding.itemTimelinePostButtonWriteComment.setOnClickListener { comment() }
+        binding.itemTimelinePostRecyclerviewFriendscomments.setOnClickListener { comment() }
 
         //댓글 작성하기 좌측에 보고있는 유저의 프로필 연결
         mainScope.launch {
@@ -132,6 +154,14 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
         }
 
         isFavorite(element.contentId.toString())
+
+
+    }
+
+    fun initCommentRecyclerView(){
+        binding.itemTimelinePostRecyclerviewFriendscomments.adapter = commentAdapter
+        binding.itemTimelinePostRecyclerviewFriendscomments.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
+        binding.itemTimelinePostRecyclerviewFriendscomments.setHasFixedSize(true)
     }
 
     fun comment() {
