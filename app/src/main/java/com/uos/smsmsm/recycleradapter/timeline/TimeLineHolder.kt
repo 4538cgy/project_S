@@ -43,7 +43,6 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
     }}
 
     private val commentAdapter by lazy { CommentAdapter().apply {
-        println("ASDFASDFASDFASDFASDFASDFASDFASDF")
     }}
 
     override fun bind(element: TimeLineDTO) {
@@ -70,19 +69,6 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
                 binding.itemTimelinePostTextviewNickname.text = it
             }
         }
-        //옵션 버튼 클릭
-        /*
-        binding.itemTimelinePostImagebuttonOption.setOnClickListener {
-            var bottomSheetDialog = BottomSheetDialogPostMoreOption()
-            var args = Bundle()
-            args.putString("postId",element.contentId)
-            args.putString("destinationUid",element.content!!.uid)
-            bottomSheetDialog.arguments = args
-            var fragmentManager = (this as FragmentActivity).supportFragmentManager
-            bottomSheetDialog.show(fragmentManager,"lol")
-        }
-
-         */
 
         //viewpager에 사진 연결
         if (element.content!!.imageDownLoadUrlList != null) {
