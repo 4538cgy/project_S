@@ -180,6 +180,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
         var intentComment = Intent(context, CommentActivity::class.java)
         intentComment.apply {
             putExtra("postId", element.contentId.toString())
+
             context.startActivity(intentComment)
         }
     }
