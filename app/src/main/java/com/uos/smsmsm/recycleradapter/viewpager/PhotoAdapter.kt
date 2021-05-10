@@ -22,7 +22,7 @@ import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.util.dialog.LoadingDialog
 
 class PhotoAdapter(private val context : Context, private val photoList : ArrayList<String> ) : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
-    lateinit var loadingDialog: LoadingDialog
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             LayoutInflater.from(context).inflate(
@@ -39,15 +39,15 @@ class PhotoAdapter(private val context : Context, private val photoList : ArrayL
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 
-
-        //프로그레스 초기화
-        loadingDialog = LoadingDialog(context).apply {
-            //프로그레스 투명하게
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            //프로그레스 꺼짐 방지
-            setCancelable(false)
-        }
-
+        Glide.with(context)
+            .load(photoList[position])
+            .fitCenter()
+            .dontAnimate()
+            .dontTransform()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .thumbnail(0.01f)
+            .into(holder.image)
+        /*
         if (photoList.size > 0 ) {
             println("이미지 꽂아넣기")
             Glide.with(context)
@@ -84,6 +84,8 @@ class PhotoAdapter(private val context : Context, private val photoList : ArrayL
             Glide.with(context).clear(holder.image)
             holder.image.setImageDrawable(null)
         }
+
+         */
 
         holder.itemView.setOnClickListener {
             //두번 연속 클릭시 좋아요 이벤트
