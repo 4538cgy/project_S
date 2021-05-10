@@ -47,45 +47,6 @@ class PhotoAdapter(private val context : Context, private val photoList : ArrayL
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .thumbnail(0.01f)
             .into(holder.image)
-        /*
-        if (photoList.size > 0 ) {
-            println("이미지 꽂아넣기")
-            Glide.with(context)
-                .load(photoList[position])
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .listener(object : RequestListener<Drawable>{
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        println("로드 실패!!!!")
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        println("로드 성공!!!!!")
-                        return false
-                    }
-
-                })
-                .into(holder.image)
-
-        }else{
-            println("이미지 지우기")
-            Glide.with(context).clear(holder.image)
-            holder.image.setImageDrawable(null)
-        }
-
-         */
 
         holder.itemView.setOnClickListener {
             //두번 연속 클릭시 좋아요 이벤트
