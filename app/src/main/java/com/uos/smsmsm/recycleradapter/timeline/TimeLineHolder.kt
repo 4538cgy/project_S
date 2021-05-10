@@ -38,7 +38,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
     }}
 
     private val commentAdapter by lazy { CommentAdapter().apply {
-        submitList(list)
+        println("ASDFASDFASDFASDFASDFASDFASDFASDF")
     }}
 
     override fun bind(element: TimeLineDTO) {
@@ -55,6 +55,7 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
 
                 Glide.with(binding.root.context).load(it)
                     .apply(RequestOptions().circleCrop())
+                    .thumbnail(0.01f)
                     .into(binding.itemTimelinePostImageviewProfileImage)
             }
         }
@@ -90,14 +91,18 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
 
         //댓글창이 3개 이하면 댓글 리사이클러뷰 연결
         //보류
+
         if (element.content!!.commentCount!!.toInt() < 3) {
             binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.VISIBLE
             //댓글 연결
             element.content!!.commentList.forEach {
+                list.clear()
                 list.add(it.value)
                 if (list.size > 3) { return@forEach }
-                commentAdapter.notifyItemInserted(list.lastIndex)
             }
+
+            commentAdapter.submitList(list)
+            commentAdapter.notifyItemInserted(list.lastIndex)
             initCommentRecyclerView()
         } else {
             binding.itemTimelinePostRecyclerviewFriendscomments.visibility = View.GONE

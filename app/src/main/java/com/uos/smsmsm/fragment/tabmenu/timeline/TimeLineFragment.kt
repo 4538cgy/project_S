@@ -45,35 +45,23 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     private var data = MutableLiveData<ArrayList<TimeLineDTO>>()
 
     private val adapter by lazy { TimeLineAdapter().apply {
-        println("list 전달 ${list.toString()}")
         submitList(list)
     } }
 
     private val list by lazy { ArrayList<TimeLineDTO>().apply {
-        println("리스트 생성")
     }}
 
     override fun init() {
-        println("이닛!")
         snsViewModel.getTimeLineData()
         super.init()
         initRecyclerView()
-        //insertItem()
     }
 
     private fun initRecyclerView(){
-        println("리사이클러뷰 부착!")
         binding.fragmentTimeLineRecycler.adapter = adapter
         binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         binding.fragmentTimeLineRecycler.setHasFixedSize(true)
     }
-    /*
-    private fun insertItem(){
-        list.add(TimeLineDTO(null,"1231231231"))
-        adapter.notifyItemInserted(list.lastIndex)
-    }
-
-     */
 
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
@@ -86,57 +74,21 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
         binding.fragmenttimeline = this
         binding.lifecycleOwner = this
-        //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
-        //타임라인 게시글 리스트 완성을 위해 내가 구독하고있는 유저들의 timeline data 가져오기
-        //내 게시글도 가져오기
-
-        /*
-        println("데이터 가져오기")
-        binding.fragmentTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)
-        binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,
-            LinearLayoutManager.VERTICAL,false)
-
-         */
         snsViewModel.timelineDataList.observe(viewLifecycleOwner, Observer {
-            println("데이터 가져와짐?")
             it.forEach {
                 list.add(TimeLineDTO(it.value,it.key))
             }
-            println("완성된 list ${list.toString()}")
             adapter.submitList(list)
             //최초 item insert
             adapter.notifyItemInserted(list.lastIndex)
         })
-        //initRecyclerViewAdapter()
+
 
         viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this.currentPhotoPath = it
         })
     }
-
-    /*
-    fun initRecyclerViewAdapter(){
-
-        var timelineData = arrayListOf<TimeLineDTO>()
-        val recyclerObserver : Observer<Map<String, ContentDTO>>
-                = Observer { livedata ->
-            println("변경된 데이터 ${livedata.toString()}")
-            timelineData.clear()
-            livedata.forEach {
-                timelineData.add(TimeLineDTO(it.value,it.key))
-            }
-            data.value = timelineData
-
-            //데이터 변동되면 리사이클러뷰 업데이트
-            binding.fragmentTimeLineRecycler.adapter!!.notifyDataSetChanged()
-
-        }
-
-        snsViewModel.timelineDataList.observe(viewLifecycleOwner, recyclerObserver)
-    }
-
-     */
 
     fun uploadPhoto(view: View) {
 

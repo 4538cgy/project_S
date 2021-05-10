@@ -50,6 +50,8 @@ class CommentHolder(binding: ItemCommentThumbnailBinding) : BaseHolder<ItemComme
         itemView.setOnClickListener { setReply() }
     }
 
+
+
     //답글
     fun setReply(){
 

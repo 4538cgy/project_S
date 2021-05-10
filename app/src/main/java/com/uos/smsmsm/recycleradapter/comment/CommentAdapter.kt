@@ -34,6 +34,12 @@ class CommentAdapter : BaseAdapter<ContentDTO.Comment>(CommentDiffCallback()) {
         return getItem(position).timestamp!!.toLong()
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    override fun getItemCount(): Int = currentList.size
+
     private class CommentDiffCallback : DiffUtil.ItemCallback<ContentDTO.Comment> () {
         override fun areItemsTheSame(
             oldItem: ContentDTO.Comment,
