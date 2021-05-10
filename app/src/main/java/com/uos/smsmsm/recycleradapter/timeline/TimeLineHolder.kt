@@ -1,8 +1,11 @@
 package com.uos.smsmsm.recycleradapter.timeline
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -15,10 +18,12 @@ import com.uos.smsmsm.base.BaseHolder
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemTimelinePostBinding
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.recycleradapter.comment.CommentAdapter
 import com.uos.smsmsm.recycleradapter.viewpager.PhotoAdapter
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
+import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogPostMoreOption
 import com.uos.smsmsm.util.time.TimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +70,19 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
                 binding.itemTimelinePostTextviewNickname.text = it
             }
         }
+        //옵션 버튼 클릭
+        /*
+        binding.itemTimelinePostImagebuttonOption.setOnClickListener {
+            var bottomSheetDialog = BottomSheetDialogPostMoreOption()
+            var args = Bundle()
+            args.putString("postId",element.contentId)
+            args.putString("destinationUid",element.content!!.uid)
+            bottomSheetDialog.arguments = args
+            var fragmentManager = (this as FragmentActivity).supportFragmentManager
+            bottomSheetDialog.show(fragmentManager,"lol")
+        }
+
+         */
 
         //viewpager에 사진 연결
         if (element.content!!.imageDownLoadUrlList != null) {

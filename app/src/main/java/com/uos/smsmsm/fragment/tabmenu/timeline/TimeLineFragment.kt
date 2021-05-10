@@ -44,7 +44,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     private var data = MutableLiveData<ArrayList<TimeLineDTO>>()
 
-    private val adapter by lazy { TimeLineAdapter().apply {
+    private val adapter by lazy { TimeLineAdapter(requireActivity().supportFragmentManager).apply {
         submitList(list)
     } }
 
@@ -83,6 +83,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
             //최초 item insert
             adapter.notifyItemInserted(list.lastIndex)
         })
+
 
 
         viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
