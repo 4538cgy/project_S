@@ -108,7 +108,9 @@ class ContentRepository  @Inject constructor(){
                                             var postThumbnail =
                                                 value.toObject(ContentDTO.PostThumbnail::class.java)
 
-                                            postThumbnail!!.thumbnailList.forEach {
+                                            var result = postThumbnail!!.thumbnailList.toList().sortedByDescending { (_,value)-> value.timestamp }.toMap()
+
+                                            result.forEach {
                                                 contentIdList.add(it.key)
                                             }
                                             this@callbackFlow.sendBlocking(contentIdList)
