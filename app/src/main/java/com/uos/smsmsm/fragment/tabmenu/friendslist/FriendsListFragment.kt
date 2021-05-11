@@ -60,12 +60,15 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
 
                 //데이터 읽은 후에 데이터 내용에 따라 내용 출력  #dialog와 같은것으로 표시를 바꿔주면 더욱 이뻐질듯함
                 "complete" -> {
-                    if (viewmodel.recyclerData.value!!.isEmpty()){ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
-                    binding.fragmentFriendsListTextviewNotice.setText(R.string.notice_no_friends)
-                        loadingDialog.dismiss()
-                    }else{
-                        binding.fragmentFriendsListTextviewNotice.visibility = View.GONE
-                        loadingDialog.dismiss()
+                    if (viewmodel.recyclerData.value != null) {
+                        if (viewmodel.recyclerData.value!!.isEmpty()) {
+                            binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
+                            binding.fragmentFriendsListTextviewNotice.setText(R.string.notice_no_friends)
+                            loadingDialog.dismiss()
+                        } else {
+                            binding.fragmentFriendsListTextviewNotice.visibility = View.GONE
+                            loadingDialog.dismiss()
+                        }
                     }
                 }
             }

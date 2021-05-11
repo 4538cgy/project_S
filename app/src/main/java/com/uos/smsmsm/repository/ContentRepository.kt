@@ -84,6 +84,63 @@ class ContentRepository  @Inject constructor(){
         awaitClose { }
     }
 
+    //북마크
+    @ExperimentalCoroutinesApi
+    fun addBookMark(uid : String , contentId : String) = callbackFlow<Boolean> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo")
+            .whereEqualTo("uid", uid)
+
+        val eventListener = databaseReference.get().addOnCompleteListener {
+            println("북마크 리스너 진입")
+            if (it.isSuccessful) {
+                if (it.result != null) {
+                    it.result.documents.forEach {
+                        if (it["uid"]!!.equals(uid)){
+                            println("북마크 트랜잭션 생성")
+                            var addBookMarkReference =
+                                db.collection("User").document("UserData")
+                                    .collection("userInfo").document(it.id)
+                                    .collection("bookmarkContents").document("list")
+                            db.runTransaction { transaction ->
+                                println("북마크 트랜잭션 시작")
+                                var bookMarkList = transaction.get(addBookMarkReference)
+                                    .toObject(ContentDTO.BookMarkList::class.java)
+                                if (bookMarkList == null) {
+                                    println("북마크 생성")
+                                    bookMarkList = ContentDTO.BookMarkList()
+                                    transaction.set(addBookMarkReference, bookMarkList)
+                                    this@callbackFlow.sendBlocking(true)
+                                    return@runTransaction
+                                }
+                                if (!bookMarkList.bookMarkList.containsKey(contentId)) {
+                                    println("북마크 추가")
+                                    //추가
+                                    bookMarkList!!.bookMarkList.put(
+                                        contentId,
+                                        System.currentTimeMillis()
+                                    )
+                                    transaction.set(addBookMarkReference, bookMarkList)
+                                    this@callbackFlow.sendBlocking(true)
+                                    return@runTransaction
+                                } else {
+                                    println("북마크 제거")
+                                    //제거
+                                    if (bookMarkList!!.bookMarkList.containsKey(contentId)) {
+                                        bookMarkList.bookMarkList.remove(contentId)
+                                        transaction.set(addBookMarkReference, bookMarkList)
+                                        this@callbackFlow.sendBlocking(false)
+                                        return@runTransaction
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose {  }
+    }
+
     //내 구독함과 내 컨텐츠 리스트 가져오기
     @ExperimentalCoroutinesApi
     fun getSubscribeContentsWithMyContents(uid: String) = callbackFlow<ArrayList<String>?> {
@@ -91,7 +148,7 @@ class ContentRepository  @Inject constructor(){
             .whereEqualTo("uid", uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
-            println("aaaaaaaa4")
+
             if (it.isSuccessful) {
                 if (it.result != null) {
                     it.result.documents.forEach {

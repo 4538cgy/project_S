@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -156,8 +157,6 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
             }
         }
 
-        //옵션 버튼 클릭시 팝업 박스 표시
-
         //사진 더블 클릭시 좋아요 액션
 
         //프로필 이미지 클릭시 프로필로 이동
@@ -179,9 +178,29 @@ class TimeLineHolder(binding: ItemTimelinePostBinding) : BaseHolder<ItemTimeline
 
         isFavorite(element.contentId.toString())
 
+        //북마크
+        binding.itemTimelineImagebuttonBookmark.setOnClickListener {
+            bookMark(element.contentId.toString())
+        }
+
 
     }
+    
+    //북마크
+    fun bookMark(contentId: String){
+        println("북마크 시작")
+        mainScope.launch {
+            contentRepository.addBookMark(auth.currentUser!!.uid,contentId).collect {
+                if (it)Toast.makeText(context, "북마크에 현재 게시글 추가 완료", Toast.LENGTH_SHORT).show() else Toast.makeText(
+                    context,
+                    "북마크에서 현재 게시글 삭제됨",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
+    //댓글 리사이클러뷰 추가
     fun initCommentRecyclerView(){
         binding.itemTimelinePostRecyclerviewFriendscomments.adapter = commentAdapter
         binding.itemTimelinePostRecyclerviewFriendscomments.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
