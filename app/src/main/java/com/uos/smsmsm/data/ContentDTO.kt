@@ -63,4 +63,8 @@ data class ContentDTO(
     data class FavoriteList(
         var favoriteList: MutableMap<String,Long> = HashMap()
     )
+
+    data class BookMarkList(
+        var bookMarkList : MutableMap<String,Long> = HashMap()
+    )
 }

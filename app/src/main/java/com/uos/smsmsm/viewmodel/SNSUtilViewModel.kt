@@ -55,6 +55,32 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     val findUserByUserName : MutableLiveData<List<UserDTO?>> by lazy { MutableLiveData<List<UserDTO?>>() }
 
+    var pagingcount = 0
+    var list : ArrayList<String> = arrayListOf()
+
+    fun getData(){
+
+            println("으아아 페이징 카운터 $pagingcount")
+            println("리스트의 사이즈 ${list.size}")
+            if (pagingcount < list.size) {
+                viewModelScope.launch(Dispatchers.Main) {
+                    println("가져올 데이터 id ${list[pagingcount]}")
+                    contentRepository.getContents(list[pagingcount]).collect { data ->
+                        println("콜렉트 결과 ${data.toString()}")
+                        timelineDataList.postValue(data)
+
+                        pagingcount++
+                    }
+
+                }
+
+            }else{
+                println("게시글의 마지막입니다.")
+            }
+
+
+    }
+
     fun getTimeLineData(){
         println("으어어")
         var contents : MutableMap<String,ContentDTO> = HashMap()
@@ -64,6 +90,12 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
 
             contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
+                list = contentIdList!!
+                contentIdList.forEach {
+                    println("가져온 게시글 id  = ${it.toString()}")
+                }
+                getData()
+                /*
                 if (contentIdList != null){
                     //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기
                     contentIdList.forEach { contentId ->
@@ -101,6 +133,8 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                         }
                     }
                 }
+
+                 */
             }
         }
         /*
@@ -230,7 +264,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         }
 
     }
-    
+
     //채팅방 있는지 확인하고 있으면 snapshot id 가져오기
     fun checkChatRoom(destinationUid : String){
         val repository = ChatRepository()

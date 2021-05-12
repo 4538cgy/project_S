@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
@@ -59,6 +60,16 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     private fun initRecyclerView(){
         binding.fragmentTimeLineRecycler.adapter = adapter
+        binding.fragmentTimeLineRecycler.addOnScrollListener(object  : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!binding.fragmentTimeLineRecycler.canScrollVertically(1))
+                {
+                    println("끝에 도달")
+                    snsViewModel.getData()
+                }
+            }
+        })
         binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         binding.fragmentTimeLineRecycler.setHasFixedSize(true)
     }
@@ -76,9 +87,11 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         binding.lifecycleOwner = this
 
         snsViewModel.timelineDataList.observe(viewLifecycleOwner, Observer {
+            println("옵저빙 중 ${it.toString()}")
             it.forEach {
                 list.add(TimeLineDTO(it.value,it.key))
             }
+            println("옵저빙 결과 ${list.toString()}")
             adapter.submitList(list)
             //최초 item insert
             adapter.notifyItemInserted(list.lastIndex)
