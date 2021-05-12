@@ -224,10 +224,10 @@ class UserRepository @Inject constructor() {
         awaitClose { eventListener }
     }
 
+
     //친구 추가
     @ExperimentalCoroutinesApi
     fun addFriend(uid: String, destinationUid: String ) = callbackFlow<String> {
-
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -236,22 +236,16 @@ class UserRepository @Inject constructor() {
             if (dataSnapshot.isSuccessful) {
                 if (dataSnapshot.result != null) {
                     dataSnapshot.result.documents.forEach { foreachDocumentSnapshot ->
-                        println("으아아아아 ${foreachDocumentSnapshot.data.toString()}")
-                        println("으어어어어 ${foreachDocumentSnapshot["uid"]}")
                         if (foreachDocumentSnapshot["uid"]!!.equals(uid)) {
                             val tsDocSubscribing =
                                 db.collection("User").document("UserData").collection("userInfo")
                                     .document(foreachDocumentSnapshot.id).collection("Subscribe")
                                     .document("subscribe")
-
                             db.runTransaction { transaction ->
-
                                 var friendsDTO = transaction.get(tsDocSubscribing)
                                     .toObject(SubscribeDTO::class.java)
-
                                 //데이터가 없으면 데이터 생성
                                 if (friendsDTO == null) {
-                                    println("복사할 컬렉션 생성")
                                     friendsDTO = SubscribeDTO()
                                     var subscribingDTO = SubscribeDTO.SubscribingDTO()
                                     subscribingDTO.uid = destinationUid
@@ -265,31 +259,31 @@ class UserRepository @Inject constructor() {
                                 }
 
                                 //구독하기를 발생시킨 사람의 db 접근
-                                if (friendsDTO.subscribingList.containsKey(uid)) {
+                                if (friendsDTO.subscribingList.containsKey(destinationUid)) {
                                     friendsDTO.subscribingCount = friendsDTO.subscribingCount!! - 1
                                     friendsDTO.subscribingList.remove(destinationUid)
-
                                     transaction.set(tsDocSubscribing, friendsDTO)
-                                    this@callbackFlow.sendBlocking("SUBSCRIBE_UPDATE" )
-                                    return@runTransaction
+                                    this@callbackFlow.sendBlocking("SUBSCRIBE_DELETE")
                                 } else {
                                     var subscribingDTO = SubscribeDTO.SubscribingDTO()
                                     subscribingDTO.uid = destinationUid
                                     subscribingDTO.timestamp = System.currentTimeMillis()
-                                    friendsDTO.subscribingCount = friendsDTO.subscribingCount!! + 1
+                                    if (friendsDTO.subscribingCount == null){
+                                        friendsDTO.subscribingCount = 1
+                                    }else {
+                                        friendsDTO.subscribingCount =
+                                            friendsDTO.subscribingCount!! + 1
+                                    }
                                     friendsDTO.subscribingList.put(destinationUid, subscribingDTO)
-
                                     transaction.set(tsDocSubscribing, friendsDTO)
-                                    this@callbackFlow.sendBlocking("SUBSCRIBE_DELETE")
-                                    return@runTransaction
+                                    this@callbackFlow.sendBlocking("SUBSCRIBE_UPDATE" )
+
                                 }
-                                println("내 db에 추가 끝")
+                                return@runTransaction
 
                             }
 
                             //구독을 당한자의 db 접근
-                            
-                            println("상대 db에 추가")
                             val databaseReference2 = db.collection("User")
                                 .document("UserData")
                                 .collection("userInfo")
@@ -304,25 +298,20 @@ class UserRepository @Inject constructor() {
                                                         destinationUid
                                                     )
                                                 ) {
+
                                                     val tsDocSubscriber =
                                                         db.collection("User").document("UserData")
                                                             .collection("userInfo")
                                                             .document(foreachDocumentSnapshot2.id)
                                                             .collection("Subscribe")
                                                             .document("subscribe")
-
-                                                    println("으아아아 ${foreachDocumentSnapshot2.id}")
-                                                    println("수정 시작")
                                                     db.runTransaction { transaction2 ->
-                                                        println("수정 진행중")
                                                         var friendsDTO2 =
                                                             transaction2.get(tsDocSubscriber)
                                                                 .toObject(SubscribeDTO::class.java)
 
                                                         //데이터가 없으면 데이터 생성
-
                                                         if (friendsDTO2 == null) {
-                                                            println("데이터가 없음 실행")
                                                             friendsDTO2 = SubscribeDTO()
                                                             var subscriberDTO =
                                                                 SubscribeDTO.SubScriberDTO()
@@ -333,24 +322,19 @@ class UserRepository @Inject constructor() {
                                                             friendsDTO2.subscriberList.put(
                                                                 uid,
                                                                 subscriberDTO
-
                                                             )
-
                                                             transaction2.set(
                                                                 tsDocSubscriber,
                                                                 friendsDTO2
                                                             )
-
                                                             this@callbackFlow.sendBlocking("SUBSCRIBER_CREATE")
                                                             return@runTransaction
                                                         }
-
                                                         //구독하기를 발생시킨 사람의 db 접근
                                                         if (friendsDTO2.subscriberList.containsKey(
                                                                 uid
                                                             )
                                                         ) {
-                                                            println("데이터가 있음 true")
                                                             friendsDTO2.subscriberCount =
                                                                 friendsDTO2.subscriberCount!! - 1
                                                             friendsDTO2.subscriberList.remove(uid)
@@ -358,17 +342,20 @@ class UserRepository @Inject constructor() {
                                                                 tsDocSubscriber,
                                                                 friendsDTO2
                                                             )
-                                                            this@callbackFlow.sendBlocking("SUBSCRIBER_UPDATE")
+                                                            this@callbackFlow.sendBlocking("SUBSCRIBER_DELETE")
                                                             return@runTransaction
                                                         } else {
-                                                            println("데이터가 있음 false")
                                                             var subscriberDTO =
                                                                 SubscribeDTO.SubScriberDTO()
                                                             subscriberDTO.uid = uid
                                                             subscriberDTO.timestamp =
                                                                 System.currentTimeMillis()
-                                                            friendsDTO2.subscriberCount =
-                                                                friendsDTO2.subscriberCount!! + 1
+                                                            if (friendsDTO2.subscriberCount == null){
+                                                                friendsDTO2.subscriberCount = 1
+                                                            }else {
+                                                                friendsDTO2.subscriberCount =
+                                                                    friendsDTO2.subscriberCount!! + 1
+                                                            }
                                                             friendsDTO2.subscriberList.put(
                                                                 uid,
                                                                 subscriberDTO
@@ -377,19 +364,15 @@ class UserRepository @Inject constructor() {
                                                                 tsDocSubscriber,
                                                                 friendsDTO2
                                                             )
-                                                            this@callbackFlow.sendBlocking("SUBSCRIBER_DELETE")
+                                                            this@callbackFlow.sendBlocking("SUBSCRIBER_UPDATE")
                                                             return@runTransaction
                                                         }
-
-
                                                     }
-
                                                 }
                                             }
                                         }
                                     }
-
-
+                                    
                                 }
                         }
                     }
