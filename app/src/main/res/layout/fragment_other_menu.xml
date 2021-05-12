@@ -184,6 +184,7 @@
                         android:orientation="horizontal"
                         >
                         <Button
+                            android:id="@+id/btn_achievements"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_weight="1"

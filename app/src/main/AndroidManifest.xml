@@ -23,13 +23,13 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.comment.CommentActivity"></activity>
+        <activity android:name=".activity.comment.CommentActivity" />
         <activity android:name=".activity.timeline.TimeLineActivity" />
         <activity android:name=".activity.welcome.WelcomeMainActivity" />
         <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />
-        <activity android:name=".activity.friendfind.FriendFindByIdActivity"/>
+        <activity android:name=".activity.friendfind.FriendFindByIdActivity" />
         <activity
             android:name=".activity.content.AddContentActivity"
             android:windowSoftInputMode="adjustNothing" />
@@ -41,27 +41,33 @@
         <activity android:name=".activity.setting.SettingActivity" />
         <activity android:name=".activity.signup.SignUpWithPhoneActivity" />
         <activity android:name=".activity.policy.PolicyActivity" />
-        <activity android:name=".activity.splash.SplashActivity">
+
+
+        <!--<activity android:name=".activity.splash.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>-->
+
+
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+
+        <activity android:name=".activity.achievements.AchievementsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
-        <!--
-<activity android:name=".activity.permission.PermissionActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
         <activity android:name=".activity.lobby.LobbyActivity" />
         <activity android:name=".activity.signup.SignUpActivity" />
         <activity android:name=".activity.login.LoginActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.uos.smsmsm.fileprovider"
@@ -69,7 +75,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

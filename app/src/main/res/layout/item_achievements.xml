@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="Color"
+            type="android.graphics.Color" />
+
+        <variable
+            name="achievement"
+            type="com.uos.smsmsm.activity.achievements.Achievement" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="100dp"
+        android:layout_height="125dp">
+
+        <ImageView
+            android:id="@+id/iv_achievement_icon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_rounded_layout"
+            android:padding="20dp"
+            android:src="@drawable/ic_baseline_auto_awesome_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@{achievement.attain ? Color.GREEN : Color.GRAY}"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_achievement_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@{achievement.attain ? Color.GREEN : Color.GRAY}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="우수 회원" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

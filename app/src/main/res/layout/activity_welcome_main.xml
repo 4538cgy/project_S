@@ -49,7 +49,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/activity_welcome_main_indicator"
             app:layout_constraintRight_toRightOf="@+id/activity_welcome_main_indicator"
             android:visibility="gone"
-            android:onClick="@{activitywelcomemain.onClickAccept}"
+            android:onClick="@{activitywelcomemain::onClickAccept}"
             />
         <Button
             android:id="@+id/activity_welcome_main_button_permission_check"
@@ -61,7 +61,7 @@
             android:orientation="horizontal"
             android:text="@string/approve"
             android:visibility="gone"
-            android:onClick="@{activitywelcomemain.onRequestPermission}"
+            android:onClick="@{activitywelcomemain::onRequestPermission}"
             app:layout_constraintBottom_toTopOf="@+id/activity_welcome_main_indicator"
             app:layout_constraintLeft_toLeftOf="@+id/activity_welcome_main_indicator"
             app:layout_constraintRight_toRightOf="@+id/activity_welcome_main_indicator" />
