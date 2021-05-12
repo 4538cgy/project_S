@@ -55,6 +55,7 @@ abstract class BaseFragment<B : ViewDataBinding>(val layoutId : Int) : Fragment(
         }
         // 파베에 이벤트 등록 화면 호출 시 호출됨.
         EventLogUtil().sendScreenName(this.javaClass.simpleName,requireContext())
+        init()
         return binding.root
     }
 
@@ -63,5 +64,9 @@ abstract class BaseFragment<B : ViewDataBinding>(val layoutId : Int) : Fragment(
         if(loadingDialog.isShowing){
             loadingDialog.dismiss()
         }
+    }
+
+    protected open fun init(){
+
     }
 }

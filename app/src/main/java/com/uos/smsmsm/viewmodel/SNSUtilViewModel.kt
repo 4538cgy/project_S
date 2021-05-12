@@ -21,6 +21,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -57,18 +60,49 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     val findUserByUserName : MutableLiveData<List<UserDTO?>> by lazy { MutableLiveData<List<UserDTO?>>() }
 
-    fun getTimeLineData(){
+    var pagingcount = 0
+    var list : ArrayList<String> = arrayListOf()
 
+    fun getData(){
+
+            println("으아아 페이징 카운터 $pagingcount")
+            println("리스트의 사이즈 ${list.size}")
+            if (pagingcount < list.size) {
+                viewModelScope.launch(Dispatchers.Main) {
+                    println("가져올 데이터 id ${list[pagingcount]}")
+                    contentRepository.getContents(list[pagingcount]).collect { data ->
+                        println("콜렉트 결과 ${data.toString()}")
+                        timelineDataList.postValue(data)
+
+                        pagingcount++
+                    }
+
+                }
+
+            }else{
+                println("게시글의 마지막입니다.")
+            }
+
+
+    }
+
+    fun getTimeLineData(){
+        println("으어어")
         var contents : MutableMap<String,ContentDTO> = HashMap()
 
-        //#1 내 구독함 가져오기
+        //#1 내 구독함과 내가 작성한 글 가져오기
         viewModelScope.launch(Dispatchers.IO){
-            println("#1 실행")
+
+
             contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
-                println("가져온 id list ${contentIdList.toString()}")
+                list = contentIdList!!
+                contentIdList.forEach {
+                    println("가져온 게시글 id  = ${it.toString()}")
+                }
+                getData()
+                /*
                 if (contentIdList != null){
                     //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기
-                    println("#2 실행")
                     contentIdList.forEach { contentId ->
                         viewModelScope.launch {
                             contentRepository.getContents(contentId).collect {
@@ -76,15 +110,14 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
                                 if (contentIdList.size == contents.size){
                                     //#3 내 게시글 가져와서 contents에 넣고 timestamp를 기준으로 정렬하기
-                                    println("#3 오오")
                                     viewModelScope.launch {
                                         contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
-                                            println("내 포스트도 가져오기 ${it.values.toString()}")
                                             contents.putAll(it)
 
                                             //#3-1 정렬
                                             var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
                                             //#4 완성된 게시글 원본 recyclerview에 연결하기
+                                            println("뀨")
                                             timelineDataList.postValue(result)
                                         }
                                     }
@@ -93,12 +126,20 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                         }
 
                     }
-
-
-
                 }else{
-                    //#2 데이터가 음슴
+                    viewModelScope.launch {
+                        contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
+                            contents.putAll(it)
+                            //#3-1 정렬
+                            var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
+                            //#4 완성된 게시글 원본 recyclerview에 연결하기
+                            println("꺄")
+                            timelineDataList.postValue(result)
+                        }
+                    }
                 }
+
+                 */
             }
         }
         /*
@@ -109,6 +150,8 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
          #4. 정렬 함.
          */
     }
+
+
 
 
     //유저 검색 서치 뷰 리스너
@@ -226,7 +269,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         }
 
     }
-    
+
     //채팅방 있는지 확인하고 있으면 snapshot id 가져오기
     fun checkChatRoom(destinationUid : String){
         val repository = ChatRepository()

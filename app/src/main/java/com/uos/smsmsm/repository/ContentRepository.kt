@@ -84,13 +84,71 @@ class ContentRepository  @Inject constructor(){
         awaitClose { }
     }
 
-    //내 구독함과 내 컨텐츠 리스트 가져오기
+    //북마크
     @ExperimentalCoroutinesApi
-    fun getSubscribeContentsWithMyContents(uid: String) = callbackFlow<ArrayList<String>> {
+    fun addBookMark(uid : String , contentId : String) = callbackFlow<Boolean> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid", uid)
 
         val eventListener = databaseReference.get().addOnCompleteListener {
+            println("북마크 리스너 진입")
+            if (it.isSuccessful) {
+                if (it.result != null) {
+                    it.result.documents.forEach {
+                        if (it["uid"]!!.equals(uid)){
+                            println("북마크 트랜잭션 생성")
+                            var addBookMarkReference =
+                                db.collection("User").document("UserData")
+                                    .collection("userInfo").document(it.id)
+                                    .collection("bookmarkContents").document("list")
+                            db.runTransaction { transaction ->
+                                println("북마크 트랜잭션 시작")
+                                var bookMarkList = transaction.get(addBookMarkReference)
+                                    .toObject(ContentDTO.BookMarkList::class.java)
+                                if (bookMarkList == null) {
+                                    println("북마크 생성")
+                                    bookMarkList = ContentDTO.BookMarkList()
+                                    transaction.set(addBookMarkReference, bookMarkList)
+                                    this@callbackFlow.sendBlocking(true)
+                                    return@runTransaction
+                                }
+                                if (!bookMarkList.bookMarkList.containsKey(contentId)) {
+                                    println("북마크 추가")
+                                    //추가
+                                    bookMarkList!!.bookMarkList.put(
+                                        contentId,
+                                        System.currentTimeMillis()
+                                    )
+                                    transaction.set(addBookMarkReference, bookMarkList)
+                                    this@callbackFlow.sendBlocking(true)
+                                    return@runTransaction
+                                } else {
+                                    println("북마크 제거")
+                                    //제거
+                                    if (bookMarkList!!.bookMarkList.containsKey(contentId)) {
+                                        bookMarkList.bookMarkList.remove(contentId)
+                                        transaction.set(addBookMarkReference, bookMarkList)
+                                        this@callbackFlow.sendBlocking(false)
+                                        return@runTransaction
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose {  }
+    }
+
+    //내 구독함과 내 컨텐츠 리스트 가져오기
+    @ExperimentalCoroutinesApi
+    fun getSubscribeContentsWithMyContents(uid: String) = callbackFlow<ArrayList<String>?> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo")
+            .whereEqualTo("uid", uid)
+
+        val eventListener = databaseReference.get().addOnCompleteListener {
+
             if (it.isSuccessful) {
                 if (it.result != null) {
                     it.result.documents.forEach {
@@ -107,10 +165,14 @@ class ContentRepository  @Inject constructor(){
                                             var postThumbnail =
                                                 value.toObject(ContentDTO.PostThumbnail::class.java)
 
-                                            postThumbnail!!.thumbnailList.forEach {
+                                            var result = postThumbnail!!.thumbnailList.toList().sortedByDescending { (_,value)-> value.timestamp }.toMap()
+
+                                            result.forEach {
                                                 contentIdList.add(it.key)
                                             }
                                             this@callbackFlow.sendBlocking(contentIdList)
+                                        } else {
+                                            this@callbackFlow.sendBlocking(null)
                                         }
                                     }
                                 }
@@ -176,23 +238,93 @@ class ContentRepository  @Inject constructor(){
         awaitClose { }
     }
 
+    //좋아요 이벤트
     @ExperimentalCoroutinesApi
-    fun getContents(contentId: String) = callbackFlow<Map<String, ContentDTO>> {
+    fun favoriteEvent(contentId: String) = callbackFlow<Boolean> {
+        var tsDoc = db.collection("Contents").document(contentId)
 
-        val databaseReference = db.collection("Contents").document(contentId)
+        db.runTransaction { transaction ->
+            var contentDTO = transaction.get(tsDoc).toObject(ContentDTO::class.java)
 
-        val eventListener = databaseReference.get().addOnCompleteListener {
-            if (it != null) {
-                if (it.isSuccessful) {
+            if (contentDTO!!.favorites.containsKey(auth.currentUser!!.uid)) {
+                contentDTO.favoriteCount = contentDTO.favoriteCount!! - 1
+                contentDTO.favorites.remove(auth.currentUser!!.uid)
+                //내가 좋아하는 게시글 리스트에서 해당 contentId 제거
+                addFavoriteContent(contentId, false)
+                transaction.set(tsDoc, contentDTO)
+                this@callbackFlow.sendBlocking(true)
+            } else {
+                contentDTO.favoriteCount = contentDTO.favoriteCount!! + 1
+                contentDTO.favorites[auth.currentUser!!.uid] = true
+                //내가 좋아하는 게시글 리스트에서 해당 contentId 추가
+                addFavoriteContent(contentId, true)
+                transaction.set(tsDoc, contentDTO)
+                this@callbackFlow.sendBlocking(true)
+            }
+
+        }
+        awaitClose { }
+    }
+
+    fun addFavoriteContent(contentId: String, type: Boolean) {
+        var databaseReference = db.collection("User").document("UserData").collection("userInfo")
+            .whereEqualTo("uid", auth.currentUser!!.uid)
+        var eventListener = databaseReference.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                if (it != null) {
                     if (it.result != null) {
-                        if (it.result.id != null) {
-                            println("으어어어어 ${it.result.data.toString()}")
-                            var contentDTO = it.result.toObject(ContentDTO::class.java)
-                            var map: MutableMap<String, ContentDTO> = HashMap()
+                        if (!it.result.isEmpty) {
+                            it.result.forEach {
+                                if (it["uid"] == auth.currentUser!!.uid) {
+                                    var addFavoriteReference =
+                                        db.collection("User").document("UserData")
+                                            .collection("userInfo").document(it.id)
+                                            .collection("favoriteContents").document("list")
+                                    db.runTransaction { transaction ->
+                                        var favoriteList = transaction.get(addFavoriteReference)
+                                            .toObject(ContentDTO.FavoriteList::class.java)
+                                        if (favoriteList == null) {
+                                            favoriteList = ContentDTO.FavoriteList()
+                                            transaction.set(addFavoriteReference, favoriteList)
+                                        }
+                                        if (type) {
+                                            //추가
+                                            favoriteList!!.favoriteList.put(
+                                                contentId,
+                                                System.currentTimeMillis()
+                                            )
+                                            transaction.set(addFavoriteReference, favoriteList)
+                                        } else {
+                                            //제거
+                                            if (favoriteList!!.favoriteList.containsKey(contentId)) {
+                                                favoriteList.favoriteList.remove(contentId)
+                                                transaction.set(addFavoriteReference, favoriteList)
+                                            } else {
 
-                            map.put(it.result.id, contentDTO!!)
-                            this@callbackFlow.sendBlocking(map)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun isFavorite(contentId: String) = callbackFlow<Boolean> {
+        println("aaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        val databaseReference = db.collection("Contents").document(contentId)
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            if (value != null) {
+                if (value.exists()) {
+                    var content = value.toObject(ContentDTO::class.java)
+                    if (content!!.favorites.containsKey(auth.currentUser!!.uid)) {
+                        this@callbackFlow.sendBlocking(true)
+                    } else {
+                        this@callbackFlow.sendBlocking(false)
                     }
                 }
             }
@@ -200,23 +332,50 @@ class ContentRepository  @Inject constructor(){
         awaitClose { }
     }
 
+    @ExperimentalCoroutinesApi
+    fun getFavoriteCountByContentId(contentId: String) = callbackFlow<Int> {
+        val databaseReference = db.collection("Contents").document(contentId)
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            if (value != null){
+                if (value.exists()){
+                    var content = value.toObject(ContentDTO::class.java)
+                    this@callbackFlow.sendBlocking(content!!.favoriteCount!!)
+                }
+            }
+        }
+        awaitClose {  }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun getContents(contentId: String) = callbackFlow<Map<String, ContentDTO>> {
+
+        val databaseReference = db.collection("Contents").document(contentId)
+
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            if (value != null) {
+                var contentDTO = value.toObject(ContentDTO::class.java)
+                var map: MutableMap<String, ContentDTO> = HashMap()
+
+                map.put(value.id, contentDTO!!)
+                this@callbackFlow.sendBlocking(map)
+            }
+        }
+        awaitClose { }
+    }
+
     fun getUserPostContent(uid: String) = callbackFlow<Map<String, ContentDTO>> {
-
-        println("자기 post 가져오기 실행")
-
         val databaseReference = db.collection("Contents")
             .whereEqualTo("uid", uid)
 
-        val eventListener = databaseReference.get().addOnCompleteListener {
-            println("자기 포스트 ${it.result.documents.toString()}")
-            if (it.isSuccessful) {
-                if (it.result != null) {
-                    it.result.documents.forEach {
+        val eventListener = databaseReference.addSnapshotListener { value, error ->
+            if (value != null) {
+                if (!value.isEmpty) {
 
-                        var map: MutableMap<String, ContentDTO> = HashMap()
+                    var map: MutableMap<String, ContentDTO> = HashMap()
+                    value.forEach {
                         map.put(it.id, it.toObject(ContentDTO::class.java)!!)
-                        this@callbackFlow.sendBlocking(map)
                     }
+                    this@callbackFlow.sendBlocking(map)
                 }
             }
         }

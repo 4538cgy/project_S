@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
@@ -24,6 +25,7 @@ import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.ContentDTO
 import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.FragmentTimeLineBinding
+import com.uos.smsmsm.recycleradapter.timeline.TimeLineAdapter
 import com.uos.smsmsm.recycleradapter.timeline.TimeLineRecyclerAdapter
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.MediaType
@@ -40,6 +42,38 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     private var isOpenFAB = false
     private val viewModel: ContentUtilViewModel by viewModels()
     private val snsViewModel : SNSUtilViewModel by viewModels()
+
+    private var data = MutableLiveData<ArrayList<TimeLineDTO>>()
+
+    private val adapter by lazy { TimeLineAdapter(requireActivity().supportFragmentManager).apply {
+        submitList(list)
+    } }
+
+    private val list by lazy { ArrayList<TimeLineDTO>().apply {
+    }}
+
+    override fun init() {
+        snsViewModel.getTimeLineData()
+        super.init()
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView(){
+        binding.fragmentTimeLineRecycler.adapter = adapter
+        binding.fragmentTimeLineRecycler.addOnScrollListener(object  : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!binding.fragmentTimeLineRecycler.canScrollVertically(1))
+                {
+                    println("끝에 도달")
+                    snsViewModel.getData()
+                }
+            }
+        })
+        binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
+        binding.fragmentTimeLineRecycler.setHasFixedSize(true)
+    }
+
     companion object { // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101
         const val REQUEST_IMAGE_CAPTURE = 102
@@ -51,36 +85,23 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
         binding.fragmenttimeline = this
         binding.lifecycleOwner = this
-        //viewModel = ViewModelProvider(this,ViewModelProvider.NewInstanceFactory()).get(ContentUtilViewModel::class.java)
 
-        //타임라인 게시글 리스트 완성을 위해 내가 구독하고있는 유저들의 timeline data 가져오기
-        //내 게시글도 가져오기
-        println("데이터 가져오기")
-        snsViewModel.getTimeLineData()
-        initRecyclerViewAdapter()
+        snsViewModel.timelineDataList.observe(viewLifecycleOwner, Observer {
+            println("옵저빙 중 ${it.toString()}")
+            it.forEach {
+                list.add(TimeLineDTO(it.value,it.key))
+            }
+            println("옵저빙 결과 ${list.toString()}")
+            adapter.submitList(list)
+            //최초 item insert
+            adapter.notifyItemInserted(list.lastIndex)
+        })
+
+
+
         viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this.currentPhotoPath = it
         })
-    }
-
-    fun initRecyclerViewAdapter(){
-        var data = MutableLiveData<ArrayList<TimeLineDTO>>()
-        var timelineData = arrayListOf<TimeLineDTO>()
-        val recyclerObserver : Observer<Map<String, ContentDTO>>
-                = Observer { livedata ->
-            println("변경된 데이터 ${livedata.toString()}")
-            livedata.forEach {
-                timelineData.add(TimeLineDTO(it.value,it.key))
-            }
-            data.value = timelineData
-
-            //데이터 변동되면 리사이클러뷰에 넣기
-            binding.fragmentTimeLineRecycler.adapter  =  TimeLineRecyclerAdapter(binding.root.context,data)
-            binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,
-                LinearLayoutManager.VERTICAL,false)
-
-        }
-        snsViewModel.timelineDataList.observe(viewLifecycleOwner, recyclerObserver)
     }
 
     fun uploadPhoto(view: View) {
