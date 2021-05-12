@@ -196,13 +196,19 @@ class UserRepository @Inject constructor() {
                                     if (it.result.exists()){
                                         println("친구 목록이 있습니다. ${it.result.toString()}")
                                         var data = it.result.toObject(SubscribeDTO::class.java)
-                                        data!!.subscribingList.forEach {
-                                            if (it.key.equals(destinationUid)){
+                                        if (data!!.subscribingList.isNotEmpty()) {
+
+                                            if (data.subscribingList.containsKey(destinationUid)){
+                                                println("친구입니다.")
                                                 this@callbackFlow.sendBlocking(true)
-                                                return@forEach
                                             }else{
+                                                println("친구가 아닙니다.")
                                                 this@callbackFlow.sendBlocking(false)
                                             }
+
+                                        }else{
+                                            println("구독 중인 유저가 아무도없습니다.")
+                                            this@callbackFlow.sendBlocking(false)
                                         }
                                     }else{
                                         println("친구 목록이 없습니다.")
