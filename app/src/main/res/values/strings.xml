@@ -99,5 +99,7 @@
     <string name="image_description_setting_icon">setting-icon</string>
     <string name="activity_setting_preview_item_name">버전정보</string>
 
+    <string name="no_search_list">검색 대상이 존재하지 않습니다.</string>
+
 
 </resources>

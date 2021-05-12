@@ -19,7 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-
+// 친구 검색 Adapter
 class FindFriendAdapter(val context: Context, val userUtilViewModel: UserUtilViewModel): RecyclerView.Adapter<FindFriendViewHolder>(){
     var findUserList = ArrayList<UserDTO>()
 
@@ -59,10 +59,10 @@ class FindFriendViewHolder(val binding: ItemFindFriendAndAddFriendBinding) : Rec
                         .into(binding.itemFindFriendAndAddFriendProfileImg)
                 }
             }
-            for( i in SNSUtilViewModel.friendsUidList){
-                if(it == i){
+            for( i in SNSUtilViewModel.friendsList){
+                if(it == i.uid){
                     isAlreadyFriends = true
-                    break;
+                    break
                 }
             }
         }

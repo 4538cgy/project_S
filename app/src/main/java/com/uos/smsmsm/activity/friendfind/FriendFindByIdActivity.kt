@@ -1,6 +1,7 @@
 package com.uos.smsmsm.activity.friendfind
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -49,7 +50,9 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
             }()
         })
         userUtilViewModel.isSuccessAddFirends.observe(this, Observer {
-            if(it.contains("SUBSCRIBER")){
+            Log.d("TEST","it: $it")
+            Log.d("TEST","it contains ${it.contains("SUBSCRIBE",true)}")
+            if(it.contains("SUBSCRIBE",true)){
                 Toast.makeText(baseContext, "친구추가 성공",Toast.LENGTH_LONG).show()
                 finish()
             }
