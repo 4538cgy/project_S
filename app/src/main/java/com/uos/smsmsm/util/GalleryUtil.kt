@@ -10,7 +10,7 @@ import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 enum class MediaType : Serializable{
-    Picture, Video
+    Picture, Video, Gallery
 }
 class GalleryUtil(val context: Context) {
 
@@ -18,7 +18,7 @@ class GalleryUtil(val context: Context) {
         val id: Long?,
         val displayName: String?,
         val dateTaken: Date?,
-        val contentUri: Uri,
+        val contentUri: Uri?,
         val isType : MediaType
     )
 

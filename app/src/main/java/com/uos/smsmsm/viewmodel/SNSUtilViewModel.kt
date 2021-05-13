@@ -92,11 +92,16 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
 
             contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
-                list = contentIdList!!
-                contentIdList.forEach {
-                    println("가져온 게시글 id  = ${it.toString()}")
+                // 가져올 데이터가 아무것도 없을 경우에 대한 예외처리
+                if(contentIdList == null || contentIdList.isEmpty()){
+
+                }else {
+                    list = contentIdList!!
+                    contentIdList.forEach {
+                        println("가져온 게시글 id  = ${it.toString()}")
+                    }
+                    getData()
                 }
-                getData()
                 /*
                 if (contentIdList != null){
                     //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기

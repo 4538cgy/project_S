@@ -101,5 +101,7 @@
 
     <string name="no_search_list">검색 대상이 존재하지 않습니다.</string>
 
-
+    <string name="open_gallery">사진첩\n열기</string>
+    <string name="take_picture_fail">사진 촬영에 실패하였습니다.</string>
+    <string name="load_picture_fail">사진을 가져오는데 실패하였습니다.</string>
 </resources>

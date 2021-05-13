@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.uos.smsmsm.databinding.ItemGalleryViewBinding
 import com.uos.smsmsm.util.GalleryUtil.MediaItem
+import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.dpToPx
 
 
@@ -30,14 +31,22 @@ class GalleryHolder(val binding : ItemGalleryViewBinding) : RecyclerView.ViewHol
 
     private lateinit var mediaItem: MediaItem
     fun bind(item: MediaItem, clickListener: View.OnClickListener, context: Context){
+
         mediaItem = item
         binding.root.setOnClickListener(clickListener)
-        Glide.with(context)
-            .load(item.contentUri)
-            .apply(
-                RequestOptions().centerCrop()
-            )
-            .into(binding.itemGalleryViewImg)
+        if(mediaItem.isType == MediaType.Gallery){
+            binding.itemGalleryLayoutImg.visibility = View.GONE
+            binding.itemGalleryLayoutOpenGallery.visibility = View.VISIBLE
+        }else {
+            binding.itemGalleryLayoutImg.visibility = View.VISIBLE
+            binding.itemGalleryLayoutOpenGallery.visibility = View.GONE
+            Glide.with(context)
+                .load(item.contentUri)
+                .apply(
+                    RequestOptions().centerCrop()
+                )
+                .into(binding.itemGalleryViewImg)
+        }
     }
 
     fun getMediaItem() : MediaItem = mediaItem

@@ -42,7 +42,7 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
     private val viewModel: ContentUtilViewModel by viewModels()
     lateinit var currentPhotoPath: String
     private var isSelectImgCount: Int = 0
-    private val MAX_SELECT_COUNT = 5
+    private val MAX_SELECTED_COUNT : Int = 5
 
     // 갤러이에서 사진을 가져왔을 경우에는 galleryHoler가 not null이고
     // 사진을 찍어서 이미지를 가져왔을 경우 mediaItem이 not null이다.
@@ -89,21 +89,21 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
                     }, {
                         val viewHolder =
                             binding.activityAddContentAddImageViewPager.getChildViewHolder(it.parent as View) as UploadImageViewHolder
-                        viewHolder.holder?.let {
+                        viewHolder.holder?.let {holder ->
                             binding.activityAddContentFragmentLayout.visibility = View.VISIBLE
                             supportFragmentManager.beginTransaction()
                                 .replace(
                                     R.id.activity_add_content_fragment_layout,
-                                    PlayVideoFragment(it.getMediaItem().contentUri)
+                                    PlayVideoFragment(holder.getMediaItem().contentUri!!)
                                 ).commit()
                         }
-                        viewHolder.mediaItem?.let {
+                        viewHolder.mediaItem?.let {item ->
 
                             binding.activityAddContentFragmentLayout.visibility = View.VISIBLE
                             supportFragmentManager.beginTransaction()
                                 .replace(
                                     R.id.activity_add_content_fragment_layout,
-                                    PlayVideoFragment(it.contentUri)
+                                    PlayVideoFragment(item.contentUri!!)
                                 ).commit()
                         }
                     }, applicationContext
@@ -111,10 +111,10 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
             }
         }
 
-        viewModel.contentEdittext.observe(this, Observer {
+        viewModel.contentEdittext.observe(this,  {
             interactiveView()
         })
-        viewModel.contentUploadState.observe(this, Observer {
+        viewModel.contentUploadState.observe(this,  {
             loadingDialogText.show()
             loadingDialogText.run{
                 when (it) {
@@ -137,7 +137,7 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
 
         })
         //게시글 업로드 후 id와 데이터가 전달되면 백그라운드 작업 진행 ( 나를구독하는 사용자들에게 post 전달 )
-        viewModel.uploadResultData.observe(this, Observer {
+        viewModel.uploadResultData.observe(this, {
 
             println("게시글 작성 완료 ${it.toString()}")
 
@@ -157,7 +157,7 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
 
 
         })
-        viewModel.currentPhotoPath.observe(this, Observer {
+        viewModel.currentPhotoPath.observe(this,  {
             this.currentPhotoPath = it
         })
         if (uploadImageList.size > 0) {
@@ -195,9 +195,9 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
         if (uploadImageList.size > 0) {
             uploadImageList.forEach {
                 if (it.galleryHolder != null) {
-                    photoImageList.add(it.galleryHolder!!.getMediaItem().contentUri)
+                    photoImageList.add(it.galleryHolder!!.getMediaItem().contentUri!!)
                 } else if (it.mediaItem != null) {
-                    photoImageList.add(it.mediaItem!!.contentUri)
+                    photoImageList.add(it.mediaItem!!.contentUri!!)
                 }
             }
         }
@@ -237,6 +237,8 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
                     androidx.lifecycle.Observer { it ->
                         Log.d("Test", "size : ${it.size}")
                         // 갤러리가 닫혀 있으면 오픈하면서 데이터 적용
+                        val openGalleryItem = MediaItem(null,null,null,null,MediaType.Gallery)
+                        it.add(0, openGalleryItem)
                         if (gallery.visibility == View.GONE) {
                             adapter = GalleryAdapter(it, applicationContext, clickListener)
                         } else {
@@ -299,42 +301,51 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
 
         val clickViewHolder =
             binding.activityAddContentGalleryRecyclerView.getChildViewHolder(it) as GalleryHolder
-        val imageBtn = clickViewHolder.binding.itemGalleryViewSelectorImgBtn
-        // 최대 선택 갯수 현재 MAX_SELECT_COUNT 개
-        if (isSelectImgCount < MAX_SELECT_COUNT) {
-            imageBtn.isSelected = !imageBtn.isSelected
-            // 이미 선택 되었다면 선택 해제
-            if (!imageBtn.isSelected) {
-                isSelectImgCount--
-                removeImage(clickViewHolder, null)
-            } else {
-                // 새로 선택
-                isSelectImgCount++
-                uploadImageList.add(UploadImgDTO(clickViewHolder, null))
-                binding.activityAddContentAddImageViewPager.run {
-                    visibility = View.VISIBLE
-                    (adapter as UploadImageSlidePagerAdapter).notifyDataSetChanged()
-                }
-            }
-        } else {
-            // 3개 이상 선택 되었을 때
-            // 이미 선택되 항목을 선택할 경우
-            if (imageBtn.isSelected) {
+        if(clickViewHolder.getMediaItem().isType == MediaType.Gallery){
+            Log.d("TEST","go Phone gallery")
+            openGallery()
+        }else {
+            val imageBtn = clickViewHolder.binding.itemGalleryViewSelectorImgBtn
+            // 최대 선택 갯수 현재 MAX_SELECT_COUNT 개
+            if (isSelectImgCount < MAX_SELECTED_COUNT) {
                 imageBtn.isSelected = !imageBtn.isSelected
-                isSelectImgCount--
-                removeImage(clickViewHolder, null)
+                // 이미 선택 되었다면 선택 해제
+                if (!imageBtn.isSelected) {
+                    isSelectImgCount--
+                    removeImage(clickViewHolder, null)
+                } else {
+                    // 새로 선택
+                    isSelectImgCount++
+                    uploadImageList.add(UploadImgDTO(clickViewHolder, null))
+                    binding.activityAddContentAddImageViewPager.run {
+                        visibility = View.VISIBLE
+                        (adapter as UploadImageSlidePagerAdapter).notifyDataSetChanged()
+                    }
+                }
             } else {
-                // 신규 선택 할 경우
-                Toast.makeText(
-                    applicationContext,
-                    "최대 선택할 수 있는 이미지 수는  ${MAX_SELECT_COUNT}장 입니다.",
-                    Toast.LENGTH_LONG
-                )
-                    .show()
+                // 3개 이상 선택 되었을 때
+                // 이미 선택되 항목을 선택할 경우
+                if (imageBtn.isSelected) {
+                    imageBtn.isSelected = !imageBtn.isSelected
+                    isSelectImgCount--
+                    removeImage(clickViewHolder, null)
+                } else {
+                    // 신규 선택 할 경우
+                    Toast.makeText(
+                        applicationContext,
+                        "최대 선택할 수 있는 이미지 수는  ${MAX_SELECTED_COUNT}장 입니다.",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                }
             }
         }
     }
-
+    private fun openGallery(){
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = MediaStore.Images.Media.CONTENT_TYPE
+        startActivityForResult(intent, Config.FLAG_REQ_GALLERY)
+    }
     // 하단 갤러리나 추가할 이미지 프리뷰에서 클로즈 버튼을 통하여 업로드할 이미지 제거할 경우
     private fun removeImage(holder: GalleryHolder?, mediaItem: MediaItem?) {
 
@@ -360,13 +371,30 @@ class AddContentActivity : BaseActivity<ActivityAddContentBinding>(R.layout.acti
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
+                Config.FLAG_REQ_GALLERY -> {
+                    val uri = data?.data
+                    uri?.let { itUri ->
+                        uploadImageList.add(
+                            UploadImgDTO(
+                                null,
+                                MediaItem(null, null, null, itUri, MediaType.Picture)
+                            )
+                        )
+                        binding.activityAddContentAddImageViewPager.run {
+                            visibility = View.VISIBLE
+                            (adapter as UploadImageSlidePagerAdapter).notifyDataSetChanged()
+                        }
+                    } ?: {
+                        Toast.makeText(this, getString(R.string.load_picture_fail), Toast.LENGTH_LONG).show()
+                    }()
+                }
                 Config.FLAG_REQ_CAMERA -> {
                     val f = File(currentPhotoPath)
                     val uri = Uri.fromFile(f)
                     uri?.let { itUri ->
                         viewModel.requestCrop(itUri).start(this@AddContentActivity)
                     } ?: {
-                        Toast.makeText(this, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.take_picture_fail), Toast.LENGTH_LONG).show()
                     }()
                 }
                 CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
