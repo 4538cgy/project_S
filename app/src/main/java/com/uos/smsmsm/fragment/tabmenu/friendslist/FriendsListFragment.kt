@@ -29,9 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fragment_friends_list) {
 
-    private val viewmodel: SNSUtilViewModel by viewModels()
+    private val viewModel: SNSUtilViewModel by viewModels()
     private val auth = FirebaseAuth.getInstance()
-
+    private var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,12 +46,12 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         - 해당 activity가 실행되면 친구 목록 데이터가 갱신된 시간을 체크하여 내부데이터를 업데이트 해줄것
          */
 
-        viewmodel.initUserFriendsList(auth.currentUser!!.uid)
+        viewModel.initUserFriendsList(auth.currentUser!!.uid)
 
 
         //friends List의 상태 확인
 
-        viewmodel.friendsListState.observe(viewLifecycleOwner, Observer {
+        viewModel.friendsListState.observe(viewLifecycleOwner, Observer {
             loadingDialog.show()
             when(it){
                 //데이터가 읽히는 중이면 실행
@@ -60,8 +60,8 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
 
                 //데이터 읽은 후에 데이터 내용에 따라 내용 출력  #dialog와 같은것으로 표시를 바꿔주면 더욱 이뻐질듯함
                 "complete" -> {
-                    if (viewmodel.recyclerData.value != null) {
-                        if (viewmodel.recyclerData.value!!.isEmpty()) {
+                    if (viewModel.recyclerData.value != null) {
+                        if (viewModel.recyclerData.value!!.isEmpty()) {
                             binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
                             binding.fragmentFriendsListTextviewNotice.setText(R.string.notice_no_friends)
                             loadingDialog.dismiss()
@@ -77,8 +77,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         initRecyclerViewAdapter()
         loadingDialog.dismiss()
     }
-    fun initRecyclerViewAdapter(){
-        var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
+    private fun initRecyclerViewAdapter(){
 
         val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
                 = Observer { livedata ->
@@ -88,13 +87,11 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
             binding.fragmentFriendsListRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
         }
 
-        viewmodel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
-
-
+        viewModel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
 
 
     }
-    fun openSearhActivity(view: View) {
+    fun openSearchActivity(view: View) {
         startActivity(Intent(binding.root.context, SearchFriendActivity::class.java))
     }
 

@@ -2,7 +2,6 @@ package com.uos.smsmsm.viewmodel
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.appcompat.widget.SearchView
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -11,28 +10,31 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.uos.smsmsm.data.*
-import com.uos.smsmsm.repository.BackgroundRepository
+import com.uos.smsmsm.data.ChatDTO
+import com.uos.smsmsm.data.ContentDTO
+import com.uos.smsmsm.data.RecyclerDefaultModel
+import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.ChatRepository
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import javax.inject.Singleton
 
 // 채팅 / Timeline / 친구 찾기등 소셜 네트워크 기능 viewmodel
+@Singleton
 class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle,
                                                     var userRepository : UserRepository,
                                                     var chatRepository : ChatRepository,
                                                     var contentRepository : ContentRepository
 ) : ViewModel(){
-
+    companion object{
+        //받아온 친구 리스트 저장
+        var friendsList : ArrayList<RecyclerDefaultModel> = ArrayList<RecyclerDefaultModel>()
+    }
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var edittextText : MutableLiveData<String> = MutableLiveData()
     var chatRoomUid : MutableLiveData<String> = MutableLiveData()
@@ -381,16 +383,17 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         viewModelScope.launch(Dispatchers.IO){
             userRepository.getFriendsList(uid).collect{
                 println("가져온 친구 목록 = ${it.toString()}")
-                it.forEach {
-                    getUserData(it)
-                }
+//                it.forEach {
+//                    getUserData(it)
+//                }
+                getUserListData(it)
             }
         }
     }
 
 
 
-    //유저 정보 가져오기
+    //유저 정보 가져오기 // 리스트로 가져오면서 필요 없어졌는데 혹시 몰라 사용할 수 있어 그냥 둠
     fun getUserData(uid : String){
         friendsListState.postValue("getting")
         viewModelScope.launch(Dispatchers.IO){
@@ -425,24 +428,66 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                             )
                         )
                     }
-
-
-
-
                     recyclerData.postValue(arrayList)
                     friendsListState.postValue("complete")
                 }
             }
         }
     }
-    @ExperimentalCoroutinesApi
-    fun getUserByUserName(userName: String){
+    // 리스트로 친구 정보 가져오는 함수 (횟수만큼 가져오면 결과 리턴)
+    private fun getUserListData(uidList : ArrayList<String>){
+        friendsListState.postValue("getting")
+        val finishCount = uidList.size
+        val arrayList = arrayListOf<RecyclerDefaultModel>()
+        uidList.forEach {
+            viewModelScope.launch(Dispatchers.IO){
+                userRepository.getUser(it).collect { userData ->
+                    userRepository.getUserProfileImage(it).collect{ userProfileImageUrl ->
 
+                        if (userProfileImageUrl != null){
+                            arrayList.add(
+                                RecyclerDefaultModel(
+                                    RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
+                                    userProfileImageUrl,
+                                    userData.uid.toString(),
+                                    null,
+                                    userData.userName.toString(),
+                                    "임시 프로필 설명"
+                                )
+                            )
+                        }else{
+                            arrayList.add(
+                                RecyclerDefaultModel(
+                                    RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
+                                    "",
+                                    userData.uid.toString(),
+                                    null,
+                                    userData.userName.toString(),
+                                    "임시 프로필 설명"
+                                )
+                            )
+                        }
+
+                        if(arrayList.size == finishCount){
+                            friendsList.clear()
+                            friendsList.addAll(arrayList)
+                            recyclerData.postValue(arrayList)
+                            friendsListState.postValue("complete")
+                        }
+                    }
+
+                }
+            }
+        }
+
+    }
+    @ExperimentalCoroutinesApi
+    fun getUserByUserName(userName: String) : Job =
         viewModelScope.launch(Dispatchers.IO){
             userRepository.getUserByUserName(userName).collect {
                 findUserByUserName.postValue(it)
             }
         }
-    }
+
 
 }

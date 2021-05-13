@@ -7,8 +7,10 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.recycleradapter.friends.FindFriendAdapter
 import com.uos.smsmsm.data.UserDTO
+import com.uos.smsmsm.recycleradapter.friends.FriendListSearchAdapter
 import java.util.*
 
 
@@ -31,6 +33,12 @@ object BindingAdapter  {
     fun bindItem(recyclerView: RecyclerView, userDTOList: ObservableArrayList<UserDTO>) {
         val adapter: FindFriendAdapter = recyclerView.adapter as FindFriendAdapter
         adapter.setItem(userDTOList)
+    }
+    @JvmStatic
+    @BindingAdapter("bind:findfriendlist")
+    fun bindFriendList(recyclerView: RecyclerView, list: ArrayList<RecyclerDefaultModel>) {
+        val adapter: FriendListSearchAdapter = recyclerView.adapter as FriendListSearchAdapter
+        adapter.setItem(list)
     }
 
 }
