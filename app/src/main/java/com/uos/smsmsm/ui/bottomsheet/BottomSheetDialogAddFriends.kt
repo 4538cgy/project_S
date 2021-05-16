@@ -9,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.zxing.integration.android.IntentIntegrator
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
 import com.uos.smsmsm.activity.friendfind.FriendFindByIdActivity
+import com.uos.smsmsm.activity.friendfind.MyQrCodeActivity
 import com.uos.smsmsm.databinding.BottomSheetDialogAddFriendsLayoutBinding
 import java.lang.ClassCastException
 
@@ -45,6 +47,8 @@ class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
             //qr 코드로 추가
             binding.bottomSheetDialogAddFriendsLayoutButtonCode.id ->{
                 println("click code")
+                IntentIntegrator(activity).initiateScan()
+
             }
             //id 로 추가
             binding.bottomSheetDialogAddFriendsLayoutButtonId.id ->{

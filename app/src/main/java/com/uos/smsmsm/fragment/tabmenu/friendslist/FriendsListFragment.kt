@@ -1,19 +1,15 @@
 package com.uos.smsmsm.fragment.tabmenu.friendslist
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.zxing.integration.android.IntentIntegrator
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
@@ -22,9 +18,9 @@ import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
 import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogAddFriends
-import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fragment_friends_list) {
@@ -53,10 +49,12 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
 
         viewModel.friendsListState.observe(viewLifecycleOwner, Observer {
             loadingDialog.show()
-            when(it){
+            when (it) {
                 //데이터가 읽히는 중이면 실행
-                "getting" ->{ binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
-                binding.fragmentFriendsListTextviewNotice.text = "데이터 불러오는 중" }
+                "getting" -> {
+                    binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
+                    binding.fragmentFriendsListTextviewNotice.text = "데이터 불러오는 중"
+                }
 
                 //데이터 읽은 후에 데이터 내용에 따라 내용 출력  #dialog와 같은것으로 표시를 바꿔주면 더욱 이뻐질듯함
                 "complete" -> {
@@ -83,8 +81,15 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
                 = Observer { livedata ->
             data.value = livedata
 
-            binding.fragmentFriendsListRecycler.adapter = MultiViewTypeRecyclerAdapter(binding.root.context,data)
-            binding.fragmentFriendsListRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
+            binding.fragmentFriendsListRecycler.adapter = MultiViewTypeRecyclerAdapter(
+                binding.root.context,
+                data
+            )
+            binding.fragmentFriendsListRecycler.layoutManager = LinearLayoutManager(
+                binding.root.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
         }
 
         viewModel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
@@ -95,9 +100,9 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         startActivity(Intent(binding.root.context, SearchFriendActivity::class.java))
     }
 
-    fun addFriend(view : View){
+    fun addFriend(view: View){
         val bottomSheetDialog = BottomSheetDialogAddFriends()
-        bottomSheetDialog.show(requireActivity().supportFragmentManager,"wow")
+        bottomSheetDialog.show(requireActivity().supportFragmentManager, "wow")
     }
 
     fun openFriendListSettingActivity(view: View) {
