@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
+import com.uos.smsmsm.activity.friendfind.MyQrCodeActivity
 import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.activity.timeline.TimeLineActivity
 import com.uos.smsmsm.base.BaseActivity
@@ -163,6 +164,9 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
             inflate(R.menu.popup_profile_option)
             show()
         }
+    }
+    fun showMyQrActivity(view : View){
+        startActivity(Intent(rootContext, MyQrCodeActivity::class.java))
     }
 
     fun onClickUpdateProfile(view: View){

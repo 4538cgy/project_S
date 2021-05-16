@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -13,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
+import com.google.zxing.integration.android.IntentIntegrator
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
@@ -116,6 +118,19 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
         if (resultCode == 1555) {
             // System.out.println -> println
             println("데이터 전달 성공적으로 완수1666")
+        }
+        //  com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE
+        //  = 0x0000c0de; // Only use bottom 16 bits
+
+        if (requestCode === IntentIntegrator.REQUEST_CODE) {
+            val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+            if (result == null) {
+                // 취소됨
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
+            } else {
+                // 스캔된 QRCode --> result.getContents()
+                Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
+            }
         }
 
         if (requestCode == UserFragment.PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
