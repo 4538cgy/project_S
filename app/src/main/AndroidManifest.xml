@@ -36,6 +36,8 @@
         <activity
             android:name=".activity.chat.ChatActivity"
             android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".activity.chat.AddOpenChatActivity"/>
         <activity android:name=".activity.friendslistsetting.FriendsListSettingActivity" />
         <activity android:name=".activity.search.SearchFriendActivity" />
         <activity android:name=".activity.setting.SettingActivity" />

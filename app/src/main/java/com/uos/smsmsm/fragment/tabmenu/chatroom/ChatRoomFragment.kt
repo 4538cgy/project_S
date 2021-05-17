@@ -1,23 +1,21 @@
 package com.uos.smsmsm.fragment.tabmenu.chatroom
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.chat.AddOpenChatActivity
 import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.databinding.FragmentChatRoomBinding
 import com.uos.smsmsm.recycleradapter.chatroomlist.ChatRoomListRecyclerAdapter
-import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,6 +40,8 @@ class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragmen
         viewmodel.initMyChatRoomList(auth.currentUser!!.uid)
         initRecyclerView()
     }
+
+    //리사이클러뷰 초기화 함수
     fun initRecyclerView(){
         var data = MutableLiveData<ArrayList<ChatDTO>>()
         val recyclerObserver : Observer<ArrayList<ChatDTO>>
@@ -59,6 +59,7 @@ class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragmen
         viewmodel.chatRoomList.observe(viewLifecycleOwner, recyclerObserver)
     }
 
+    //상단 툴바 생성함수
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_option_bar,menu)
 
@@ -68,11 +69,13 @@ class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragmen
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("itemId", ""+item.itemId)
         when(item.itemId){
             R.id.action_search ->{
                 return true
             }
-            R.id.action_add-> {
+            R.id.action_add -> {
+                startActivity(Intent(context, AddOpenChatActivity::class.java))
                 return true
             }
             R.id.action_another ->{

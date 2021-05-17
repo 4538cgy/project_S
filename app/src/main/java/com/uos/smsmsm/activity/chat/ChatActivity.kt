@@ -1,6 +1,8 @@
 package com.uos.smsmsm.activity.chat
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,6 +25,8 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
     var recyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
 
     var destinationUid : String = ""
+
+    //리사이클러뷰 초기화 확인 플래그 (왜있는건지..?)
     var chatRecyclerAdapterInitChecker = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +42,11 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
         }
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        //뷰모델 값 적용
         viewModel.apply {
+            //destinationUid 값으로 채팅방이 있는지 찾아 뷰모델에 추가
             checkChatRoom(destinationUid)
+
             chatRoomUid.observe(this@ChatActivity, Observer { uid ->
                 //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
                 getMessageList()
@@ -58,6 +65,7 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
 
     fun backPressed(view : View){ finish() }
 
+    //리사이클러뷰 초기화 함수
     fun initRecyclerAdapter(){
         chatRecyclerAdapterInitChecker = true
         with(binding) {
@@ -69,12 +77,14 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
 
     }
 
+    //상단 툴바 생성함수
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val menuInflater = menuInflater
         menuInflater.inflate(R.menu.menu_option_bar_search_more,menu)
         return true
     }
 
+    //상단 툴바 선택시 실행되는 함수
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.action_search -> {
@@ -86,6 +96,8 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
 
 }
