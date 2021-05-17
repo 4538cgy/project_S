@@ -1,9 +1,11 @@
 package com.uos.smsmsm.activity.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.EditText
 import com.google.android.material.internal.TextWatcherAdapter
 import com.uos.smsmsm.R
@@ -23,7 +25,23 @@ class AddOpenChatActivity  : BaseActivity<ActivityAddOpenChatBinding>(R.layout.a
     var TitleTextChangeAdapter = object : TextWatcherAdapter() {
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             var count = binding.openChatTitle.text.count();
-            binding.TitleTextCount.text = count.toString() + "/30" ;
+            if(count == 0){
+                binding.makeOpenChat.isEnabled = false;
+            }else{
+                binding.makeOpenChat.isEnabled = true;
+            }
+            binding.titleTextCount.text = count.toString() + "/30" ;
         }
+    }
+
+    fun finish(view : View) {
+        finish()
+    }
+
+    fun ReturnResult(view : View) {
+        var intent : Intent = Intent();
+        intent.putExtra("OpenChatTitle",binding.openChatTitle.text.toString());
+        setResult(RESULT_OK,intent);
+        finish()
     }
 }

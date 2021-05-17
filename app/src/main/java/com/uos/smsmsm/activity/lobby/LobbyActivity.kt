@@ -108,6 +108,9 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        //리퀘스트 코드 마스킹 작업
+        var unmaskedRequestCode : Int = requestCode and 0x0000ffff
+
         if (requestCode == 1234) {
             // System.out.println -> println
             println("데이터 전달 성공적으로 완수1234")
@@ -116,6 +119,9 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
         if (resultCode == 1555) {
             // System.out.println -> println
             println("데이터 전달 성공적으로 완수1666")
+        }
+        
+        if(unmaskedRequestCode == 1721){
         }
 
         if (requestCode == UserFragment.PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {

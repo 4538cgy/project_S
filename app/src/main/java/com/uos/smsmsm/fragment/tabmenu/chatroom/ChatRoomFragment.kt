@@ -69,13 +69,12 @@ class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragmen
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("itemId", ""+item.itemId)
         when(item.itemId){
             R.id.action_search ->{
                 return true
             }
             R.id.action_add -> {
-                startActivity(Intent(context, AddOpenChatActivity::class.java))
+                startActivityForResult(Intent(context, AddOpenChatActivity::class.java),1721)
                 return true
             }
             R.id.action_another ->{
