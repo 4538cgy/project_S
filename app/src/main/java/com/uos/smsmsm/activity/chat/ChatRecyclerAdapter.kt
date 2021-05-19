@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class ChatRecyclerAdapter(private var context: Context, private val list : LiveData<ArrayList<ChatDTO.Comment>>,private val destinationUid : String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatRecyclerAdapter(private var context: Context, private val list : LiveData<ArrayList<ChatDTO.Comment>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val userRepository = UserRepository()
     val uid = FirebaseAuth.getInstance().currentUser!!.uid
@@ -39,7 +39,7 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as MessageViewHolder).onBind(list.value!![position])
-        
+
         //내가 보낸 메세지
         if (list.value!![position].uid.equals(uid)){
             holder.binding.messageItemTextViewMessage.text = list.value!![position].message
@@ -50,13 +50,14 @@ class ChatRecyclerAdapter(private var context: Context, private val list : LiveD
         }else{//상대방이 보낸 메세지
             //프로필 이미지 가져오고
             //유저 닉네임 가져오고
+            var uid : String = list.value!![position].uid!!
             ioScope.launch {
-                userRepository.getUserProfileImage(destinationUid).collect{
+                userRepository.getUserProfileImage(uid).collect{
                     Glide.with(holder.binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.messageItemImageviewProfile)
                 }
             }
             ioScope.launch {
-                userRepository.getUserNickName(destinationUid).collect {
+                userRepository.getUserNickName(uid).collect {
                     holder.binding.messageItemTextviewName.text = it
                 }
             }

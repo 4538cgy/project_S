@@ -43,25 +43,21 @@ class ChatRepository @Inject constructor() {
         awaitClose()
     }
 
-    //제작중
-//    @ExperimentalCoroutinesApi
-//    fun checkOpenChatRoom(destinationUid: String) = callbackFlow<String> {
-//        //유저 uid가 들어간 realdb 정보가져오기
-//        val eventListener = databaseReference.addListenerForSingleValueEvent(object  : ValueEventListener{
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                // 상대 방 uid가 있는 채팅방 의키값 반환하기
-//                snapshot.children.forEach{
-//                    var chatDTOs: ChatDTO = it.getValue(ChatDTO::class.java)!!
-//                    if (chatDTOs.users.containsKey(destinationUid)){
-//                        this@callbackFlow.sendBlocking(it.key!!)
-//                    }
-//                }
-//            }
-//            override fun onCancelled(error: DatabaseError) {
-//            }
-//        })
-//        awaitClose()
-//    }
+    @ExperimentalCoroutinesApi
+    fun checkOpenChatRoom(destinationUid: String?) = callbackFlow<String> {
+        //유저 uid가 들어간 realdb 정보가져오기
+        if(destinationUid!=null) {
+            val databaseReference = db.collection("openChatRoom").document(destinationUid)
+            val eventListener = databaseReference.addSnapshotListener { value, error ->
+                println(value)
+                if (value != null) {
+                    this@callbackFlow.sendBlocking(value.id)
+                }
+            }
+        }
+        awaitClose()
+
+    }
 
     @ExperimentalCoroutinesApi
     fun createChatRoom(destinationUid: String,chatData : ChatDTO) = callbackFlow<String> {
@@ -114,23 +110,38 @@ class ChatRepository @Inject constructor() {
 
 
     @ExperimentalCoroutinesApi
-    fun getChat(chatRoomUid: String) = callbackFlow<ArrayList<ChatDTO.Comment>> {
-        var chatData : ArrayList<ChatDTO.Comment> = arrayListOf()
-        val databaseReference = rdb.reference.child("chatrooms").child(chatRoomUid).child("comments")
-        val eventListener = databaseReference.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.children.forEach {
-                    chatData.add(it.getValue(ChatDTO.Comment::class.java)!!)
-                }
+    fun getChat(chatRoomUid: String,chatType : String?) = callbackFlow<ArrayList<ChatDTO.Comment>> {
 
-                this@callbackFlow.sendBlocking(chatData)
+        println("메세지 가져오기 시도 : chatType : " + chatType)
+
+        var chatData: ArrayList<ChatDTO.Comment> = arrayListOf()
+
+        if(chatType == "personal") {
+            var chatData: ArrayList<ChatDTO.Comment> = arrayListOf()
+            val databaseReference = rdb.reference.child("chatrooms").child(chatRoomUid).child("comments")
+            val eventListener = databaseReference.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.children.forEach {
+                            chatData.add(it.getValue(ChatDTO.Comment::class.java)!!)
+                        }
+                        this@callbackFlow.sendBlocking(chatData)
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+        }else if(chatType == "open") {
+            val databaseReference = db.collection("openChatRoom").document(chatRoomUid).collection("comment")
+            val eventListener = databaseReference.addSnapshotListener { value, error ->
+                if (value != null) {
+                    value.documents.forEach {
+                        chatData.add(it.toObject(ChatDTO.Comment::class.java)!!)
+                    }
+                    this@callbackFlow.sendBlocking(chatData)
+                }
             }
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
-        
-        awaitClose {  }
+        }
+        awaitClose { }
     }
 
     //채팅룸 리스트 가져오기

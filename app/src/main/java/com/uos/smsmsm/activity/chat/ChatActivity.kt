@@ -58,8 +58,10 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
             //chatRoomUid 변화시 메세지 가져오기 -> chatList qusghktl 리사이클러뷰 다시 설정
             chatRoomUid.observe(this@ChatActivity, Observer { uid ->
                 //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
+                println("chatRoomUid 변경 : " + chatRoomUid.value);
                 getMessageList()
                 chatList.observe(this@ChatActivity, Observer { livedata ->
+                    println("chatList 변경 : " + chatList.value);
                     this@ChatActivity.recyclerData.value = livedata
                     if (!chatRecyclerAdapterInitChecker) {
                         initRecyclerAdapter()
@@ -78,9 +80,8 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
     fun initRecyclerAdapter(){
         chatRecyclerAdapterInitChecker = true
         with(binding) {
-            if(chatType == "person") {
-                activityChatRecyclerview.adapter = ChatRecyclerAdapter(rootContext, recyclerData, destinationUid!!)
-            }
+            activityChatRecyclerview.adapter = ChatRecyclerAdapter(rootContext, recyclerData)
+
             activityChatRecyclerview.layoutManager = LinearLayoutManager(rootContext,
                 LinearLayoutManager.VERTICAL,false)
             activityChatRecyclerview.scrollToPosition(recyclerData.value!!.size - 1)

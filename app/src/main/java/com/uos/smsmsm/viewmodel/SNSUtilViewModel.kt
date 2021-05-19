@@ -272,28 +272,37 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     //채팅방 있는지 확인하고 있으면 snapshot id 가져오기
     fun checkChatRoom(destinationUid : String?,chatType : String?,chatTitle : String?){
+        val repository = ChatRepository()
+
         if(chatType == "personal") {
             //개인 채팅방일때
-            val repository = ChatRepository()
             viewModelScope.launch(Dispatchers.IO) {
                 repository.checkChatRoom(destinationUid!!).collect {
                     println("채팅방 uid : " + it)
                     chatRoomUid.postValue(it)
-                    chatRoomType = chatType
-                    chatRoomTitle = chatTitle
                 }
             }
         }else if (chatType == "open"){
-        //오픈 채팅 방일떄
+            viewModelScope.launch(Dispatchers.IO) {
+                repository.checkOpenChatRoom(destinationUid).collect {
+                    println("채팅방 uid : " + it)
+                    chatRoomUid.postValue(it)
+                }
+            }
         }
-
+        chatRoomType = chatType
+        chatRoomTitle = chatTitle
     }
 
     //메세지 가져오기
     fun getMessageList(){
         val repository = ChatRepository()
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getChat(chatRoomUid.value.toString()).collect {
+            repository.getChat(chatRoomUid.value.toString(),chatRoomType).collect {
+                println("메세지 리스트 가져오기 : ")
+                it.forEach(){
+                    println("내용물 " + it.message)
+                }
                 chatList.postValue(it)
             }
         }
@@ -303,8 +312,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     fun sendMessage(destinationUid : String?,chatType: String?,chatTitle: String?){
 
         val repository = ChatRepository()
-        println("메세지 전송시도 : " + destinationUid)
-        println("chatRoomUid : " + chatRoomUid.value)
+        println("메세지 전송시도 : " + chatRoomUid.value)
         if (chatList.value != null && chatList.value!!.isNotEmpty()){
             chatList.value!!.clear()
         }
@@ -383,6 +391,17 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                                 edittextText.postValue(null)
                             }
                         }
+                    }
+                }else{
+                    var comment = ChatDTO.Comment()
+                    comment.uid = auth.currentUser!!.uid
+                    comment.message = edittextText.value.toString()
+                    comment.timestamp = System.currentTimeMillis()
+
+                    repository.addChat(chatRoomUid.value.toString(),comment,chatType).collect {
+                        if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
+                        //채팅 다 보낸뒤 edittextText 교체해주기
+                        edittextText.postValue(null)
                     }
                 }
             }
