@@ -1,5 +1,6 @@
 package com.uos.smsmsm.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -93,7 +94,43 @@ class UserRepository @Inject constructor() {
 
         awaitClose { eventListener }
     }
+    @ExperimentalCoroutinesApi
+    fun requestFavorite(uid : String, isFavorite : Boolean) = callbackFlow<String> {
+        val databaseReference  = db.collection("User").document("UserData").collection("userInfo").whereEqualTo("uid",authUid)
+        val eventListener = databaseReference.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                if (it.result != null) {
+                    it.result.documents.forEach {
+                        if (it["uid"]!!.equals(authUid)) {
 
+                            val tsDocSubscribing =
+                                db.collection("User").document("UserData").collection("userInfo")
+                                    .document(it.id).collection("Subscribe")
+                                    .document("subscribe")
+                            db.runTransaction { transaction ->
+                                var friendsDTO = transaction.get(tsDocSubscribing)
+                                    .toObject(SubscribeDTO::class.java)
+                                //데이터가 없으면 데이터 생성
+                                if (friendsDTO != null) {
+                                    friendsDTO.subscribingList[uid]?.isFavorite = isFavorite
+                                    transaction.update(tsDocSubscribing, "subscribingList", friendsDTO.subscribingList)
+                                }
+                            }.addOnSuccessListener {
+                                Log.d("TEST", "Transaction success!")
+                                this@callbackFlow.sendBlocking("Success")
+                                return@addOnSuccessListener
+                            }.addOnFailureListener { e ->
+                                    Log.w("TEST", "Transaction failure.", e)
+                                this@callbackFlow.sendBlocking("Failure")
+                                return@addOnFailureListener
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose { eventListener }
+    }
     //유저의 프로필 이미지 url 가져오기
     @ExperimentalCoroutinesApi
     fun getUserProfileImage(uid : String) = callbackFlow<String> {
@@ -372,7 +409,7 @@ class UserRepository @Inject constructor() {
                                             }
                                         }
                                     }
-                                    
+
                                 }
                         }
                     }
@@ -383,7 +420,7 @@ class UserRepository @Inject constructor() {
     }
 
     //친구 목록 가져오기
-    fun getFriendsList(uid : String) = callbackFlow<ArrayList<String>> {
+    fun getFriendsList(uid : String) = callbackFlow<ArrayList<SubscribeDTO.SubscribingDTO>> {
         val databaseReference = db.collection("User")
             .document("UserData")
             .collection("userInfo")
@@ -408,11 +445,11 @@ class UserRepository @Inject constructor() {
 
 
                                         var subscribeDTO = value.toObject(SubscribeDTO::class.java)
-                                        var arrayList = arrayListOf<String>()
+                                        var arrayList = arrayListOf<SubscribeDTO.SubscribingDTO>()
 
 
-                                        subscribeDTO!!.subscribingList.keys.forEach {
-                                            arrayList.add(it)
+                                        subscribeDTO!!.subscribingList.forEach {
+                                            arrayList.add(it.value)
                                         }
 
 

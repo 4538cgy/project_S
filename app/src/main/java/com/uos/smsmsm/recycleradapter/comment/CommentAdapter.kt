@@ -3,12 +3,11 @@ package com.uos.smsmsm.recycleradapter.comment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.DiffUtil
 import com.uos.smsmsm.base.BaseAdapter
 import com.uos.smsmsm.base.BaseHolder
 import com.uos.smsmsm.data.ContentDTO
-import com.uos.smsmsm.data.TimeLineDTO
 import com.uos.smsmsm.databinding.ItemCommentThumbnailBinding
+import com.uos.smsmsm.recycleradapter.diffCallback.CommentDiffCallback
 
 class CommentAdapter : BaseAdapter<ContentDTO.Comment>(CommentDiffCallback()) {
     init {
@@ -40,21 +39,5 @@ class CommentAdapter : BaseAdapter<ContentDTO.Comment>(CommentDiffCallback()) {
 
     override fun getItemCount(): Int = currentList.size
 
-    private class CommentDiffCallback : DiffUtil.ItemCallback<ContentDTO.Comment> () {
-        override fun areItemsTheSame(
-            oldItem: ContentDTO.Comment,
-            newItem: ContentDTO.Comment
-        ): Boolean {
-            return oldItem.timestamp!! == newItem.timestamp!!
-        }
 
-        override fun areContentsTheSame(
-            oldItem: ContentDTO.Comment,
-            newItem: ContentDTO.Comment
-        ): Boolean {
-            return oldItem.timestamp!! == newItem.timestamp!!
-        }
-
-
-    }
 }

@@ -1,4 +1,4 @@
-package com.uos.smsmsm.recycleradapter.friends
+package com.uos.smsmsm.recycleradapter.friends.find
 
 import android.content.Context
 import android.content.Intent

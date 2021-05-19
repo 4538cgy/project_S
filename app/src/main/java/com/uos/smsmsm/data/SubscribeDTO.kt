@@ -12,6 +12,7 @@ data class SubscribeDTO(
 ){
     data class SubscribingDTO(
         var uid : String ? = null,
+        var isFavorite : Boolean = false, // 친구 즐겨찾기 여부
         var timestamp : Long ? = null
     )
     data class SubScriberDTO(

@@ -55,10 +55,6 @@ class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
                 println("click id")
                 startActivity(Intent(context, FriendFindByIdActivity::class.java))
             }
-            //연락처로 추가
-            binding.bottomSheetDialogAddFriendsLayoutButtonPhoneNumber.id ->{
-                println("click number")
-            }
             //추천 친구
             binding.bottomSheetDialogAddFriendsLayoutButtonRecommand.id ->{
                 println("click recommand")

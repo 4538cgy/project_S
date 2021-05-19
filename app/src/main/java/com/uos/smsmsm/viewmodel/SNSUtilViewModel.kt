@@ -10,10 +10,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.uos.smsmsm.data.ChatDTO
-import com.uos.smsmsm.data.ContentDTO
-import com.uos.smsmsm.data.RecyclerDefaultModel
-import com.uos.smsmsm.data.UserDTO
+import com.uos.smsmsm.data.*
 import com.uos.smsmsm.repository.ChatRepository
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
@@ -440,16 +437,20 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         }
     }
     // 리스트로 친구 정보 가져오는 함수 (횟수만큼 가져오면 결과 리턴)
-    private fun getUserListData(uidList : ArrayList<String>){
-        friendsListState.postValue("getting")
+    private fun getUserListData(uidList : ArrayList<SubscribeDTO.SubscribingDTO>){
         val finishCount = uidList.size
         val arrayList = arrayListOf<RecyclerDefaultModel>()
+        if(uidList.isEmpty()){
+            recyclerData.postValue(arrayList)
+            friendsListState.postValue("complete")
+        }else{
+            friendsListState.postValue("getting")
         uidList.forEach {
-            viewModelScope.launch(Dispatchers.IO){
-                userRepository.getUser(it).collect { userData ->
-                    userRepository.getUserProfileImage(it).collect{ userProfileImageUrl ->
+            viewModelScope.launch(Dispatchers.IO) {
+                userRepository.getUser(it.uid!!).collect { userData ->
+                    userRepository.getUserProfileImage(it.uid!!).collect { userProfileImageUrl ->
 
-                        if (userProfileImageUrl != null){
+                        if (userProfileImageUrl != null) {
                             arrayList.add(
                                 RecyclerDefaultModel(
                                     RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
@@ -457,10 +458,11 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                                     userData.uid.toString(),
                                     null,
                                     userData.userName.toString(),
-                                    "임시 프로필 설명"
+                                    "임시 프로필 설명",
+                                    it.isFavorite
                                 )
                             )
-                        }else{
+                        } else {
                             arrayList.add(
                                 RecyclerDefaultModel(
                                     RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
@@ -468,12 +470,13 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                                     userData.uid.toString(),
                                     null,
                                     userData.userName.toString(),
-                                    "임시 프로필 설명"
+                                    "임시 프로필 설명",
+                                    it.isFavorite
                                 )
                             )
                         }
 
-                        if(arrayList.size == finishCount){
+                        if (arrayList.size == finishCount) {
                             friendsList.clear()
                             friendsList.addAll(arrayList)
                             recyclerData.postValue(arrayList)
@@ -483,6 +486,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
                 }
             }
+        }
         }
 
     }

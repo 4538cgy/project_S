@@ -69,6 +69,7 @@
                 android:layout_height="50dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_baseline_star_outline_24"
+                android:onClick="@{activityprofile.requestFavorite}"
                 app:layout_constraintRight_toLeftOf="@+id/activity_profile_imagebutton_option"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,7 +82,15 @@
                 android:onClick="@{activityprofile.showMyQrActivity}"
                 app:layout_constraintRight_toLeftOf="@+id/activity_profile_imagebutton_favorite"
                 app:layout_constraintTop_toTopOf="parent"/>
-
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_close_24"
+                android:onClick="@{activityprofile.closeActivity}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

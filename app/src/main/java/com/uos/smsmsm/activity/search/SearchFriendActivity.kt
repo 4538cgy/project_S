@@ -5,12 +5,11 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.ActivitySearchFriendBinding
-import com.uos.smsmsm.recycleradapter.friends.FriendListSearchAdapter
+import com.uos.smsmsm.recycleradapter.friends.find.FriendListSearchAdapter
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

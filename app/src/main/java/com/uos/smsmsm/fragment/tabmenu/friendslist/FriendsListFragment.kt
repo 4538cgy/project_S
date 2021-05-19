@@ -3,22 +3,24 @@ package com.uos.smsmsm.fragment.tabmenu.friendslist
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.zxing.integration.android.IntentIntegrator
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
+import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
 import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
-import com.uos.smsmsm.recycleradapter.MultiViewTypeRecyclerAdapter
+import com.uos.smsmsm.recycleradapter.friends.list.FriendListAdapter
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogAddFriends
+import com.uos.smsmsm.util.Delegate
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -26,8 +28,27 @@ import dagger.hilt.android.AndroidEntryPoint
 class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fragment_friends_list) {
 
     private val viewModel: SNSUtilViewModel by viewModels()
+    private val userViewModel : UserUtilViewModel by viewModels()
     private val auth = FirebaseAuth.getInstance()
     private var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
+    // 친구 리스트 adapter
+    private val listAdapter : FriendListAdapter by lazy {
+        FriendListAdapter(object : Delegate.Action1<RecyclerDefaultModel>{
+            override fun run(item: RecyclerDefaultModel) {
+                // 친구 삭제 액
+            }
+
+        })
+    }
+    //즐겨찾기 친구 리스트 adapter
+    private val favoriteAdapter : FriendListAdapter by lazy {
+        FriendListAdapter(object : Delegate.Action1<RecyclerDefaultModel>{
+            override fun run(item: RecyclerDefaultModel) {
+                // 친구 삭제 액
+            }
+
+        })
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -44,7 +65,14 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
 
         viewModel.initUserFriendsList(auth.currentUser!!.uid)
 
+        // 내 프로필 셋팅
+        userViewModel.getUserProfile(auth.currentUser!!.uid.toString())
+        userViewModel.profileImage.observe(viewLifecycleOwner, Observer {
+            Glide.with(binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(binding.fragmentFriendsListMyProfileTitleContentImageview) })
 
+        //유저 닉네임 가져오기
+        userViewModel.getUserName(auth.currentUser!!.uid.toString())
+        userViewModel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentFriendsListMyProfileTitleContentTextviewTitle.text = it.toString()})
         //friends List의 상태 확인
 
         viewModel.friendsListState.observe(viewLifecycleOwner, Observer {
@@ -61,9 +89,12 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
                     if (viewModel.recyclerData.value != null) {
                         if (viewModel.recyclerData.value!!.isEmpty()) {
                             binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
+                            binding.fragmentFriendsListFavoritesLayout.visibility = View.GONE
+                            binding.fragmentFriendsListNormalListLayout.visibility = View.GONE
                             binding.fragmentFriendsListTextviewNotice.setText(R.string.notice_no_friends)
                             loadingDialog.dismiss()
                         } else {
+                            binding.fragmentFriendsListNormalListLayout.visibility = View.VISIBLE
                             binding.fragmentFriendsListTextviewNotice.visibility = View.GONE
                             loadingDialog.dismiss()
                         }
@@ -71,25 +102,39 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
                 }
             }
         })
-
+        // 내 프로필 클릭 시 내 프로필 상세 노출
+        binding.fragmentFriendsListMyProfileLayout.setOnClickListener {
+            Intent(binding.root.context, ProfileActivity::class.java).run {
+                putExtra("uid",auth.currentUser!!.uid)
+                binding.root.context.startActivity(this)
+            }
+        }
         initRecyclerViewAdapter()
         loadingDialog.dismiss()
     }
     private fun initRecyclerViewAdapter(){
-
+        binding.fragmentFriendsListRecycler.adapter = listAdapter
+        binding.fragmentFriendsListFavoritesRecycler.adapter = favoriteAdapter
         val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
                 = Observer { livedata ->
             data.value = livedata
+            listAdapter.replaceList(livedata)
 
-            binding.fragmentFriendsListRecycler.adapter = MultiViewTypeRecyclerAdapter(
-                binding.root.context,
-                data
-            )
-            binding.fragmentFriendsListRecycler.layoutManager = LinearLayoutManager(
-                binding.root.context,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
+            // 친구 리스트 중 즐겨찾기 리스트
+            val favoriteList = ArrayList<RecyclerDefaultModel>()
+            for( i in livedata){
+                if(i.isFavorite != null && i.isFavorite){
+                    favoriteList.add(i)
+                }
+            }
+
+            if(favoriteList.isNotEmpty()){
+                binding.fragmentFriendsListFavoritesLayout.visibility = View.VISIBLE
+                favoriteAdapter.replaceList(favoriteList)
+            }else{
+                binding.fragmentFriendsListFavoritesLayout.visibility = View.GONE
+            }
+
         }
 
         viewModel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
