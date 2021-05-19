@@ -33,16 +33,6 @@
                 android:onClick="@{bottomsheetdialogaddfriendslayout.groupClick}"
                 />
 
-            <Button
-                android:id="@+id/bottom_sheet_dialog_add_friends_layout_button_phone_number"
-                android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:drawableTop="@drawable/ic_baseline_assignment_ind_24"
-                android:background="@android:color/transparent"
-                android:text="연락처로 추가"
-                android:layout_weight="1"
-                android:onClick="@{bottomsheetdialogaddfriendslayout.groupClick}"
-                />
 
             <Button
                 android:id="@+id/bottom_sheet_dialog_add_friends_layout_button_id"

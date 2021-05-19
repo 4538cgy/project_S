@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.work.Data
@@ -22,6 +23,7 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityProfileBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.util.workmanager.SubscribeWorker
+import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
 class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_profile) {
@@ -34,6 +36,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
     
     //프로필 편집 버튼을 눌렀을때 뷰 변화 기준
     private var updateOnOff = false
+    private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +61,24 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
                 .circleCrop()
                 .into(binding.activityProfileImageviewProfile)
         })
-
+        // 친구 즐겨찾기 변경여부 observe
+        viewModel.isFavoriteResult.observe(this, Observer {
+            it?.let{
+                setFavoriteImg(it.isFavorite)
+            }?:{
+                Toast.makeText(baseContext,getString(R.string.fail_to_request_favorite_to_friend), Toast.LENGTH_LONG).show()
+            }()
+        })
         //본인인지 아닌지 구분
         isMe(destinationUid.toString())
 
-
+        // 친구 리스트 중에 uid 비교해서 즐겨찾기 여부 체크
+        for(i in SNSUtilViewModel.friendsList){
+            if(i.uid == destinationUid){
+                setFavoriteImg(i.isFavorite)
+                break
+            }
+        }
 
         initDestinationUserData()
 
@@ -116,16 +132,17 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
                     }
                 }
             }
-
-
-
-
-
-
-
         })
     }
 
+    // 즐겨찾기 이미지 변경
+    private fun setFavoriteImg(isFavorite : Boolean){
+        this.isFavorite = isFavorite
+        if (isFavorite) {
+            binding.activityProfileImagebuttonFavorite.setImageResource(R.drawable.ic_baseline_star_rate_24)
+        } else {
+            binding.activityProfileImagebuttonFavorite.setImageResource(R.drawable.ic_baseline_star_outline_24)}
+    }
     fun onSubscribeWorker(){
         println("백그라운드 실행")
         var data : MutableMap<String,Any> = HashMap()
@@ -169,6 +186,10 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
         startActivity(Intent(rootContext, MyQrCodeActivity::class.java))
     }
 
+    // 프로필 화면 닫기
+    fun closeActivity(view : View){
+        finish()
+    }
     fun onClickUpdateProfile(view: View){
         if (!updateOnOff){
             binding.activityProfileLine1.visibility = View.VISIBLE
@@ -218,6 +239,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
             binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
             binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+            binding.activityProfileImagebuttonFavorite.visibility = View.GONE
         }else{
             binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
             //친구인지 아닌지 구분
@@ -235,9 +257,17 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
 
         }else {
+            // 친구가 아닐 경우 즐겨찾기 아이콘 안나타나도록
+            binding.activityProfileImagebuttonFavorite.visibility = View.GONE
             binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.VISIBLE
         }
+    }
+
+    // 친구 즐겨찾기 요청
+    fun requestFavorite(view : View){
+
+        viewModel.requestSetFavorite(destinationUid!!, !isFavorite)
     }
 
     fun openChat(view: View){

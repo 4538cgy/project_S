@@ -7,8 +7,8 @@ data class RecyclerDefaultModel(
     val uid: String?,
     val imageUrl: Int?, // image
     val title: String, // title
-    val content: String? // content
-
+    val content: String?, // content
+    var isFavorite : Boolean = false // 친구 즐겨찾기
 ) {
 
     // 친구 목록 모델

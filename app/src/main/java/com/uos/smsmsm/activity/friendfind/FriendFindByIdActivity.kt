@@ -9,12 +9,10 @@ import androidx.activity.viewModels
 import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.Observer
 import com.uos.smsmsm.R
-import com.uos.smsmsm.activity.content.GalleryHolder
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivityFindFriendsByIdBinding
-import com.uos.smsmsm.recycleradapter.friends.FindFriendAdapter
-import com.uos.smsmsm.recycleradapter.friends.FindFriendViewHolder
+import com.uos.smsmsm.recycleradapter.friends.find.FindFriendAdapter
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint

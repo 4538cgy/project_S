@@ -83,7 +83,9 @@
     <string name="calendar">캘랜더</string>
     <string name="sms">SMS</string>
     <string name="approve">승인하기</string>
-
+    <string name="favorites">즐겨찾기</string>
+    <string name="friends">친구</string>
+    <string name="remove">삭제</string>
     <!-- Toolbar -->
     <string name="back">Back</string>
 
@@ -104,4 +106,7 @@
     <string name="open_gallery">사진첩\n열기</string>
     <string name="take_picture_fail">사진 촬영에 실패하였습니다.</string>
     <string name="load_picture_fail">사진을 가져오는데 실패하였습니다.</string>
+
+    <string name="this_is_a_temporary_profile">임시 프로필 입니다.</string>
+    <string name="fail_to_request_favorite_to_friend">즐겨찾기 추가를 실패하였습니다.</string>
 </resources>

@@ -8,9 +8,9 @@ import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.uos.smsmsm.data.RecyclerDefaultModel
-import com.uos.smsmsm.recycleradapter.friends.FindFriendAdapter
+import com.uos.smsmsm.recycleradapter.friends.find.FindFriendAdapter
 import com.uos.smsmsm.data.UserDTO
-import com.uos.smsmsm.recycleradapter.friends.FriendListSearchAdapter
+import com.uos.smsmsm.recycleradapter.friends.find.FriendListSearchAdapter
 import java.util.*
 
 
