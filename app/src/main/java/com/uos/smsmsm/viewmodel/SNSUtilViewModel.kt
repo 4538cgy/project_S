@@ -337,7 +337,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     //채팅 보내기
     fun sendMessage(destinationUid: String,chatType: String?){
-        if(chatRoomType == "personal"){
+        if(chatType == "personal"){
             val repository = ChatRepository()
             println("메세지 전송시도 : " + destinationUid)
             if (chatList.value != null && chatList.value!!.isNotEmpty()){

@@ -39,14 +39,14 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
         chatType = intent.getStringExtra("chatType")
         chatTitle = intent.getStringExtra("chatTitle")
 
-
+        println("destinationUid : " + destinationUid + " chatType : " + chatType + " chatTitle : " +chatTitle)
         binding.apply {
             viewmodel = viewModel
             chat = this@ChatActivity
             //액션바 Toolbar에 바인딩
             setSupportActionBar(activityChatToolbar)
             //채팅 보내기
-            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid) }
+            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid,chatType) }
         }
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)

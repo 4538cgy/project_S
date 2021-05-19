@@ -170,7 +170,6 @@ class ChatRepository @Inject constructor() {
                         commentMap.putAll(chatDTO.comments)
                         val lastMessageKey = commentMap.keys.toTypedArray()[0]
                         if (it.equals(commentMap[lastMessageKey]?.timestamp.toString())){
-                            chatDTO.chatType = "personal"
                             resultChat.add(index,chatDTO)
                         }else{
                             return@forEachIndexed
@@ -181,6 +180,7 @@ class ChatRepository @Inject constructor() {
                     val commentMap: MutableMap<String, ChatDTO.Comment> =
                         TreeMap(Collections.reverseOrder())
                     commentMap.putAll(it.comments)
+                    it.chatType = "personal"
                     val lastMessageKey = commentMap.keys.toTypedArray()[0]
                 }
                 this@callbackFlow.sendBlocking(resultChat)

@@ -88,6 +88,7 @@ class ChatRoomListRecyclerAdapter(private val context : Context, private val lis
             val intent = Intent(context,ChatActivity::class.java)
             intent.apply {
                 putExtra("destinationUid",destinationUsers[position])
+                putExtra("chatType", list.value!![position].chatType)
                 context.startActivity(intent)
             }
         }
