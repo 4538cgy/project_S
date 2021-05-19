@@ -70,38 +70,43 @@ class ChatRepository @Inject constructor() {
         eventListener.setValue(chatData).addOnSuccessListener {
             this@callbackFlow.sendBlocking(eventListener.key!!)
         }
-
-
         awaitClose()
     }
 
-//제작중
-//    @ExperimentalCoroutinesApi
-//    fun createOpenChatRoom(chatTitle : String, chatData: ChatDTO) = callbackFlow<Boolean> {
-//        println(" 채팅방 개설 : " + chatTitle)
-//        println(" chatDTOs : " + chatData.users.toString())
-//        var document = db.collection("openChatRoom").document()
-//        println("uid 가져와 지나?? : "+ document.id)
-//        document.set(chatData).addOnSuccessListener {
-//            this@callbackFlow.sendBlocking(true)
-//        }
-//        awaitClose()
-////        document.set(chatDTOs).addOnSuccessListener {
-////            this@callbackFlow.sendBlocking(true)
-////        }
-//    }
+    @ExperimentalCoroutinesApi
+    fun createOpenChatRoom(chatTitle : String?, chatData: ChatDTO) = callbackFlow<String> {
+        println(" 채팅방 개설 : " + chatTitle)
+        chatData.chatTitle = chatTitle
+        var document = db.collection("openChatRoom").document()
+        document.set(chatData).addOnSuccessListener {
+            this@callbackFlow.sendBlocking(document.id)
+        }
+        awaitClose()
+    }
 
     @ExperimentalCoroutinesApi
-    fun addChat(chatRoomUid: String, comment: ChatDTO.Comment) = callbackFlow<Boolean> {
-        val databaseReference = rdb.reference.child("chatrooms").child(chatRoomUid)
-        val commentReference = databaseReference.child("comments")
-        val nameReference = databaseReference.child("commentTimestamp")
+    fun addChat(chatRoomUid: String, comment: ChatDTO.Comment,chatType : String) = callbackFlow<Boolean> {
+        if(chatType == "personal") {
+            val databaseReference = rdb.reference.child("chatrooms").child(chatRoomUid)
+            val commentReference = databaseReference.child("comments")
+            val timeReference = databaseReference.child("commentTimestamp")
 
-        val commentListener = commentReference.push().setValue(comment).addOnCompleteListener {
-            println("코멘트 추가 성공")
-            val eventListener = nameReference.setValue(comment.timestamp).addOnCompleteListener {
-                println("날자 최신화 성공")
-                this@callbackFlow.sendBlocking(true)
+            val commentListener = commentReference.push().setValue(comment).addOnCompleteListener {
+                println("코멘트 추가 성공")
+                val eventListener = timeReference.setValue(comment.timestamp).addOnCompleteListener {
+                        println("날자 최신화 성공")
+                        this@callbackFlow.sendBlocking(true)
+                    }
+            }
+        }else if(chatType == "open"){
+            var databaseReference = db.collection("openChatRoom").document(chatRoomUid)
+            val commentReference = databaseReference.collection("comments").document()
+            val commentListener = commentReference.set(comment).addOnCompleteListener {
+                println("코멘트 추가 성공")
+                val eventListener = databaseReference.update("commentTimestamp",comment.timestamp).addOnCompleteListener {
+                        println("날자 최신화 성공")
+                        this@callbackFlow.sendBlocking(true)
+                    }
             }
         }
         awaitClose()

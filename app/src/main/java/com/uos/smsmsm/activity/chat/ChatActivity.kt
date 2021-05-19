@@ -25,7 +25,7 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
     var recyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
 
     //채팅방 uid
-    var destinationUid : String = ""
+    var destinationUid : String? = ""
     //채팅방 종류
     var chatType : String? = ""
     //오픈 채팅방 제목
@@ -46,7 +46,7 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
             //액션바 Toolbar에 바인딩
             setSupportActionBar(activityChatToolbar)
             //채팅 보내기
-            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid,chatType) }
+            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid,chatType,chatTitle) }
         }
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -78,7 +78,9 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
     fun initRecyclerAdapter(){
         chatRecyclerAdapterInitChecker = true
         with(binding) {
-            activityChatRecyclerview.adapter = ChatRecyclerAdapter(rootContext,recyclerData,destinationUid)
+            if(chatType == "person") {
+                activityChatRecyclerview.adapter = ChatRecyclerAdapter(rootContext, recyclerData, destinationUid!!)
+            }
             activityChatRecyclerview.layoutManager = LinearLayoutManager(rootContext,
                 LinearLayoutManager.VERTICAL,false)
             activityChatRecyclerview.scrollToPosition(recyclerData.value!!.size - 1)

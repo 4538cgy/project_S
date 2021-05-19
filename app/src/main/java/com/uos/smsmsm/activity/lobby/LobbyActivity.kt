@@ -129,7 +129,6 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
             var intent = Intent(rootContext, ChatActivity::class.java)
             intent.apply {
                 putExtra("chatType","open")
-                putExtra("destinationUid","new")
                 putExtra("chatTitle",chatTitle)
                 startActivity(intent)
             }

@@ -271,12 +271,12 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     }
 
     //채팅방 있는지 확인하고 있으면 snapshot id 가져오기
-    fun checkChatRoom(destinationUid : String,chatType : String?,chatTitle : String?){
+    fun checkChatRoom(destinationUid : String?,chatType : String?,chatTitle : String?){
         if(chatType == "personal") {
             //개인 채팅방일때
             val repository = ChatRepository()
             viewModelScope.launch(Dispatchers.IO) {
-                repository.checkChatRoom(destinationUid).collect {
+                repository.checkChatRoom(destinationUid!!).collect {
                     println("채팅방 uid : " + it)
                     chatRoomUid.postValue(it)
                     chatRoomType = chatType
@@ -299,61 +299,29 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         }
     }
 
-    //사용되지 않음
-//    fun createChatRoom(destinationUid: String){
-//        val repository = ChatRepository()
-//        var chatDTOs = ChatDTO()
-//        chatDTOs.users[auth.currentUser?.uid!!] = true;
-//        chatDTOs.commentTimestamp = System.currentTimeMillis()
-//        chatDTOs.users[destinationUid!!] = true
-//        viewModelScope.launch(Dispatchers.IO) {
-//            //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
-//            if (chatRoomUid.value == null) {
-//
-//                repository.createChatRoom(destinationUid, chatDTOs).collect {
-//                    if (it) println("채팅방 생성 성공") else println("채팅방 생성 실패")
-//                }
-//                //채팅방이 있다면 그냥 메세지 전달
-//            }
-//        }
-//    }
-//
-//    fun createOpenChatRoom(chatTitle: String){
-//        val repository = ChatRepository()
-//        var chatDTOs = ChatDTO()
-//        chatDTOs.users[auth.currentUser?.uid!!] = true;
-//        chatDTOs.commentTimestamp = System.currentTimeMillis()
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.createOpenChatRoom(chatTitle,chatDTOs).collect {
-//                if (it != null){
-//                    println("채팅방 생성 성공")
-//                }else{
-//                    println("채팅방 생성 실패")
-//                }
-//            }
-//
-//        }
-//    }
-
     //채팅 보내기
-    fun sendMessage(destinationUid: String,chatType: String?){
-        if(chatType == "personal"){
-            val repository = ChatRepository()
-            println("메세지 전송시도 : " + destinationUid)
-            if (chatList.value != null && chatList.value!!.isNotEmpty()){
-                chatList.value!!.clear()
-            }
+    fun sendMessage(destinationUid : String?,chatType: String?,chatTitle: String?){
 
-            var chatDTOs = ChatDTO()
-            chatDTOs.users[auth.currentUser?.uid!!] = true;
-            chatDTOs.commentTimestamp = System.currentTimeMillis()
-            chatDTOs.users[destinationUid!!] = true
-            chatDTOs.chatType = chatRoomType
-            chatDTOs.users[destinationUid!!] = true
+        val repository = ChatRepository()
+        println("메세지 전송시도 : " + destinationUid)
+        println("chatRoomUid : " + chatRoomUid.value)
+        if (chatList.value != null && chatList.value!!.isNotEmpty()){
+            chatList.value!!.clear()
+        }
+
+        if(chatType == "personal"){
             viewModelScope.launch(Dispatchers.IO) {
                 //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
                 if (chatRoomUid.value == null) {
                     println("채팅방 없음")
+
+                    //채팅방 정보 생성
+                    var chatDTOs = ChatDTO()
+                    chatDTOs.users[auth.currentUser?.uid!!] = true;
+                    chatDTOs.commentTimestamp = System.currentTimeMillis()
+                    chatDTOs.chatType = chatRoomType
+                    chatDTOs.users[destinationUid!!] = true
+
                     repository.createChatRoom(destinationUid,chatDTOs).collect {
                         if (it != null) println("채팅방 생성 성공") else println("채팅방 생성 실패")
                         println("채팅방 uid : " + it)
@@ -364,7 +332,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                             comment.uid = auth.currentUser!!.uid
                             comment.message = edittextText.value.toString()
                             comment.timestamp = System.currentTimeMillis()
-                            repository.addChat(it.toString(),comment).collect {
+                            repository.addChat(it.toString(),comment,chatType).collect {
                                 if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                                 //채팅 다 보낸뒤 edittextText 교체해주기
                                 edittextText.postValue(null)
@@ -379,17 +347,46 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                     comment.message = edittextText.value.toString()
                     comment.timestamp = System.currentTimeMillis()
 
-                    repository.addChat(chatRoomUid.value.toString(),comment).collect {
+                    repository.addChat(chatRoomUid.value.toString(),comment,chatType).collect {
                         if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                         //채팅 다 보낸뒤 edittextText 교체해주기
                         edittextText.postValue(null)
                     }
                 }
             }
+        }else if(chatType == "open") {
+            val repository = ChatRepository()
+            viewModelScope.launch(Dispatchers.IO) {
+                //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
+                if (chatRoomUid.value == null) {
+                    println("채팅방 없음")
 
+                    //채팅방 정보 생성
+                    var chatDTOs = ChatDTO()
+                    chatDTOs.users[auth.currentUser?.uid!!] = true;
+                    chatDTOs.commentTimestamp = System.currentTimeMillis()
+                    chatDTOs.chatType = chatRoomType
+
+                    repository.createOpenChatRoom(chatTitle,chatDTOs).collect {
+                        if (it != null) println("채팅방 생성 성공") else println("채팅방 생성 실패")
+                        println("채팅방 uid : " + it)
+                        chatRoomUid.postValue(it)
+                        //채팅방을 생성하고도 에딧텍스트에 값이 남아있다면 메세지 전달
+                        if (edittextText.value!!.isNotEmpty()){
+                            var comment = ChatDTO.Comment()
+                            comment.uid = auth.currentUser!!.uid
+                            comment.message = edittextText.value.toString()
+                            comment.timestamp = System.currentTimeMillis()
+                            repository.addChat(it.toString(),comment,chatType).collect {
+                                if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
+                                //채팅 다 보낸뒤 edittextText 교체해주기
+                                edittextText.postValue(null)
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-
     }
 
     //채팅방 목록 가져오기
