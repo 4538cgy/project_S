@@ -39,7 +39,6 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
         chatType = intent.getStringExtra("chatType")
         chatTitle = intent.getStringExtra("chatTitle")
 
-        println("destinationUid : " + destinationUid + " chatType : " + chatType + " chatTitle : " + chatTitle)
 
         binding.apply {
             viewmodel = viewModel
@@ -55,7 +54,8 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
         //뷰모델 값 적용
         viewModel.apply {
             //destinationUid 값으로 채팅방이 있는지 찾아 뷰모델에 추가
-            checkChatRoom(destinationUid)
+            checkChatRoom(destinationUid,chatType,chatTitle)
+            //chatRoomUid 변화시 메세지 가져오기 -> chatList qusghktl 리사이클러뷰 다시 설정
             chatRoomUid.observe(this@ChatActivity, Observer { uid ->
                 //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
                 getMessageList()

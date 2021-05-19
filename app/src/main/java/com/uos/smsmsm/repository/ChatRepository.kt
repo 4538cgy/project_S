@@ -1,5 +1,6 @@
 package com.uos.smsmsm.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,6 +10,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -19,11 +21,15 @@ class ChatRepository @Inject constructor() {
     private val rdb = FirebaseDatabase.getInstance()
     private val uid = FirebaseAuth.getInstance().currentUser?.uid
 
+    //destinationUid = 채팅방의 uid
+
     @ExperimentalCoroutinesApi
     fun checkChatRoom(destinationUid: String) = callbackFlow<String> {
+        //유저 uid가 들어간 realdb 정보가져오기
         val databaseReference = rdb.reference.child("chatrooms").orderByChild("users/" + uid).equalTo(true)
         val eventListener = databaseReference.addListenerForSingleValueEvent(object  : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                //채팅방이 있는경우 상대 방 uid가 있는 채팅방 의키값 반환하기
                 snapshot.children.forEach{
                     var chatDTOs: ChatDTO = it.getValue(ChatDTO::class.java)!!
                     if (chatDTOs.users.containsKey(destinationUid)){
@@ -37,23 +43,70 @@ class ChatRepository @Inject constructor() {
         awaitClose()
     }
 
+    //제작중
+//    @ExperimentalCoroutinesApi
+//    fun checkOpenChatRoom(destinationUid: String) = callbackFlow<String> {
+//        //유저 uid가 들어간 realdb 정보가져오기
+//        val eventListener = databaseReference.addListenerForSingleValueEvent(object  : ValueEventListener{
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                // 상대 방 uid가 있는 채팅방 의키값 반환하기
+//                snapshot.children.forEach{
+//                    var chatDTOs: ChatDTO = it.getValue(ChatDTO::class.java)!!
+//                    if (chatDTOs.users.containsKey(destinationUid)){
+//                        this@callbackFlow.sendBlocking(it.key!!)
+//                    }
+//                }
+//            }
+//            override fun onCancelled(error: DatabaseError) {
+//            }
+//        })
+//        awaitClose()
+//    }
+
     @ExperimentalCoroutinesApi
-    fun createChatRoom(destinationUid: String, chatData: ChatDTO) = callbackFlow<Boolean> {
+    fun createChatRoom(destinationUid: String,chatData : ChatDTO) = callbackFlow<String> {
         val databaseReference = rdb.reference.child("chatrooms")
-        val eventListener = databaseReference.push().setValue(chatData).addOnSuccessListener {
-            checkChatRoom(destinationUid)
-            this@callbackFlow.sendBlocking(true)
+        val eventListener = databaseReference.push()
+        eventListener.setValue(chatData).addOnSuccessListener {
+            this@callbackFlow.sendBlocking(eventListener.key!!)
         }
+
+
         awaitClose()
     }
+
+//제작중
+//    @ExperimentalCoroutinesApi
+//    fun createOpenChatRoom(chatTitle : String, chatData: ChatDTO) = callbackFlow<Boolean> {
+//        println(" 채팅방 개설 : " + chatTitle)
+//        println(" chatDTOs : " + chatData.users.toString())
+//        var document = db.collection("openChatRoom").document()
+//        println("uid 가져와 지나?? : "+ document.id)
+//        document.set(chatData).addOnSuccessListener {
+//            this@callbackFlow.sendBlocking(true)
+//        }
+//        awaitClose()
+////        document.set(chatDTOs).addOnSuccessListener {
+////            this@callbackFlow.sendBlocking(true)
+////        }
+//    }
+
     @ExperimentalCoroutinesApi
     fun addChat(chatRoomUid: String, comment: ChatDTO.Comment) = callbackFlow<Boolean> {
-        val databaseReference = rdb.reference.child("chatrooms").child(chatRoomUid).child("comments")
-        val eventListener = databaseReference.push().setValue(comment).addOnCompleteListener {
-            this@callbackFlow.sendBlocking(true)
+        val databaseReference = rdb.reference.child("chatrooms").child(chatRoomUid)
+        val commentReference = databaseReference.child("comments")
+        val nameReference = databaseReference.child("commentTimestamp")
+
+        val commentListener = commentReference.push().setValue(comment).addOnCompleteListener {
+            println("코멘트 추가 성공")
+            val eventListener = nameReference.setValue(comment.timestamp).addOnCompleteListener {
+                println("날자 최신화 성공")
+                this@callbackFlow.sendBlocking(true)
+            }
         }
         awaitClose()
     }
+
 
     @ExperimentalCoroutinesApi
     fun getChat(chatRoomUid: String) = callbackFlow<ArrayList<ChatDTO.Comment>> {
@@ -90,10 +143,13 @@ class ChatRepository @Inject constructor() {
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                //채팅룸 리스트 초기화
                 chat.clear()
+                //리스트에 리얼타임 db의 채팀룸 리스트 추가
                 for (item in snapshot.children) {
                     chat.add(item.getValue(ChatDTO::class.java)!!)
                 }
+                //채팅룸 리스트에서 가장 빠른 코멘트의 타임스템프 리스트 생성
                 chat.forEachIndexed{
                         index, chatDTO ->
                     val commentMap: MutableMap<String, ChatDTO.Comment> =
@@ -103,7 +159,10 @@ class ChatRepository @Inject constructor() {
                     val timeStamp = commentMap[lastMessageKey]?.timestamp
                     chatTimestampList.add(timeStamp.toString())
                 }
+                //채팅룸의 타임라인 리스트 정렬
                 chatTimestampList.sortDescending()
+                //채팅룸의 타임 라인 리스트와 각 채팅방의 채팅룸 리스트의 가장 빠른 채팅을 비교하여
+                //채팅룸을 시간순으로 정렬한 resultChat 완성
                 chatTimestampList.forEachIndexed { index,it ->
                     chat.forEachIndexed { chatindex, chatDTO ->
                         val commentMap: MutableMap<String, ChatDTO.Comment> =
@@ -111,6 +170,7 @@ class ChatRepository @Inject constructor() {
                         commentMap.putAll(chatDTO.comments)
                         val lastMessageKey = commentMap.keys.toTypedArray()[0]
                         if (it.equals(commentMap[lastMessageKey]?.timestamp.toString())){
+                            chatDTO.chatType = "personal"
                             resultChat.add(index,chatDTO)
                         }else{
                             return@forEachIndexed

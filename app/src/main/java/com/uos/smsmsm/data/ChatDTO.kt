@@ -3,6 +3,8 @@ package com.uos.smsmsm.data
 // Apply ktlint
 data class ChatDTO(
     var commentTimestamp : Long ? = null,
+    var chatType : String? =null,
+    var chatTitle : String? =null,
     var users: MutableMap<String, Boolean> = HashMap(),
     var comments: MutableMap<String, Comment> = HashMap()
 ) {
