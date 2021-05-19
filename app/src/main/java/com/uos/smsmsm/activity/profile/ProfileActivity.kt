@@ -241,7 +241,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
         var intent = Intent(rootContext,ChatActivity::class.java)
         intent.apply {
             putExtra("destinationUid",destinationUid)
-
+            putExtra("chatType","personal")
             startActivity(intent)
         }
     }

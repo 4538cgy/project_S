@@ -18,20 +18,29 @@ import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
+class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
 
     private val viewModel : SNSUtilViewModel by viewModels()
 
     var recyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
 
+    //채팅방 uid
     var destinationUid : String = ""
-
+    //채팅방 종류
+    var chatType : String? = ""
+    //오픈 채팅방 제목
+    var chatTitle : String? = ""
     //리사이클러뷰 초기화 확인 플래그 (왜있는건지..?)
     var chatRecyclerAdapterInitChecker = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         destinationUid = intent.getStringExtra("destinationUid")
+        chatType = intent.getStringExtra("chatType")
+        chatTitle = intent.getStringExtra("chatTitle")
+
+        println("destinationUid : " + destinationUid + " chatType : " + chatType + " chatTitle : " + chatTitle)
+
         binding.apply {
             viewmodel = viewModel
             chat = this@ChatActivity
@@ -42,11 +51,11 @@ class ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat) {
         }
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
         //뷰모델 값 적용
         viewModel.apply {
             //destinationUid 값으로 채팅방이 있는지 찾아 뷰모델에 추가
             checkChatRoom(destinationUid)
-
             chatRoomUid.observe(this@ChatActivity, Observer { uid ->
                 //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
                 getMessageList()

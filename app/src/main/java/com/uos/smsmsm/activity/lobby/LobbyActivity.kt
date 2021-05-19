@@ -15,6 +15,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.content.AddContentActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityLobbyBinding
@@ -120,8 +121,18 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
             // System.out.println -> println
             println("데이터 전달 성공적으로 완수1666")
         }
-        
+
+        //오픈 채팅방 추가
         if(unmaskedRequestCode == 1721){
+            var chatTitle : String = data?.getStringExtra("OpenChatTitle")!!
+
+            var intent = Intent(rootContext, ChatActivity::class.java)
+            intent.apply {
+                putExtra("chatType","open")
+                putExtra("destinationUid","new")
+                putExtra("chatTitle",chatTitle)
+                startActivity(intent)
+            }
         }
 
         if (requestCode == UserFragment.PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
