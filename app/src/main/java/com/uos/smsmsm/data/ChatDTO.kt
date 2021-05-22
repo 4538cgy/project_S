@@ -2,6 +2,7 @@ package com.uos.smsmsm.data
 
 // Apply ktlint
 data class ChatDTO(
+    var chatuid : String? =null,
     var commentTimestamp : Long ? = null,
     var chatType : String? =null,
     var chatTitle : String? =null,

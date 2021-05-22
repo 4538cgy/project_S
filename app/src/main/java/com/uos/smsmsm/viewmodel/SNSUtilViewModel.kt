@@ -412,6 +412,9 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     fun initMyChatRoomList(uid: String){
         viewModelScope.launch(Dispatchers.IO){
             chatRepository.getChatRoomList(uid).collect{
+                it.forEach {
+                    println("채팅방 목록" + it)
+                }
                 chatRoomList.postValue(it)
             }
         }

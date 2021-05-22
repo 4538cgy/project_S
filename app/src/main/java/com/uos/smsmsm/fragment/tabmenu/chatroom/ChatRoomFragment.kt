@@ -45,13 +45,9 @@ class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragmen
     fun initRecyclerView(){
         var data = MutableLiveData<ArrayList<ChatDTO>>()
         val recyclerObserver : Observer<ArrayList<ChatDTO>>
-            = Observer { livedata ->
-            data.value = livedata
-            binding.fragmentChatRoomRecyclerview.adapter =
-                ChatRoomListRecyclerAdapter(
-                    binding.root.context,
-                    data
-                )
+        = Observer { livedata -> data.value = livedata
+            println(" 프래그먼트에 들어갈 리스트 : " + livedata)
+            binding.fragmentChatRoomRecyclerview.adapter = ChatRoomListRecyclerAdapter(binding.root.context, data)
             binding.fragmentChatRoomRecyclerview.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
             loadingDialog.dismiss()
         }
