@@ -7,6 +7,7 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.recycleradapter.friends.FindFriendAdapter
 import com.uos.smsmsm.data.UserDTO
@@ -47,4 +48,14 @@ object BindingAdapter  {
     fun setTimeStamp(view: TextView, time: Long) {
         view.text = TimeUtil().formatTimeString(time)
     }
+
+//    //마지막 채팅 내용 반환
+//    @JvmStatic
+//    @BindingAdapter("getLastComment")
+//    fun getLastComment(view: TextView,comments : MutableMap<String, ChatDTO.Comment> ) {
+//        val commentMap : MutableMap<String,ChatDTO.Comment> = TreeMap(Collections.reverseOrder())
+//        commentMap.putAll(comments)
+//        val lastMessageKey = commentMap.keys.toTypedArray()[0]
+//        view.text = comments[lastMessageKey]?.message
+//    }
 }

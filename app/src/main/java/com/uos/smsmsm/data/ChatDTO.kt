@@ -4,6 +4,7 @@ package com.uos.smsmsm.data
 data class ChatDTO(
     var chatuid : String? =null,
     var commentTimestamp : Long ? = null,
+    var lastComment : String ? = null,
     var chatType : String? =null,
     var chatTitle : String? =null,
     var users: MutableMap<String, Boolean> = HashMap(),

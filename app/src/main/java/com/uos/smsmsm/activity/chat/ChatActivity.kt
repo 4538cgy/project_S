@@ -35,7 +35,7 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        destinationUid = intent.getStringExtra("destinationUid")
+        destinationUid = intent.getStringExtra("chatUid")
         chatType = intent.getStringExtra("chatType")
         chatTitle = intent.getStringExtra("chatTitle")
 

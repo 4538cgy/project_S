@@ -71,9 +71,10 @@ class ChatRepository @Inject constructor() {
 
     @ExperimentalCoroutinesApi
     fun createOpenChatRoom(chatTitle : String?, chatData: ChatDTO) = callbackFlow<String> {
+        var document = db.collection("openChatRoom").document()
         println(" 채팅방 개설 : " + chatTitle)
         chatData.chatTitle = chatTitle
-        var document = db.collection("openChatRoom").document()
+        chatData.chatuid = document.id
         document.set(chatData).addOnSuccessListener {
             this@callbackFlow.sendBlocking(document.id)
         }
@@ -86,13 +87,17 @@ class ChatRepository @Inject constructor() {
             val databaseReference = rdb.reference.child("chatrooms").child(chatRoomUid)
             val commentReference = databaseReference.child("comments")
             val timeReference = databaseReference.child("commentTimestamp")
+            val lastCommentReference = databaseReference.child("lastComment")
 
             val commentListener = commentReference.push().setValue(comment).addOnCompleteListener {
                 println("코멘트 추가 성공")
                 val eventListener = timeReference.setValue(comment.timestamp).addOnCompleteListener {
                         println("날자 최신화 성공")
+                    val eventListener = lastCommentReference.setValue(comment.message).addOnCompleteListener {
+                        println("마지막코멘트 최신화 성공")
                         this@callbackFlow.sendBlocking(true)
                     }
+                }
             }
         }else if(chatType == "open"){
             var databaseReference = db.collection("openChatRoom").document(chatRoomUid)
@@ -101,8 +106,11 @@ class ChatRepository @Inject constructor() {
                 println("코멘트 추가 성공")
                 val eventListener = databaseReference.update("commentTimestamp",comment.timestamp).addOnCompleteListener {
                         println("날자 최신화 성공")
+                    val lastCommentListener = databaseReference.update("lastComment",comment.message).addOnCompleteListener {
+                        println("마지막 코멘트 최신화 성공")
                         this@callbackFlow.sendBlocking(true)
                     }
+                }
             }
         }
         awaitClose()
@@ -131,12 +139,14 @@ class ChatRepository @Inject constructor() {
                     }
                 })
         }else if(chatType == "open") {
-            val databaseReference = db.collection("openChatRoom").document(chatRoomUid).collection("comment")
+            val databaseReference = db.collection("openChatRoom").document(chatRoomUid).collection("comments")
             val eventListener = databaseReference.addSnapshotListener { value, error ->
                 if (value != null) {
                     value.documents.forEach {
                         chatData.add(it.toObject(ChatDTO.Comment::class.java)!!)
                     }
+                    chatData = ArrayList(chatData.sortedWith(compareBy<ChatDTO.Comment>({ it.timestamp })))
+
                     this@callbackFlow.sendBlocking(chatData)
                 }
             }
@@ -181,9 +191,7 @@ class ChatRepository @Inject constructor() {
                     //두개의 리스트를 추가하여 정렬하여 반환
                     resultChat.addAll(openChat)
                     resultChat.addAll(personalChat)
-                    resultChat = ArrayList(
-                        resultChat.sortedWith(compareBy<ChatDTO>({ it.commentTimestamp })).reversed()
-                    )
+                    resultChat = ArrayList(resultChat.sortedWith(compareBy<ChatDTO>({ it.commentTimestamp })).reversed())
                     this@callbackFlow.sendBlocking(resultChat)
                 }
             }
