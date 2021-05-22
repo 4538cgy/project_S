@@ -148,43 +148,58 @@ class ChatRepository @Inject constructor() {
     @ExperimentalCoroutinesApi
     fun getChatRoomList(uid: String) = callbackFlow<ArrayList<ChatDTO>> {
 
-        //1:1 채팅
-        var personalChat : ArrayList<ChatDTO> = arrayListOf()
-        var openChat : ArrayList<ChatDTO> = arrayListOf()
+        var chat : ArrayList<ChatDTO> = arrayListOf()
+        var chatTimestampList : ArrayList<String> = arrayListOf()
         var resultChat : ArrayList<ChatDTO> = arrayListOf()
 
-        //1:1 채팅 레퍼런스
-        val personalReference = rdb.reference.child("chatrooms").orderByChild("users/$uid").equalTo(true)
-        //오픈 채팅 레퍼런스
-        val openReference = db.collection("openChatRoom")
-        val personalListener = personalReference.addListenerForSingleValueEvent(object : ValueEventListener{
+        val databaseReference = rdb.reference.child("chatrooms").orderByChild("users/$uid").equalTo(true)
+        val eventListener = databaseReference.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
+
             override fun onDataChange(snapshot: DataSnapshot) {
-                println("1:1 채팅 목록 가져오기")
                 //채팅룸 리스트 초기화
-                personalChat.clear()
+                chat.clear()
                 //리스트에 리얼타임 db의 채팀룸 리스트 추가
                 for (item in snapshot.children) {
-                    personalChat.add(item.getValue(ChatDTO::class.java)!!)
+                    chat.add(item.getValue(ChatDTO::class.java)!!)
                 }
-
-                val openListener = openReference.addSnapshotListener{ value, error ->
-                    openChat.clear()
-                    resultChat.clear()
-                    if (value!!.isEmpty) return@addSnapshotListener
-                    value.documents.forEach {
-                        openChat.add(it.toObject(ChatDTO::class.java)!!)
+                //채팅룸 리스트에서 가장 빠른 코멘트의 타임스템프 리스트 생성
+                chat.forEachIndexed{
+                        index, chatDTO ->
+                    val commentMap: MutableMap<String, ChatDTO.Comment> =
+                        TreeMap(Collections.reverseOrder())
+                    commentMap.putAll(chat[index].comments)
+                    val lastMessageKey = commentMap.keys.toTypedArray()[0]
+                    val timeStamp = commentMap[lastMessageKey]?.timestamp
+                    chatTimestampList.add(timeStamp.toString())
+                }
+                //채팅룸의 타임라인 리스트 정렬
+                chatTimestampList.sortDescending()
+                //채팅룸의 타임 라인 리스트와 각 채팅방의 채팅룸 리스트의 가장 빠른 채팅을 비교하여
+                //채팅룸을 시간순으로 정렬한 resultChat 완성
+                chatTimestampList.forEachIndexed { index,it ->
+                    chat.forEachIndexed { chatindex, chatDTO ->
+                        val commentMap: MutableMap<String, ChatDTO.Comment> =
+                            TreeMap(Collections.reverseOrder())
+                        commentMap.putAll(chatDTO.comments)
+                        val lastMessageKey = commentMap.keys.toTypedArray()[0]
+                        if (it.equals(commentMap[lastMessageKey]?.timestamp.toString())){
+                            resultChat.add(index,chatDTO)
+                        }else{
+                            return@forEachIndexed
+                        }
                     }
-                    //두개의 리스트를 추가하여 정렬하여 반환
-                    resultChat.addAll(openChat)
-                    resultChat.addAll(personalChat)
-                    resultChat = ArrayList(resultChat.sortedWith(compareBy<ChatDTO>({ it.commentTimestamp?.get() })).reversed())
-                    
-                    this@callbackFlow.sendBlocking(resultChat)
                 }
-//                this@callbackFlow.sendBlocking(resultChat)
+                resultChat.forEachIndexed {index,it ->
+                    val commentMap: MutableMap<String, ChatDTO.Comment> =
+                        TreeMap(Collections.reverseOrder())
+                    commentMap.putAll(it.comments)
+                    it.chatType = "personal"
+                    val lastMessageKey = commentMap.keys.toTypedArray()[0]
+                }
+                this@callbackFlow.sendBlocking(resultChat)
             }
         })
         awaitClose {  }

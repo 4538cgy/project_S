@@ -11,7 +11,6 @@ import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.recycleradapter.friends.FindFriendAdapter
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.recycleradapter.friends.FriendListSearchAdapter
-import com.uos.smsmsm.util.time.TimeUtil
 import java.util.*
 
 
@@ -42,10 +41,4 @@ object BindingAdapter  {
         adapter.setItem(list)
     }
 
-    //시간 -> 텍스트 변환용
-    @JvmStatic
-    @BindingAdapter("setTimeStamp")
-    fun setTimeStamp(view: TextView, time: Long) {
-        view.text = TimeUtil().formatTimeString(time)
-    }
 }
