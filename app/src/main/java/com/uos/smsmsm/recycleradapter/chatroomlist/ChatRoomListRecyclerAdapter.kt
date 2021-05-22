@@ -24,7 +24,6 @@ import kotlin.collections.ArrayList
 class ChatRoomListRecyclerAdapter(private val context : Context, private val list : LiveData<ArrayList<ChatDTO>>) : RecyclerView.Adapter<ChatRoomListRecyclerAdapter.ChatListViewHolder>() {
 
     private val uid = FirebaseAuth.getInstance().currentUser!!.uid
-//    private var destinationUsers : ArrayList<String> = arrayListOf()
     private val mainScope = CoroutineScope(Dispatchers.Main)
     private val userRepository = UserRepository()
 
@@ -33,8 +32,6 @@ class ChatRoomListRecyclerAdapter(private val context : Context, private val lis
         fun onBind(data: ChatDTO) {
             binding.listchatroom = data
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListViewHolder {
@@ -48,35 +45,33 @@ class ChatRoomListRecyclerAdapter(private val context : Context, private val lis
     override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
         holder.onBind(list.value!![position])
 
-//        var destinationUid : String ? = null
-//
-//        //일일 챗방에 있는 유저를 체크
-//        for(user in list.value!![position].users.keys){
-//            if (user != uid){
-//                destinationUid = user
-//                destinationUsers.add(destinationUid)
-//            }
-//        }
-//
-//
-//        //프로필 이미지
-//        mainScope.launch {
-//            userRepository.getUserProfileImage(destinationUsers[position]).collect {
-//                Glide.with(holder.itemView.context)
-//                    .load(it)
-//                    .apply(RequestOptions().circleCrop()).into(holder.binding.itemChatRoomListCircleimageview)
-//            }
-//        }
-//
-//        //유저 이름
-//        mainScope.launch {
-//            userRepository.getUserNickName(destinationUsers[position]).collect {
-//                holder.binding.itemChatRoomListTextviewTitle.text = it
-//            }
-//        }
-//
-//
-//
+        //list[posion에 있는 유저들 (1:1 일경우 상대방만)]
+        var destinationUsers : ArrayList<String> = arrayListOf()
+
+        //일일 챗방에 있는 유저를 체크
+        for(user in list.value!![position].users.keys){
+            if (user != uid || list.value!![position].chatType!="personal"){
+                destinationUsers.add(user)
+            }
+        }
+
+        //프로필 이미지
+        mainScope.launch {
+            userRepository.getUserProfileImage(destinationUsers[0]).collect {
+                Glide.with(holder.itemView.context).load(it).apply(RequestOptions().circleCrop()).into(holder.binding.itemChatRoomListCircleimageview)
+            }
+        }
+
+
+        //오픈챗이 아닐경우 채팅방이름 유저명으로 설정
+        if(list.value!![position].chatType!="open") {
+            mainScope.launch {
+                userRepository.getUserNickName(destinationUsers[0]).collect {
+                    holder.binding.itemChatRoomListTextviewTitle.text = it
+                }
+            }
+        }
+
 //        //메세지를 내림차순으로 정렬 후 마지막 메세지의 키값을 가져옴
 //        val commentMap : MutableMap<String,ChatDTO.Comment> = TreeMap(Collections.reverseOrder())
 //        commentMap.putAll(list.value!![position].comments)

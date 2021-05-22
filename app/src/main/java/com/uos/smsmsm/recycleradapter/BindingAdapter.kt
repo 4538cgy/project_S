@@ -58,4 +58,6 @@ object BindingAdapter  {
 //        val lastMessageKey = commentMap.keys.toTypedArray()[0]
 //        view.text = comments[lastMessageKey]?.message
 //    }
+
+
 }
