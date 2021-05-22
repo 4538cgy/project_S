@@ -6,11 +6,14 @@ import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.data.ChatDTO
 import com.uos.smsmsm.data.UserDTO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -20,6 +23,7 @@ class ChatRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val rdb = FirebaseDatabase.getInstance()
     private val uid = FirebaseAuth.getInstance().currentUser?.uid
+    private val userRepository = UserRepository()
 
     //destinationUid = 채팅방의 uid
 
@@ -178,7 +182,8 @@ class ChatRepository @Inject constructor() {
                 //채팅룸 리스트 초기화
                 personalChat.clear()                //리스트에 리얼타임 db의 채팀룸 리스트 추가
                 for (item in snapshot.children) {
-                    personalChat.add(item.getValue(ChatDTO::class.java)!!)
+                    var chat = item.getValue(ChatDTO::class.java)!!
+                    personalChat.add(chat)
                 }
                 val openListener = openReference.addSnapshotListener { value, error ->
                     println("오픈 채팅 목록 가져오기")

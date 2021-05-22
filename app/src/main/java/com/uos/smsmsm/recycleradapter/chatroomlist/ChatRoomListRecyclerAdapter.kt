@@ -89,6 +89,7 @@ class ChatRoomListRecyclerAdapter(private val context : Context, private val lis
             intent.apply {
                 putExtra("chatUid",list.value!![position].chatuid)
                 putExtra("chatType", list.value!![position].chatType)
+                putExtra("chatTitle", list.value!![position].chatTitle)
                 context.startActivity(intent)
             }
         }

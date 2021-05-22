@@ -1,5 +1,7 @@
 package com.uos.smsmsm.data
 
+import androidx.databinding.ObservableField
+
 // Apply ktlint
 data class ChatDTO(
     var chatuid : String? =null,

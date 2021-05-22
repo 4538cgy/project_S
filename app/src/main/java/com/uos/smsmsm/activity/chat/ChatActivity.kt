@@ -22,6 +22,7 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
 
     private val viewModel : SNSUtilViewModel by viewModels()
 
+    //채팅방 채팅 리스트
     var recyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
     //1:1 대상 uid
     var destinationUid : String? = ""
@@ -29,25 +30,30 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
     var chatUid : String? = ""
     //채팅방 종류
     var chatType : String? = ""
-    //오픈 채팅방 제목
-    var chatTitle : String? = ""
     //리사이클러뷰 초기화 확인 플래그 (왜있는건지..?)
     var chatRecyclerAdapterInitChecker = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //1:1 전용 상대방 uid
         destinationUid = intent.getStringExtra("destinationUid")
-        chatTitle = intent.getStringExtra("chatTitle")
 
-        println("destinationUid : " + chatUid + " chatType : " + chatType + " chatTitle : " +chatTitle)
         binding.apply {
             viewmodel = viewModel
             chat = this@ChatActivity
             //액션바 Toolbar에 바인딩
             setSupportActionBar(activityChatToolbar)
+
             //채팅 보내기
-            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid,chatTitle) }
+            activityChatImagebuttonSendmessage.setOnClickListener {
+                if (viewModel.chatRoomType == "personal") {
+                    viewModel.sendMessageForPersonal(destinationUid)
+                } else if (viewModel.chatRoomType == "open") {
+                    viewModel.sendMessageForOpen()
+                }
+            }
         }
+
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -56,11 +62,12 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
             //destinationUid 값으로 채팅방이 있는지 찾아 뷰모델에 추가
             chatRoomUid.postValue(intent.getStringExtra("chatUid"))
             chatRoomType = intent.getStringExtra("chatType")
-//            checkChatRoom(chatUid,chatType,chatTitle)
+            chatRoomTitle = intent.getStringExtra("chatTitle")
+            //checkChatRoom(chatUid,chatType,chatTitle)
             //chatRoomUid 변화시 메세지 가져오기 -> chatList qusghktl 리사이클러뷰 다시 설정
             chatRoomUid.observe(this@ChatActivity, Observer { uid ->
                 //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
-                println("chatRoomUid 변경 : " + chatRoomUid.value);
+                println("chatRoomUid 변경됨 : " + chatRoomUid.value);
                 getMessageList()
                 chatList.observe(this@ChatActivity, Observer { livedata ->
                     println("chatList 변경 : " + chatList.value);
@@ -83,12 +90,9 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
         chatRecyclerAdapterInitChecker = true
         with(binding) {
             activityChatRecyclerview.adapter = ChatRecyclerAdapter(rootContext, recyclerData)
-
-            activityChatRecyclerview.layoutManager = LinearLayoutManager(rootContext,
-                LinearLayoutManager.VERTICAL,false)
+            activityChatRecyclerview.layoutManager = LinearLayoutManager(rootContext, LinearLayoutManager.VERTICAL,false)
             activityChatRecyclerview.scrollToPosition(recyclerData.value!!.size - 1)
         }
-
     }
 
     //상단 툴바 생성함수
