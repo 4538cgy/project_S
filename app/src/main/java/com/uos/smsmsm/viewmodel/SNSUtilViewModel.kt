@@ -277,7 +277,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         if(chatType == "personal") {
             //개인 채팅방일때
             viewModelScope.launch(Dispatchers.IO) {
-                repository.checkChatRoom(destinationUid!!).collect {
+                repository.checkChatRoom(destinationUid).collect {
                     println("채팅방 uid : " + it)
                     chatRoomUid.postValue(it)
                 }
@@ -309,7 +309,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     }
 
     //채팅 보내기
-    fun sendMessage(destinationUid : String?,chatType: String?,chatTitle: String?){
+    fun sendMessage(destinationUid : String?,chatTitle: String?){
 
         val repository = ChatRepository()
         println("메세지 전송시도 : " + chatRoomUid.value)
@@ -317,7 +317,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
             chatList.value!!.clear()
         }
 
-        if(chatType == "personal"){
+        if(chatRoomType == "personal"){
             viewModelScope.launch(Dispatchers.IO) {
                 //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
                 if (chatRoomUid.value == null) {
@@ -340,7 +340,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                             comment.uid = auth.currentUser!!.uid
                             comment.message = edittextText.value.toString()
                             comment.timestamp = System.currentTimeMillis()
-                            repository.addChat(it.toString(),comment,chatType).collect {
+                            repository.addChat(it.toString(),comment, chatRoomType!!).collect {
                                 if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                                 //채팅 다 보낸뒤 edittextText 교체해주기
                                 edittextText.postValue(null)
@@ -355,14 +355,14 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                     comment.message = edittextText.value.toString()
                     comment.timestamp = System.currentTimeMillis()
 
-                    repository.addChat(chatRoomUid.value.toString(),comment,chatType).collect {
+                    repository.addChat(chatRoomUid.value.toString(),comment, chatRoomType!!).collect {
                         if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                         //채팅 다 보낸뒤 edittextText 교체해주기
                         edittextText.postValue(null)
                     }
                 }
             }
-        }else if(chatType == "open") {
+        }else if(chatRoomType == "open") {
             val repository = ChatRepository()
             viewModelScope.launch(Dispatchers.IO) {
                 //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
@@ -385,7 +385,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                             comment.uid = auth.currentUser!!.uid
                             comment.message = edittextText.value.toString()
                             comment.timestamp = System.currentTimeMillis()
-                            repository.addChat(it.toString(),comment,chatType).collect {
+                            repository.addChat(it.toString(),comment, chatRoomType!!).collect {
                                 if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                                 //채팅 다 보낸뒤 edittextText 교체해주기
                                 edittextText.postValue(null)
@@ -398,7 +398,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                     comment.message = edittextText.value.toString()
                     comment.timestamp = System.currentTimeMillis()
 
-                    repository.addChat(chatRoomUid.value.toString(),comment,chatType).collect {
+                    repository.addChat(chatRoomUid.value.toString(),comment, chatRoomType!!).collect {
                         if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                         //채팅 다 보낸뒤 edittextText 교체해주기
                         edittextText.postValue(null)

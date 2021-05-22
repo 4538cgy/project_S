@@ -24,7 +24,7 @@ class ChatRepository @Inject constructor() {
     //destinationUid = 채팅방의 uid
 
     @ExperimentalCoroutinesApi
-    fun checkChatRoom(destinationUid: String) = callbackFlow<String> {
+    fun checkChatRoom(destinationUid: String?) = callbackFlow<String> {
         //유저 uid가 들어간 realdb 정보가져오기
         val databaseReference = rdb.reference.child("chatrooms").orderByChild("users/" + uid).equalTo(true)
         val eventListener = databaseReference.addListenerForSingleValueEvent(object  : ValueEventListener{
@@ -63,6 +63,7 @@ class ChatRepository @Inject constructor() {
     fun createChatRoom(destinationUid: String,chatData : ChatDTO) = callbackFlow<String> {
         val databaseReference = rdb.reference.child("chatrooms")
         val eventListener = databaseReference.push()
+        chatData.chatuid=eventListener.key
         eventListener.setValue(chatData).addOnSuccessListener {
             this@callbackFlow.sendBlocking(eventListener.key!!)
         }

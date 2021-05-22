@@ -23,9 +23,10 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
     private val viewModel : SNSUtilViewModel by viewModels()
 
     var recyclerData : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
-
-    //채팅방 uid
+    //1:1 대상 uid
     var destinationUid : String? = ""
+    //채팅방 uid
+    var chatUid : String? = ""
     //채팅방 종류
     var chatType : String? = ""
     //오픈 채팅방 제목
@@ -35,18 +36,17 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        destinationUid = intent.getStringExtra("chatUid")
-        chatType = intent.getStringExtra("chatType")
+        destinationUid = intent.getStringExtra("destinationUid")
         chatTitle = intent.getStringExtra("chatTitle")
 
-        println("destinationUid : " + destinationUid + " chatType : " + chatType + " chatTitle : " +chatTitle)
+        println("destinationUid : " + chatUid + " chatType : " + chatType + " chatTitle : " +chatTitle)
         binding.apply {
             viewmodel = viewModel
             chat = this@ChatActivity
             //액션바 Toolbar에 바인딩
             setSupportActionBar(activityChatToolbar)
             //채팅 보내기
-            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid,chatType,chatTitle) }
+            activityChatImagebuttonSendmessage.setOnClickListener { viewModel.sendMessage(destinationUid,chatTitle) }
         }
         //액션바 제목 지우기
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -54,7 +54,9 @@ class   ChatActivity : BaseActivity<ActivityChatBinding>(R.layout.activity_chat)
         //뷰모델 값 적용
         viewModel.apply {
             //destinationUid 값으로 채팅방이 있는지 찾아 뷰모델에 추가
-            checkChatRoom(destinationUid,chatType,chatTitle)
+            chatRoomUid.postValue(intent.getStringExtra("chatUid"))
+            chatRoomType = intent.getStringExtra("chatType")
+//            checkChatRoom(chatUid,chatType,chatTitle)
             //chatRoomUid 변화시 메세지 가져오기 -> chatList qusghktl 리사이클러뷰 다시 설정
             chatRoomUid.observe(this@ChatActivity, Observer { uid ->
                 //채팅 데이터 가져오기 [ chatRoomUid ] 에 변화가 있다면
