@@ -57,12 +57,21 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     var pagingcount = 0
     var list : ArrayList<String> = arrayListOf()
 
+    val joblist : ArrayList<Job> = ArrayList<Job>()
+    fun cancelAlljob(){
+        joblist.forEach {
+            if(!it.isCompleted){
+                it.cancel()
+            }
+        }
+        joblist.clear()
+    }
     fun getData(){
 
             println("으아아 페이징 카운터 $pagingcount")
             println("리스트의 사이즈 ${list.size}")
             if (pagingcount < list.size) {
-                viewModelScope.launch(Dispatchers.Main) {
+               val job = viewModelScope.launch(Dispatchers.Main) {
                     println("가져올 데이터 id ${list[pagingcount]}")
                     contentRepository.getContents(list[pagingcount]).collect { data ->
                         println("콜렉트 결과 ${data.toString()}")
@@ -72,7 +81,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                     }
 
                 }
-
+                joblist.add(job)
             }else{
                 println("게시글의 마지막입니다.")
             }
@@ -85,7 +94,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         var contents : MutableMap<String,ContentDTO> = HashMap()
 
         //#1 내 구독함과 내가 작성한 글 가져오기
-        viewModelScope.launch(Dispatchers.IO){
+       val job = viewModelScope.launch(Dispatchers.IO){
 
 
             contentRepository.getSubscribeContentsWithMyContents(auth.currentUser!!.uid).collect {contentIdList ->
@@ -141,6 +150,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                  */
             }
         }
+        joblist.add(job)
         /*
          다음과 같이 수정해야함.
          #1. 리사이클러뷰에 꽂아넣어야할 list가 존재함.
@@ -199,28 +209,31 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
 
     fun getSearchUserList(query: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
 
             userRepository.getUser(query).collect{
             }
 
         }
+        joblist.add(job)
     }
     fun getAllUserSearchResult(){
-        viewModelScope.launch(Dispatchers.IO){
+        val job = viewModelScope.launch(Dispatchers.IO){
             userRepository.getAllUser().collect {
                 userList.postValue(it)
             }
         }
+        joblist.add(job)
     }
 
     fun getTestUserSearchResult(){
-        viewModelScope.launch(Dispatchers.IO){
+        val job = viewModelScope.launch(Dispatchers.IO){
             userRepository.getTestUserList().collect {
 
                 testUserList.postValue(it)
             }
         }
+        joblist.add(job)
     }
 
     //게시글 검색 서치뷰 리스너
@@ -271,46 +284,45 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     //채팅방 있는지 확인하고 있으면 snapshot id 가져오기
     fun checkChatRoom(destinationUid : String){
-        val repository = ChatRepository()
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.checkChatRoom(destinationUid).collect {
+        val job = viewModelScope.launch(Dispatchers.IO) {
+            chatRepository.checkChatRoom(destinationUid).collect {
 
                 chatRoomUid.postValue(it)
             }
         }
+        joblist.add(job)
     }
 
     //메세지 가져오기
     fun getMessageList(){
-        val repository = ChatRepository()
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getChat(chatRoomUid.value.toString()).collect {
+        val job = viewModelScope.launch(Dispatchers.IO) {
+            chatRepository.getChat(chatRoomUid.value.toString()).collect {
                 chatList.postValue(it)
             }
         }
+        joblist.add(job)
     }
 
     fun createChatRoom(destinationUid: String){
-        val repository = ChatRepository()
         var chatDTOs = ChatDTO()
         chatDTOs.users[auth.currentUser?.uid!!] = true;
         chatDTOs.commentTimestamp = System.currentTimeMillis()
         chatDTOs.users[destinationUid!!] = true
-        viewModelScope.launch(Dispatchers.IO) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
             //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
             if (chatRoomUid.value == null) {
 
-                repository.createChatRoom(destinationUid, chatDTOs).collect {
+                chatRepository.createChatRoom(destinationUid, chatDTOs).collect {
                     if (it) println("채팅방 생성 성공") else println("채팅방 생성 실패")
                 }
                 //채팅방이 있다면 그냥 메세지 전달
             }
         }
+        joblist.add(job)
     }
 
     //채팅 보내기
     fun sendMessage(destinationUid: String){
-        val repository = ChatRepository()
 
         if (chatList.value!!.isNotEmpty()){
             chatList.value!!.clear()
@@ -320,17 +332,17 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         chatDTOs.users[auth.currentUser?.uid!!] = true;
         chatDTOs.commentTimestamp = System.currentTimeMillis()
         chatDTOs.users[destinationUid!!] = true
-        viewModelScope.launch(Dispatchers.IO) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
             //채팅방 id가 없다면 채팅방 생성 후 메세지 전달
             if (chatRoomUid.value == null) {
 
-                repository.createChatRoom(destinationUid,chatDTOs).collect {
+                chatRepository.createChatRoom(destinationUid,chatDTOs).collect {
                     if (it) println("채팅방 생성 성공") else println("채팅방 생성 실패")
 
                     //채팅방 생성하고 채팅방 uid 가져오기
                     checkChatRoom(destinationUid)
 
-                    repository.checkChatRoom(destinationUid).collect{
+                    chatRepository.checkChatRoom(destinationUid).collect{
 
                         //채팅방을 생성하고도 에딧텍스트에 값이 남아있다면 메세지 전달
                         if (edittextText.value!!.isNotEmpty()){
@@ -339,7 +351,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                             comment.message = edittextText.value.toString()
                             comment.timestamp = System.currentTimeMillis()
 
-                            repository.addChat(it.toString(),comment).collect {
+                            chatRepository.addChat(it.toString(),comment).collect {
                                 if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                                 //채팅 다 보낸뒤 edittextText 교체해주기
                                 edittextText.postValue(null)
@@ -358,31 +370,29 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                 comment.message = edittextText.value.toString()
                 comment.timestamp = System.currentTimeMillis()
 
-                repository.addChat(chatRoomUid.value.toString(),comment).collect {
+                chatRepository.addChat(chatRoomUid.value.toString(),comment).collect {
                     if (it) println("채팅 저장 성공")  else println("채팅 저장 실패")
                     //채팅 다 보낸뒤 edittextText 교체해주기
                     edittextText.postValue(null)
                 }
             }
         }
-
-
-
-
+        joblist.add(job)
     }
 
     //채팅방 목록 가져오기
     fun initMyChatRoomList(uid: String){
-        viewModelScope.launch(Dispatchers.IO){
+       val job = viewModelScope.launch(Dispatchers.IO){
             chatRepository.getChatRoomList(uid).collect{
                 chatRoomList.postValue(it)
             }
         }
+        joblist.add(job)
     }
 
     //해당 유저의 친구 목록 가져오기
     fun initUserFriendsList(uid : String){
-        viewModelScope.launch(Dispatchers.IO){
+       val job = viewModelScope.launch(Dispatchers.IO){
             userRepository.getFriendsList(uid).collect{
                 println("가져온 친구 목록 = ${it.toString()}")
 //                it.forEach {
@@ -391,6 +401,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                 getUserListData(it)
             }
         }
+        joblist.add(job)
     }
 
 
@@ -398,7 +409,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
     //유저 정보 가져오기 // 리스트로 가져오면서 필요 없어졌는데 혹시 몰라 사용할 수 있어 그냥 둠
     fun getUserData(uid : String){
         friendsListState.postValue("getting")
-        viewModelScope.launch(Dispatchers.IO){
+        val job = viewModelScope.launch(Dispatchers.IO){
             userRepository.getUser(uid).collect { userData ->
                 println("가져온 유저 정보 = ${userData}")
 
@@ -435,6 +446,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
                 }
             }
         }
+        joblist.add(job)
     }
     // 리스트로 친구 정보 가져오는 함수 (횟수만큼 가져오면 결과 리턴)
     private fun getUserListData(uidList : ArrayList<SubscribeDTO.SubscribingDTO>){
@@ -446,7 +458,7 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
         }else{
             friendsListState.postValue("getting")
         uidList.forEach {
-            viewModelScope.launch(Dispatchers.IO) {
+         val job = viewModelScope.launch(Dispatchers.IO) {
                 userRepository.getUser(it.uid!!).collect { userData ->
                     userRepository.getUserProfileImage(it.uid!!).collect { userProfileImageUrl ->
 
@@ -486,17 +498,20 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
                 }
             }
+            joblist.add(job)
         }
         }
 
     }
     @ExperimentalCoroutinesApi
-    fun getUserByUserName(userName: String) : Job =
-        viewModelScope.launch(Dispatchers.IO){
+    fun getUserByUserName(userName: String) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
             userRepository.getUserByUserName(userName).collect {
                 findUserByUserName.postValue(it)
             }
         }
+        joblist.add(job)
+    }
 
 
 }

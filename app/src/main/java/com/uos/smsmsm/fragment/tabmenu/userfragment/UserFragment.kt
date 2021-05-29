@@ -21,12 +21,6 @@ import kotlinx.coroutines.launch
 
 class UserFragment : BaseFragment<FragmentUserBinding>(R.layout.fragment_user) {
 
-
-    private val viewmodel: SNSUtilViewModel by viewModels()
-
-    private val auth = FirebaseAuth.getInstance()
-
-
     companion object {
         // var -> const val
         const val PICK_PROFILE_FROM_ALBUM = 101

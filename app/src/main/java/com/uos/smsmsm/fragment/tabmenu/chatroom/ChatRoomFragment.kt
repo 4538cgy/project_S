@@ -25,8 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragment_chat_room) {
 
-    private val viewmodel: SNSUtilViewModel by viewModels()
-
     private val auth = FirebaseAuth.getInstance()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +37,7 @@ class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragmen
         actionBar?.setDisplayShowTitleEnabled(false)
 
         loadingDialog.show()
-        viewmodel.initMyChatRoomList(auth.currentUser!!.uid)
+        snsViewModel.initMyChatRoomList(auth.currentUser!!.uid)
         initRecyclerView()
     }
     fun initRecyclerView(){
@@ -56,7 +54,7 @@ class ChatRoomFragment : BaseFragment<FragmentChatRoomBinding>( R.layout.fragmen
             loadingDialog.dismiss()
         }
 
-        viewmodel.chatRoomList.observe(viewLifecycleOwner, recyclerObserver)
+        snsViewModel.chatRoomList.observe(viewLifecycleOwner, recyclerObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

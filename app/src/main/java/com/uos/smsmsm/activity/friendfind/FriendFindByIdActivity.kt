@@ -26,7 +26,6 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
     private val findFriendsList: ObservableArrayList<UserDTO> by lazy {
         ObservableArrayList<UserDTO>()
     }
-    private var getUserByUserNameJob : Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,16 +67,7 @@ class FriendFindByIdActivity : BaseActivity<ActivityFindFriendsByIdBinding>(R.la
 
     }
     private fun searchUserByUserName(){
-        getUserByUserNameJob = snsViewModel.getUserByUserName(binding.editFindFriendById.text.toString())
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        getUserByUserNameJob?.let{
-            if(!it.isCompleted){
-                it.cancel()
-            }
-        }
+        snsViewModel.getUserByUserName(binding.editFindFriendById.text.toString())
     }
 
     override fun finish() {

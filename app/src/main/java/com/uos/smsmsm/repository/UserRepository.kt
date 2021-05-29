@@ -418,7 +418,94 @@ class UserRepository @Inject constructor() {
         }
         awaitClose {  }
     }
+    //친구 삭제
+    fun removeFriend(uid:String) = callbackFlow<String>{
+        val databaseReference = db.collection("User")
+            .document("UserData")
+            .collection("userInfo")
+            .whereEqualTo("uid", authUid)
+        val eventListener = databaseReference.get().addOnCompleteListener { it ->
+            if (it.isSuccessful && it.result != null) {
+                it.result.documents.forEach {
+                    if (it["uid"]!!.equals(authUid)) {
+                        val tsDocSubscribing = db.collection("User").document("UserData")
+                            .collection("userInfo")
+                            .document(it.id)
+                            .collection("Subscribe")
+                            .document("subscribe")
+                        db.runTransaction { transaction ->
+                            val friendsDTO = transaction.get(tsDocSubscribing)
+                                .toObject(SubscribeDTO::class.java)
+                            friendsDTO?.let {
+                                it.subscribingList.remove(uid)
+                                it.subscribingCount = it.subscribingCount!! - 1
+                                transaction.update(
+                                    tsDocSubscribing,
+                                    "subscribingList",
+                                    friendsDTO.subscribingList
+                                )
+                                transaction.update(
+                                    tsDocSubscribing,
+                                    "subscribingCount",
+                                    friendsDTO.subscribingCount
+                                )
+                            } ?: {
+                                this@callbackFlow.sendBlocking("Fail")
+                            }()
+                        }.addOnSuccessListener {
+                            this@callbackFlow.sendBlocking("Success")
+                            return@addOnSuccessListener
+                        }.addOnFailureListener {
+                            this@callbackFlow.sendBlocking("Fail")
+                            return@addOnFailureListener
+                        }
 
+                        val databaseReferenceSuber = db.collection("User")
+                            .document("UserData")
+                            .collection("userInfo")
+                            .whereEqualTo("uid", uid)
+                        val eventSuber = databaseReferenceSuber.get().addOnCompleteListener { it ->
+                            if (it.isSuccessful && it.result != null) {
+                                it.result.documents.forEach {
+                                    if(it["uid"]!! == uid){
+                                        val tsDocSubscriber = db.collection("User").document("UserData")
+                                            .collection("userInfo")
+                                            .document(it.id)
+                                            .collection("Subscribe")
+                                            .document("subscribe")
+                                        db.runTransaction { transaction ->
+                                            val friendsDTO = transaction.get(tsDocSubscriber)
+                                                .toObject(SubscribeDTO::class.java)
+                                            friendsDTO?.let {
+                                                it.subscriberList.remove(uid)
+                                                it.subscriberCount = it.subscriberCount!! - 1
+                                                transaction.update(
+                                                    tsDocSubscribing,
+                                                    "subscriberList",
+                                                    friendsDTO.subscriberList
+                                                )
+                                                transaction.update(
+                                                    tsDocSubscribing,
+                                                    "subscriberCount",
+                                                    friendsDTO.subscriberCount
+                                                )
+                                            } ?: {
+                                            }()
+                                        }.addOnSuccessListener {
+                                            return@addOnSuccessListener
+                                        }.addOnFailureListener {
+                                            return@addOnFailureListener
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose{eventListener}
+    }
     //친구 목록 가져오기
     fun getFriendsList(uid : String) = callbackFlow<ArrayList<SubscribeDTO.SubscribingDTO>> {
         val databaseReference = db.collection("User")
