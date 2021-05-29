@@ -183,7 +183,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
         }
     }
     fun showMyQrActivity(view : View){
-        startActivity(Intent(rootContext, MyQrCodeActivity::class.java))
+        startActivity(Intent(rootContext, MyQrCodeActivity::class.java).putExtra("uid", "3VRMVIEfxfM0mK40Jr3j3ikmhAJ2"))//auth.currentUser?.uid))
     }
 
     // 프로필 화면 닫기
@@ -237,6 +237,7 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding>(R.layout.activity_p
     fun isMe(uid : String){
         if (uid == auth.currentUser?.uid){
             binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
+            binding.activityProfileImagebuttonQr.visibility = View.VISIBLE
             binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
             binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
             binding.activityProfileImagebuttonFavorite.visibility = View.GONE

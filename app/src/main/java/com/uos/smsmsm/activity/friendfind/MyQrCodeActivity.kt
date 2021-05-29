@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
@@ -20,8 +22,15 @@ class MyQrCodeActivity : BaseActivity<ActivityMyQrCodeBinding>(R.layout.activity
         super.onCreate(savedInstanceState)
 
         overridePendingTransition(R.anim.slide_up, R.anim.slide_up_out)
-        generateRQCode("https://www.naver.com/")
         binding.activity = this
+        val uid = intent.getStringExtra("uid")
+        uid?.let {
+
+            generateRQCode(it)
+        }?:{
+            Toast.makeText(rootContext,"Qr 코드를 만들 수 없습니다.", Toast.LENGTH_LONG).show()
+            finish()
+        }()
     }
     fun generateRQCode(contents: String?) {
         val qrCodeWriter = QRCodeWriter()
