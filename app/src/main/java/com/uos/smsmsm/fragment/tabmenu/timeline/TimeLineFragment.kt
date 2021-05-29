@@ -40,8 +40,6 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     lateinit var currentPhotoPath: String
     private var isOpenFAB = false
-    private val viewModel: ContentUtilViewModel by viewModels()
-    private val snsViewModel : SNSUtilViewModel by viewModels()
 
     private var data = MutableLiveData<ArrayList<TimeLineDTO>>()
 
@@ -99,7 +97,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
 
 
-        viewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        contentViewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this.currentPhotoPath = it
         })
     }
@@ -107,12 +105,12 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     fun uploadPhoto(view: View) {
 
 
-        activity?.startActivityForResult(viewModel.openGallery(), PICK_PROFILE_FROM_ALBUM)
+        activity?.startActivityForResult(contentViewModel.openGallery(), PICK_PROFILE_FROM_ALBUM)
     }
 
     fun takePhotoCamera(view: View) {
         if (isPermitted(requireActivity(), Config.CAMERA_PERMISSION)) {
-            startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
+            startActivityForResult(contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(), Config.CAMERA_PERMISSION,
@@ -130,7 +128,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Config.FLAG_PERM_CAMERA) {
             if (isPermitted(requireContext(), Config.CAMERA_PERMISSION)) {
-                startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
+                startActivityForResult(contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -143,7 +141,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     //fun takePhotoGallery(view: View) {activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)}
     fun takeVideo(view: View) {
-        startActivityForResult(viewModel.dispatchTakePictureIntent(MediaStore.ACTION_VIDEO_CAPTURE), REQUEST_VIDEO_CAPTURE)
+        startActivityForResult(contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_VIDEO_CAPTURE), REQUEST_VIDEO_CAPTURE)
     }
 
     fun writeContent(view: View) {
@@ -198,7 +196,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
                     val f = File(currentPhotoPath)
                     val uri = Uri.fromFile(f)
                     uri?.let { itUri ->
-                        activity?.let { it1 -> viewModel.requestCrop(itUri).start(it1) }
+                        activity?.let { it1 -> contentViewModel.requestCrop(itUri).start(it1) }
                     } ?: {
                         Toast.makeText(context, "사진 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
                     }()

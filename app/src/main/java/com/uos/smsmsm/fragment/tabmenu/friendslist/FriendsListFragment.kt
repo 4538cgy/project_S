@@ -27,8 +27,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fragment_friends_list) {
 
-    private val viewModel: SNSUtilViewModel by viewModels()
-    private val userViewModel : UserUtilViewModel by viewModels()
     private val auth = FirebaseAuth.getInstance()
     private var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
     // 친구 리스트 adapter
@@ -36,6 +34,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         FriendListAdapter(object : Delegate.Action1<RecyclerDefaultModel>{
             override fun run(item: RecyclerDefaultModel) {
                 // 친구 삭제 액
+                userViewModel.removeFriend(item.uid!!)
             }
 
         })
@@ -45,6 +44,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         FriendListAdapter(object : Delegate.Action1<RecyclerDefaultModel>{
             override fun run(item: RecyclerDefaultModel) {
                 // 친구 삭제 액
+                userViewModel.removeFriend(item.uid!!)
             }
 
         })
@@ -63,7 +63,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         - 해당 activity가 실행되면 친구 목록 데이터가 갱신된 시간을 체크하여 내부데이터를 업데이트 해줄것
          */
 
-        viewModel.initUserFriendsList(auth.currentUser!!.uid)
+        snsViewModel.initUserFriendsList(auth.currentUser!!.uid)
 
         // 내 프로필 셋팅
         userViewModel.getUserProfile(auth.currentUser!!.uid.toString())
@@ -75,7 +75,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         userViewModel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentFriendsListMyProfileTitleContentTextviewTitle.text = it.toString()})
         //friends List의 상태 확인
 
-        viewModel.friendsListState.observe(viewLifecycleOwner, Observer {
+        snsViewModel.friendsListState.observe(viewLifecycleOwner, Observer {
             loadingDialog.show()
             when (it) {
                 //데이터가 읽히는 중이면 실행
@@ -86,8 +86,8 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
 
                 //데이터 읽은 후에 데이터 내용에 따라 내용 출력  #dialog와 같은것으로 표시를 바꿔주면 더욱 이뻐질듯함
                 "complete" -> {
-                    if (viewModel.recyclerData.value != null) {
-                        if (viewModel.recyclerData.value!!.isEmpty()) {
+                    if (snsViewModel.recyclerData.value != null) {
+                        if (snsViewModel.recyclerData.value!!.isEmpty()) {
                             binding.fragmentFriendsListTextviewNotice.visibility = View.VISIBLE
                             binding.fragmentFriendsListFavoritesLayout.visibility = View.GONE
                             binding.fragmentFriendsListNormalListLayout.visibility = View.GONE
@@ -137,7 +137,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
 
         }
 
-        viewModel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
+        snsViewModel.recyclerData.observe(viewLifecycleOwner, recyclerObserver)
 
 
     }

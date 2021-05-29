@@ -1,5 +1,6 @@
 package com.uos.smsmsm.viewmodel
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,10 +9,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.UserRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 // 사용자 로그인 / Setting 등 사용자 정보 관련 ViewModel
 class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
@@ -34,18 +33,27 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     val isFavoriteResult : MutableLiveData<RecyclerDefaultModel?> by lazy {
         MutableLiveData<RecyclerDefaultModel?>()
     }
-
+    val jobList : ArrayList<Job>  = ArrayList<Job>()
+    fun cancelAllJob(){
+        jobList.forEach {
+            if(!it.isCompleted){
+                it.cancel()
+            }
+        }
+        jobList.clear()
+    }
     fun checkFriend(destinationUid: String){
-        viewModelScope.launch(Dispatchers.IO){
+      val job =  viewModelScope.launch(Dispatchers.IO){
             userRepository.isFriend(auth.currentUser!!.uid, destinationUid).collect{
                 println("으아아아아아 $it")
                 checkFriends.postValue(it)
             }
         }
+        jobList.add(job)
     }
 
     fun addFriend(destinationUid: String){
-        viewModelScope.launch(Dispatchers.IO){
+       val job = viewModelScope.launch(Dispatchers.IO){
 
             userRepository.addFriend(auth.currentUser!!.uid,destinationUid).collect{
                 
@@ -55,41 +63,53 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
                 isSuccessAddFirends.postValue(it)
             }
         }
+        jobList.add(job)
+    }
+    fun removeFriend(uid:String){
+        val job = viewModelScope.launch(Dispatchers.IO){
+            userRepository.removeFriend(uid).collect {
+                Log.d("TEST","result : $it")
+            }
+        }
+        jobList.add(job)
     }
 
 
     fun getUserName(destinationUid: String){
-        viewModelScope.launch(Dispatchers.IO){
+        val job = viewModelScope.launch(Dispatchers.IO){
             userRepository.getUserNickName(destinationUid).collect{
                 userName.postValue(it)
             }
         }
+        jobList.add(job)
     }
 
     fun getUserProfile(destinationUid: String){
-        viewModelScope.launch(Dispatchers.IO){
+        val job = viewModelScope.launch(Dispatchers.IO){
             userRepository.getUserProfileImage(destinationUid).collect {
                     profileImage.postValue(it)
             }
         }
+        jobList.add(job)
     }
 
 
     fun initDestinationUser(destinationUid : String){
-        viewModelScope.launch(Dispatchers.IO){
+        val job =  viewModelScope.launch(Dispatchers.IO){
             userRepository.getUser(destinationUid).collect {
                 currentUser
             }
         }
+        jobList.add(job)
     }
 
     // 친구 즐겨찾기 요청
-    fun requestSetFavorite(uid : String, isFavorite : Boolean): Job =
-        viewModelScope.launch(Dispatchers.IO){
-            userRepository.requestFavorite(uid,isFavorite).collect {
-                if(it == "Success"){
-                    for(i in SNSUtilViewModel.friendsList){
-                        if(i.uid == uid){
+    fun requestSetFavorite(uid : String, isFavorite : Boolean) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
+            userRepository.requestFavorite(uid, isFavorite).collect {
+                if (it == "Success") {
+                    for (i in SNSUtilViewModel.friendsList) {
+                        if (i.uid == uid) {
                             i.isFavorite = isFavorite
 
                             isFavoriteResult.postValue(i)
@@ -97,9 +117,11 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
                         }
                     }
 
-                }else if(it == "Failure"){
+                } else if (it == "Failure") {
                     isFavoriteResult.postValue(null)
                 }
             }
         }
+        jobList.add(job)
+    }
 }

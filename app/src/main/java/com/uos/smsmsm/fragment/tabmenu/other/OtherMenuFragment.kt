@@ -2,15 +2,8 @@ package com.uos.smsmsm.fragment.tabmenu.other
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDialog
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -27,12 +20,8 @@ import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.databinding.FragmentOtherMenuBinding
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.util.dialog.LoadingDialog
-import com.uos.smsmsm.viewmodel.SNSUtilViewModel
-import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
 class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragment_other_menu) {
-
-    private val viewmodel: UserUtilViewModel by viewModels()
 
     private val auth = FirebaseAuth.getInstance()
     private var destinationUid : String ? = null
@@ -57,14 +46,14 @@ class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragme
 
         //유저 프로필 사진 가져오기
         loadingDialog.show()
-        viewmodel.getUserProfile(auth.currentUser!!.uid.toString())
-        viewmodel.profileImage.observe(viewLifecycleOwner, Observer {
+        userViewModel.getUserProfile(auth.currentUser!!.uid.toString())
+        userViewModel.profileImage.observe(viewLifecycleOwner, Observer {
             profileImageUri = it.toString()
             Glide.with(binding.root.context).load(it).apply(RequestOptions().circleCrop()).into(binding.fragmentOtherMenuCircle) })
 
         //유저 닉네임 가져오기
-        viewmodel.getUserName(auth.currentUser!!.uid.toString())
-        viewmodel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentOtherMenuTextviewProfileNickname.text = it.toString()
+        userViewModel.getUserName(auth.currentUser!!.uid.toString())
+        userViewModel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentOtherMenuTextviewProfileNickname.text = it.toString()
         loadingDialog.dismiss()})
 
     }
@@ -118,7 +107,7 @@ class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragme
                 var map = HashMap<String,Any>()
                 map["image"] = uri.toString()
                 FirebaseFirestore.getInstance().collection("profileImages").document(uid).set(map)
-                viewmodel.getUserProfile(auth.currentUser!!.uid)
+                userViewModel.getUserProfile(auth.currentUser!!.uid)
                 progressDialog.dismiss()
             }
         }
