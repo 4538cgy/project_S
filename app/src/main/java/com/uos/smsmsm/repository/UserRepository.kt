@@ -477,15 +477,15 @@ class UserRepository @Inject constructor() {
                                             val friendsDTO = transaction.get(tsDocSubscriber)
                                                 .toObject(SubscribeDTO::class.java)
                                             friendsDTO?.let {
-                                                it.subscriberList.remove(uid)
+                                                it.subscriberList.remove(authUid)
                                                 it.subscriberCount = it.subscriberCount!! - 1
                                                 transaction.update(
-                                                    tsDocSubscribing,
+                                                    tsDocSubscriber,
                                                     "subscriberList",
                                                     friendsDTO.subscriberList
                                                 )
                                                 transaction.update(
-                                                    tsDocSubscribing,
+                                                    tsDocSubscriber,
                                                     "subscriberCount",
                                                     friendsDTO.subscriberCount
                                                 )
