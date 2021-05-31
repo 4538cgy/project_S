@@ -25,16 +25,18 @@ import com.uos.smsmsm.fragment.tabmenu.friendslist.FriendsListFragment
 import com.uos.smsmsm.fragment.tabmenu.other.OtherMenuFragment
 import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
+import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.util.MediaType
 import com.uos.smsmsm.util.time.TimeUtil
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private val viewModel : SNSUtilViewModel by viewModels()
-
+    private val userViewModel : UserUtilViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.apply {
@@ -129,7 +131,22 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
             } else {
                 // 스캔된 QRCode --> result.getContents()
-                Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
+                if(FirebaseAuth.getInstance().currentUser?.uid == result.contents){
+                    Toast.makeText(this, getString(R.string.your_id_scan), Toast.LENGTH_LONG).show()
+                }else{
+                    var isAlreadyFriend = false
+                    for(i in SNSUtilViewModel.friendsList){
+                        if (i.uid == result.contents) {
+                            isAlreadyFriend = true
+                            Toast.makeText(this, getString(R.string.already_add_friend), Toast.LENGTH_LONG).show()
+                            break
+                        }
+                    }
+                    if(!isAlreadyFriend){
+                        userViewModel.addFriend(result.contents)
+                    }
+                }
+
             }
         }
 
