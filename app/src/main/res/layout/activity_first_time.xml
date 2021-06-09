@@ -40,6 +40,7 @@
             android:textColor="@color/colorWhite"
             android:layout_marginHorizontal="12dp"
             android:background="@color/colorGoogleSignIn"
+            android:onClick="@{activityfiresttime.onSignGoogle}"
             />
 
         <Button
