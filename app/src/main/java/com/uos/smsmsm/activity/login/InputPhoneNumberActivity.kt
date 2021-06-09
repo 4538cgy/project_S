@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import com.google.firebase.FirebaseException
@@ -73,63 +74,59 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
     }
 
     fun signinPhone(view : View) {
-        // 핸드폰 자동인증 처리
-
-        val phoneNumber = "+82" + binding.activityInputPhoneNumberEdittext.text.toString()
-        var code: String? = null
-        FirebaseAuth.getInstance().firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(
-            phoneNumber,
-            code
-        )
-
-        // auth.useAppLanguage()
-
-        // Fix Deprecated
-        PhoneAuthProvider.verifyPhoneNumber(
-            PhoneAuthOptions
-                .newBuilder(FirebaseAuth.getInstance())
-                .setPhoneNumber(phoneNumber)
-                .setActivity(this)
-                .setTimeout(120L, TimeUnit.SECONDS)
+            progressDialog.show()
+            println("핸드폰 자동 인증 시작")
+            val phoneNumber = "+82" + binding.activityInputPhoneNumberEdittext.text.toString()
+            var code: String? = null
+            FirebaseAuth.getInstance().firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(
+                phoneNumber,
+                code
+            )
+            val options = PhoneAuthOptions.newBuilder(FirebaseAuth.getInstance())
+                .setPhoneNumber(phoneNumber)       // Phone number to verify
+                .setTimeout(120L, TimeUnit.SECONDS) // Timeout and unit
+                .setActivity(this)                 // Activity (for callback binding)
                 .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     override fun onVerificationCompleted(p0: PhoneAuthCredential) {
                         // 성공시
                         Log.d("credential", p0.toString())
                         Log.d("성공", "인증에 성공 했습니다.")
-                        // Apply extension
-                        toast("핸드폰 인증에 성공했습니다.")
-                        progressDialogPhoneAuth?.dismiss()
+                        Toast.makeText(
+                            binding.root.context,
+                            "핸드폰 번호 인증에 성공했습니다.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        progressDialog.dismiss()
 
-                        FirebaseAuth.getInstance().signInWithCredential(p0).addOnFailureListener {
-                        }.addOnCompleteListener {
-                            interactiveUi()
-                            startActivity(Intent(binding.root.context,InputNickNameActivity::class.java))
-                            finish()
-                        }
+                        interactiveUi()
                     }
 
                     override fun onVerificationFailed(p0: FirebaseException) {
                         // 실패시
                         Log.d("exception", p0.toString())
                         Log.d("실패", "인증에 실패 했습니다.")
-                        // Apply extension
-                        toast("핸드폰 인증에 실패했습니다..")
+                        Toast.makeText(
+                            binding.root.context,
+                            "핸드폰 인증에 실패했습니다. \n 올바른 번호를 입력해주세요.",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                        progressDialogPhoneAuth?.dismiss()
+                        progressDialog.dismiss()
                     }
 
                     override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
                         super.onCodeSent(p0, p1)
-                        // Revmoe `String.toString()`
-                        Log.d("코드가 전송됨", p0)
+                        Log.d("코드가 전송됨", p0.toString())
                     }
 
                     override fun onCodeAutoRetrievalTimeOut(p0: String) {
                         super.onCodeAutoRetrievalTimeOut(p0)
-                        progressDialogPhoneAuth?.dismiss()
+                        progressDialog.dismiss()
                     }
-                }
-                ).build()
-        )
+                })          // OnVerificationStateChangedCallbacks
+                .build()
+            // auth.useAppLanguage()
+            PhoneAuthProvider.verifyPhoneNumber(options)
+
     }
 }

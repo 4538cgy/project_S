@@ -30,11 +30,7 @@
         <activity android:name=".activity.login.FirstTimeActivity"></activity>
         <activity android:name=".activity.login.InputNickNameActivity" />
         <activity android:name=".activity.login.InputPhoneNumberActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activity.login.LoginPolicyActivity" />
         <activity android:name=".activity.login.AddProfileImageActivity" />
@@ -62,7 +58,11 @@
         <activity android:name=".activity.signup.SignUpWithPhoneActivity" />
         <activity android:name=".activity.policy.PolicyActivity" />
         <activity android:name=".activity.splash.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
