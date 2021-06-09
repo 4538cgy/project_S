@@ -5,15 +5,13 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
-import com.uos.smsmsm.databinding.ActivityInputPhoneNumberBinding
+import com.uos.smsmsm.databinding.ActivityFirstTimeBinding
 
-class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R.layout.activity_input_phone_number) {
+class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activity_first_time) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.apply {
-            activityinputphonenumber = this@InputPhoneNumberActivity
+            activityfiresttime = this@FirstTimeActivity
         }
-
-
     }
 }
