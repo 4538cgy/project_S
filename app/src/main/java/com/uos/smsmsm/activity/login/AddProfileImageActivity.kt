@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import com.bumptech.glide.Glide
 import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
@@ -31,9 +32,22 @@ class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.l
         startActivityForResult(intent, Config.FLAG_REQ_GALLERY)
     }
 
+    fun onComplete(view : View){
+        val intent = Intent(binding.root.context,InputPhoneNumberActivity::class.java)
+        intent.apply {
+            putExtra("photoUri",photoUri.toString())
+            startActivity(intent)
+            finish()
+        }
+    }
+
     fun interactiveUI(){
-        binding.activityAddProfileImageImagebuttonProfile.setImageURI(photoUri)
         binding.activityAddProfileImageButtonComplete.isEnabled = true
+        Glide.with(binding.root.context)
+            .load(photoUri)
+            .thumbnail(0.01f)
+            .circleCrop()
+            .into(binding.activityAddProfileImageImagebuttonProfile)
         binding.activityAddProfileImageButtonComplete.setBackgroundResource(R.drawable.background_edittext_round_black_4dp)
     }
 
@@ -43,7 +57,7 @@ class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.l
         if (resultCode == Activity.RESULT_OK){
             if (requestCode == Config.FLAG_REQ_GALLERY){
                 if (data != null){
-                    val photoUri = data.data
+                    photoUri = data.data
                     interactiveUI()
                 }
             }
