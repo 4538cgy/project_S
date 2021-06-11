@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,15 +30,16 @@ class RenewLoginActivity : BaseActivity<ActivityLoginRenewBinding>(R.layout.acti
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
         binding.apply {
-            activityLoginRenew = this@RenewLoginActivity
+            activityloginrenew = this@RenewLoginActivity
 
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
 
-            activityLoginRenewImagebuttonClose.setOnClickListener { finish() }
+
             activityLoginRenewTextviewGoToSignup.setOnClickListener {
                 startActivity(Intent(root.context,FirstTimeActivity::class.java))
                 finish()
@@ -46,12 +48,12 @@ class RenewLoginActivity : BaseActivity<ActivityLoginRenewBinding>(R.layout.acti
 
     }
 
-    private fun google(view : View){
+    fun google(view : View){
         val signInIntent = googleSignInClient?.signInIntent
         startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
     }
 
-    private fun phone(view : View){
+    fun phone(view : View){
 
     }
 

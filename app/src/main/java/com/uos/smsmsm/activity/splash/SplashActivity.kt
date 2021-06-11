@@ -22,6 +22,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
         super.onCreate(savedInstanceState)
         binding.splash = this@SplashActivity
 
+
         val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
         firebaseRemoteConfig.fetch(0).addOnCompleteListener { task ->
             if (task.isSuccessful) {

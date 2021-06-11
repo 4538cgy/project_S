@@ -1,10 +1,12 @@
 package com.uos.smsmsm.activity.setting
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.postDelayed
 import androidx.databinding.DataBindingUtil
 import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
@@ -40,7 +42,8 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(R.layout.activity_s
 
                 when (name.toString()) {
                     "로그아웃" -> {
-                        SignOut(rootContext)?.signOut()
+                        SignOut(rootContext,this@SettingActivity)?.signOut()
+
                     }
                 }
             }
