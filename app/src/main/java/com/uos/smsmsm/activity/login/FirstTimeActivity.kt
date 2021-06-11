@@ -54,17 +54,20 @@ class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activi
         startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
     }
 
-    fun onSignPhoneNumber(){
-
+    fun onSignPhoneNumber(view : View){
+        var intent = Intent(this,AddProfileImageActivity::class.java)
+        intent.apply {
+            putExtra("signUpType","phone")
+            startActivity(intent)
+            finish()
+        }
     }
 
-    fun onLogin(){
-
+    fun onLogin(view : View){
+        startActivity(Intent(binding.root.context,RenewLoginActivity::class.java))
+        finish()
     }
 
-    fun onFindID(){
-
-    }
 
     private fun moveMainPage(user: FirebaseUser?) {
         if (user != null) {
@@ -113,4 +116,6 @@ class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activi
             }
         }
     }
+
+
 }

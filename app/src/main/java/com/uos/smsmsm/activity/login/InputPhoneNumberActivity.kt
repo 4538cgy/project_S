@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityInputPhoneNumberBinding
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit
 class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R.layout.activity_input_phone_number) {
 
     private lateinit var photoUri : String
+    private lateinit var signupType : String
 
     var progressDialogPhoneAuth: ProgressDialogPhoneAuthLoading? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +49,9 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
 
 
             }
+
+            signupType = intent.getStringExtra("signUpType")
+
         }
 
         photoUri = intent.getStringExtra("photoUri").toString()
@@ -63,12 +68,14 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
 
     fun interactiveUi(){
         binding.activityInputPhoneNumberButtonComplete.isEnabled = true
+        binding.activityInputPhoneNumberEdittext.isEnabled = false
     }
 
     fun onComplete(view : View){
         var intent = Intent(binding.root.context,InputNickNameActivity::class.java)
         intent.apply {
             putExtra("photoUri",photoUri)
+            putExtra("phonenumber",binding.activityInputPhoneNumberEdittext.text.toString())
             startActivity(intent)
         }
     }
@@ -99,6 +106,19 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
                         progressDialog.dismiss()
 
                         interactiveUi()
+
+                        if (signupType == "phone") {
+                            FirebaseAuth.getInstance().signInWithCredential(p0)
+                                .addOnCompleteListener {
+
+                                    Toast.makeText(
+                                        binding.root.context,
+                                        "회원가입 성공",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                }
+                        }
                     }
 
                     override fun onVerificationFailed(p0: FirebaseException) {

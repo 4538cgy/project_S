@@ -92,6 +92,7 @@
             android:layout_margin="24dp"
             android:background="@drawable/background_round_gray"
             android:text="완료"
+            android:onClick="@{activityinputnickname.onComplete}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 

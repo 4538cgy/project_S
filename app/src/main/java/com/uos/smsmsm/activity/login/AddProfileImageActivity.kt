@@ -36,6 +36,7 @@ class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.l
         val intent = Intent(binding.root.context,InputPhoneNumberActivity::class.java)
         intent.apply {
             putExtra("photoUri",photoUri.toString())
+            putExtra("signUpType",intent.getStringExtra("signUpType"))
             startActivity(intent)
             finish()
         }
