@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.uos.smsmsm">
 
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -11,11 +13,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
-    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
     <application
         android:name=".util.shareddate.SharedData"
@@ -26,18 +27,25 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.comment.CommentActivity"></activity>
+        <activity android:name=".activity.login.FirstTimeActivity"></activity>
+        <activity android:name=".activity.login.InputNickNameActivity" />
+        <activity android:name=".activity.login.InputPhoneNumberActivity" >
+
+        </activity>
+        <activity android:name=".activity.login.LoginPolicyActivity" />
+        <activity android:name=".activity.login.AddProfileImageActivity" />
+        <activity android:name=".activity.comment.CommentActivity" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
-            tools:replace="screenOrientation"/>
+            tools:replace="screenOrientation" />
         <activity android:name=".activity.timeline.TimeLineActivity" />
         <activity android:name=".activity.welcome.WelcomeMainActivity" />
         <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />
-        <activity android:name=".activity.friendfind.FriendFindByIdActivity"/>
-        <activity android:name=".activity.friendfind.MyQrCodeActivity"/>
+        <activity android:name=".activity.friendfind.FriendFindByIdActivity" />
+        <activity android:name=".activity.friendfind.MyQrCodeActivity" />
         <activity
             android:name=".activity.content.AddContentActivity"
             android:windowSoftInputMode="adjustNothing" />
@@ -57,14 +65,18 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:host="action" android:scheme="basassak" />
+                <data
+                    android:host="action"
+                    android:scheme="basassak" />
             </intent-filter>
         </activity>
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
         <!--
 <activity android:name=".activity.permission.PermissionActivity">
             <intent-filter>
@@ -77,6 +89,7 @@
         <activity android:name=".activity.lobby.LobbyActivity" />
         <activity android:name=".activity.signup.SignUpActivity" />
         <activity android:name=".activity.login.LoginActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.uos.smsmsm.fileprovider"
@@ -84,7 +97,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

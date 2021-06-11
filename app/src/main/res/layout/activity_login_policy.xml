@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.login.LoginPolicyActivity">
+
+    <data>
+        <variable
+            name="activitypolish"
+            type="com.uos.smsmsm.activity.login.LoginPolicyActivity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <TextView
+                    android:id="@+id/activity_login_policy_textview_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="약관 동의"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="24dp"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="24dp"
+                    />
+
+                <Button
+                    android:id="@+id/activity_login_policy_button_all_accept"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_baseline_check_circle_outline_gray_24"
+                    android:background="@drawable/background_edittext_round_gray_4dp"
+                    android:layout_marginHorizontal="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/activity_login_policy_textview_title"
+                    android:layout_marginTop="24dp"
+                    android:paddingLeft="16dp"
+                    android:text="전체 동의"
+                    android:gravity="left|center"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:drawablePadding="24dp"
+                    />
+
+
+                <LinearLayout
+                    app:layout_constraintTop_toBottomOf="@+id/activity_login_policy_button_all_accept"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    >
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_baseline_check_gray_24"
+                        android:background="@drawable/background_round_white"
+                        android:layout_marginHorizontal="24dp"
+                        android:paddingLeft="16dp"
+                        android:text="SMSM 필수 항목 모두 동의"
+                        android:gravity="left|center"
+                        android:drawablePadding="8dp"
+                        android:layout_marginVertical="4dp"
+                        android:elevation="2dp"
+                        android:drawableRight="@drawable/ic_baseline_chevron_right_24"
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_baseline_check_gray_24"
+                        android:background="@drawable/background_round_white"
+                        android:layout_marginHorizontal="24dp"
+                        android:paddingLeft="16dp"
+                        android:text="SMSM 필수 항목 모두 동의"
+                        android:gravity="left|center"
+                        android:layout_marginVertical="4dp"
+                        android:drawablePadding="8dp"
+                        android:elevation="2dp"
+                        android:drawableRight="@drawable/ic_baseline_chevron_right_24"
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_baseline_check_gray_24"
+                        android:background="@drawable/background_round_white"
+                        android:layout_marginHorizontal="24dp"
+                        android:paddingLeft="16dp"
+                        android:text="SMSM 필수 항목 모두 동의"
+                        android:gravity="left|center"
+                        android:layout_marginVertical="4dp"
+                        android:drawablePadding="8dp"
+                        android:elevation="2dp"
+                        android:drawableRight="@drawable/ic_baseline_chevron_right_24"
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_baseline_check_gray_24"
+                        android:background="@drawable/background_round_white"
+                        android:layout_marginHorizontal="24dp"
+                        android:paddingLeft="16dp"
+                        android:text="SMSM 필수 항목 모두 동의"
+                        android:gravity="left|center"
+                        android:layout_marginVertical="4dp"
+                        android:drawablePadding="8dp"
+                        android:elevation="2dp"
+                        android:drawableRight="@drawable/ic_baseline_chevron_right_24"
+                        />
+
+                </LinearLayout>
+
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </ScrollView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="다음"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:textColor="@color/colorWhite"
+            android:background="@color/common_google_signin_btn_text_light_default"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

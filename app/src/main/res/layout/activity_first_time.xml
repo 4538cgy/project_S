@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.login.FirstTimeActivity">
+
+    <data>
+        <variable
+            name="activityfiresttime"
+            type="com.uos.smsmsm.activity.login.FirstTimeActivity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+
+        <TextView
+            android:id="@+id/activity_firest_time_textview_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="80dp"
+            android:text="LOGO"
+            android:textSize="80dp"
+            />
+
+        <Button
+
+            android:id="@+id/activity_first_time_button_google"
+            app:layout_constraintTop_toBottomOf="@+id/activity_firest_time_textview_logo"
+            android:layout_marginTop="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="구글 아이디로 회원가입"
+            android:textColor="@color/colorWhite"
+            android:layout_marginHorizontal="12dp"
+            android:background="@color/colorGoogleSignIn"
+            android:onClick="@{activityfiresttime.onSignGoogle}"
+            />
+
+        <Button
+            android:id="@+id/activity_first_time_button_phonenumber"
+            app:layout_constraintTop_toBottomOf="@+id/activity_first_time_button_google"
+            android:layout_margin="12dp"
+            android:text="핸드폰 번호로 회원가입"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/colorPrimary"
+            />
+
+
+
+        <TextView
+            android:id="@+id/activity_first_time_textview_already_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이미 아이디가 있으신가요?"
+            app:layout_constraintTop_toBottomOf="@+id/activity_first_time_button_phonenumber"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="180dp"
+            />
+
+        <TextView
+            android:id="@+id/activity_first_time_textview_login"
+            app:layout_constraintTop_toBottomOf="@+id/activity_first_time_textview_already_account"
+            app:layout_constraintLeft_toLeftOf="@+id/activity_first_time_textview_already_account"
+            app:layout_constraintRight_toRightOf="@+id/activity_first_time_textview_already_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="로그인"
+            android:textColor="@color/colorBlack"
+            />
+
+        <TextView
+            app:layout_constraintTop_toBottomOf="@+id/activity_first_time_textview_login"
+            app:layout_constraintLeft_toLeftOf="@+id/activity_first_time_textview_login"
+            app:layout_constraintRight_toRightOf="@+id/activity_first_time_textview_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="ID 비밀번호 찾기"
+            android:textColor="@color/colorBlack"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

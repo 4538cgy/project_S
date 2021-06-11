@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.login.FirstTimeActivity
 import com.uos.smsmsm.activity.login.LoginActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityWelcomeMainBinding
@@ -65,7 +66,7 @@ class WelcomeMainActivity : BaseActivity<ActivityWelcomeMainBinding>(R.layout.ac
     }
     fun onClickAccept(view : View){
         PreferenceUtil(binding.root.context).setString("adultCheck","true")
-        startActivity(Intent(binding.root.context, LoginActivity::class.java))
+        startActivity(Intent(binding.root.context, FirstTimeActivity::class.java))
         finish()
     }
     fun onRequestPermission(v: View){
