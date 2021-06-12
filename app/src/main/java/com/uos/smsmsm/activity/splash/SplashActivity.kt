@@ -3,6 +3,7 @@ package com.uos.smsmsm.activity.splash
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -14,7 +15,9 @@ import com.uos.smsmsm.activity.welcome.WelcomeMainActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivitySplashBinding
 import com.uos.smsmsm.util.shareddate.PreferenceUtil
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_splash) {
 
 
@@ -39,7 +42,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
                         this.finishAffinity()
                     }.show()
             }
+        }.addOnFailureListener {
+            Log.e("TEST","${it.toString()}")
         }
+        activityManager.removeAllBehindActivity()
     }
 
     // 앱버전 체크

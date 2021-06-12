@@ -19,7 +19,9 @@ import com.uos.smsmsm.databinding.ActivityWelcomeMainBinding
 import com.uos.smsmsm.util.Config
 import com.uos.smsmsm.util.isPermitted
 import com.uos.smsmsm.util.shareddate.PreferenceUtil
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class WelcomeMainActivity : BaseActivity<ActivityWelcomeMainBinding>(R.layout.activity_welcome_main) {
 
     private val NUM_PAGES = 4

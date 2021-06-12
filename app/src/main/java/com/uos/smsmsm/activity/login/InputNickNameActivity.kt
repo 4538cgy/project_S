@@ -16,7 +16,9 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivityInputNickNameBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layout.activity_input_nick_name) {
 
     lateinit var phoneNumber : String

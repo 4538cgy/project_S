@@ -20,8 +20,10 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityLoginBinding
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.extensions.toast
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>(R.layout.activity_login) {
 
     // Make private [auth, googleSignInClient, GOOGLE_LOGIN_CODE]

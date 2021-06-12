@@ -14,6 +14,9 @@ import com.uos.smsmsm.util.EventLogUtil
 import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
+import com.uos.smsmsm.util.manager.ActivityManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 abstract class BaseActivity<B : ViewDataBinding>(val layoutId: Int) : AppCompatActivity() {
 
@@ -22,9 +25,12 @@ abstract class BaseActivity<B : ViewDataBinding>(val layoutId: Int) : AppCompatA
     lateinit var loadingDialog: LoadingDialog
     lateinit var loadingDialogText: LoadingDialogText
     lateinit var progressDialog: ProgressDialogPhoneAuthLoading
+    @Inject
+    lateinit var activityManager: ActivityManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        activityManager.addActivity(this)
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.lifecycleOwner = this
 
@@ -57,6 +63,7 @@ abstract class BaseActivity<B : ViewDataBinding>(val layoutId: Int) : AppCompatA
 
     override fun onDestroy() {
         super.onDestroy()
+        activityManager.removeActivity(this)
         if (loadingDialog.isShowing) {
             loadingDialog.dismiss()
         }

@@ -20,7 +20,9 @@ import com.uos.smsmsm.activity.signup.SignUpActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityLoginRenewBinding
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RenewLoginActivity : BaseActivity<ActivityLoginRenewBinding>(R.layout.activity_login_renew) {
 
     private var auth = FirebaseAuth.getInstance()

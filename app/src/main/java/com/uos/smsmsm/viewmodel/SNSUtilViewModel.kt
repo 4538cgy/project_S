@@ -23,15 +23,15 @@ import javax.inject.Singleton
 
 // 채팅 / Timeline / 친구 찾기등 소셜 네트워크 기능 viewmodel
 @Singleton
-class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedStateHandle: SavedStateHandle,
-                                                    var userRepository : UserRepository,
-                                                    var chatRepository : ChatRepository,
-                                                    var contentRepository : ContentRepository
+class SNSUtilViewModel @ViewModelInject constructor(
 ) : ViewModel(){
     companion object{
         //받아온 친구 리스트 저장
         var friendsList : ArrayList<RecyclerDefaultModel> = ArrayList<RecyclerDefaultModel>()
     }
+    val userRepository : UserRepository by lazy{ UserRepository()}
+    val chatRepository : ChatRepository by lazy{ChatRepository()}
+    val contentRepository : ContentRepository by lazy { ContentRepository() }
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var edittextText : MutableLiveData<String> = MutableLiveData()
     var chatRoomUid : MutableLiveData<String> = MutableLiveData()
@@ -59,12 +59,14 @@ class SNSUtilViewModel @ViewModelInject constructor(@Assisted private val savedS
 
     val joblist : ArrayList<Job> = ArrayList<Job>()
     fun cancelAlljob(){
-        joblist.forEach {
-            if(!it.isCompleted){
-                it.cancel()
+        if(joblist.size > 0) {
+            joblist.forEach {
+                if (!it.isCompleted) {
+                    it.cancel()
+                }
             }
+            joblist.clear()
         }
-        joblist.clear()
     }
     fun getData(){
 

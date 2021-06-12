@@ -21,8 +21,10 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityInputPhoneNumberBinding
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.extensions.toast
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R.layout.activity_input_phone_number) {
 
     private lateinit var photoUri : String

@@ -13,7 +13,9 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivitySettingBinding
 import com.uos.smsmsm.util.auth.SignOut
 import com.uos.smsmsm.viewmodel.AppUtilViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingActivity : BaseActivity<ActivitySettingBinding>(R.layout.activity_setting) {
 
     private val viewModel: AppUtilViewModel by viewModels()

@@ -20,7 +20,9 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.signup.SignUpActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityFirstTimeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activity_first_time) {
 
     private val auth = FirebaseAuth.getInstance()

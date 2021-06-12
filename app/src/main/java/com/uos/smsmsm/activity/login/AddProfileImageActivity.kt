@@ -13,7 +13,9 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.databinding.ActivityAddProfileImageBinding
 import com.uos.smsmsm.util.Config
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.layout.activity_add_profile_image) {
 
     private var photoUri : Uri ? = null
