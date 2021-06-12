@@ -45,7 +45,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
         }.addOnFailureListener {
             Log.e("TEST","${it.toString()}")
         }
-        activityManager.removeAllBehindActivity()
+//        activityManager.removeAllBehindActivity()
     }
 
     // 앱버전 체크

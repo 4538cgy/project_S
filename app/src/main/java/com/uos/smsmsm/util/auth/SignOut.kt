@@ -42,7 +42,7 @@ class SignOut(private val context: Context,private val activity: Activity) : Act
 
                             var intent = Intent(context,SplashActivity::class.java)
                             intent.apply {
-                                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                 context.startActivity(intent)
                                 activity.finish()
                             }
