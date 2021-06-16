@@ -61,7 +61,6 @@ class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activi
         intent.apply {
             putExtra("signUpType","phone")
             startActivity(intent)
-            finish()
         }
     }
 
