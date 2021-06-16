@@ -20,7 +20,9 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.signup.SignUpActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityFirstTimeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activity_first_time) {
 
     private val auth = FirebaseAuth.getInstance()
@@ -54,17 +56,19 @@ class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activi
         startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
     }
 
-    fun onSignPhoneNumber(){
-
+    fun onSignPhoneNumber(view : View){
+        var intent = Intent(this,AddProfileImageActivity::class.java)
+        intent.apply {
+            putExtra("signUpType","phone")
+            startActivity(intent)
+        }
     }
 
-    fun onLogin(){
-
+    fun onLogin(view : View){
+        startActivity(Intent(binding.root.context,RenewLoginActivity::class.java))
+        finish()
     }
 
-    fun onFindID(){
-
-    }
 
     private fun moveMainPage(user: FirebaseUser?) {
         if (user != null) {
@@ -113,4 +117,6 @@ class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activi
             }
         }
     }
+
+
 }

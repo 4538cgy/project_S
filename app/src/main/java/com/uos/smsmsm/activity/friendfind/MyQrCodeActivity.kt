@@ -14,8 +14,10 @@ import com.google.zxing.qrcode.QRCodeWriter
 import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityMyQrCodeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class MyQrCodeActivity : BaseActivity<ActivityMyQrCodeBinding>(R.layout.activity_my_qr_code){
 
     override fun onCreate(savedInstanceState: Bundle?) {

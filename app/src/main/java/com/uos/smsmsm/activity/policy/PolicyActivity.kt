@@ -5,7 +5,9 @@ import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityPolicyBinding
 import com.uos.smsmsm.util.extensions.toast
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PolicyActivity : BaseActivity<ActivityPolicyBinding>(R.layout.activity_policy) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.login.RenewLoginActivity">
+
+    <data>
+        <variable
+            name="activityloginrenew"
+            type="com.uos.smsmsm.activity.login.RenewLoginActivity" />
+        <variable
+            name="snsviewmodel"
+            type="com.uos.smsmsm.viewmodel.ContentUtilViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:id="@+id/activity_login_renew_textview_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="80dp"
+            android:text="LOGO"
+            android:textSize="80dp"
+            />
+
+        <Button
+
+            android:id="@+id/activity_login_renew_button_google"
+            app:layout_constraintTop_toBottomOf="@+id/activity_login_renew_textview_logo"
+            android:layout_marginTop="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="구글 아이디로 로그인"
+            android:textColor="@color/colorWhite"
+            android:layout_marginHorizontal="12dp"
+            android:background="@color/colorGoogleSignIn"
+            android:onClick="@{activityloginrenew.google}"
+            />
+
+        <Button
+            android:id="@+id/activity_login_renew_button_phone_login"
+            app:layout_constraintTop_toBottomOf="@+id/activity_login_renew_button_google"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="32dp"
+            android:text="핸드폰 번호로 로그인"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:onClick="@{activityloginrenew.phone}"
+            android:background="@color/colorPrimary"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/activity_login_renew_textinputlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/activity_login_renew_button_phone_login"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="12dp"
+            >
+
+            <EditText
+                android:id="@+id/activity_login_renew_edittext_phonenumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="핸드폰 번호를 입력해주세요."
+                android:maxLength="11"
+                android:visibility="gone"
+                android:inputType="phone"
+                android:addTextChangedListener="@{snsviewmodel.textWatcher()}"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/activity_login_renew_button_phone_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/activity_login_renew_textinputlayout"
+            app:layout_constraintRight_toRightOf="@+id/activity_login_renew_textinputlayout"
+            android:background="@drawable/background_edittext_round_gray_16dp"
+            android:padding="12dp"
+            android:text="인증 요청 및 로그인"
+            android:onClick="@{activityloginrenew.phoneVerifyAndLogin}"
+            android:visibility="gone"
+            />
+
+
+        <TextView
+            android:id="@+id/activity_login_renew_textview_go_to_signup"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="회원 가입 페이지로 이동"
+            android:textSize="14dp"
+            android:textColor="@color/colorBlack"
+
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -18,6 +18,7 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
+import com.uos.smsmsm.activity.splash.SplashActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityLobbyBinding
 import com.uos.smsmsm.fragment.tabmenu.chatroom.ChatRoomFragment
@@ -39,8 +40,12 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
     private val userViewModel : UserUtilViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         binding.apply {
             snsviewmodel = viewModel
+
             // 바텀 네비게이션 리스너 초기화
             activityLobbyBottomNavigation.setOnNavigationItemSelectedListener(this@LobbyActivity)
             activityLobbyBottomNavigation.selectedItemId = R.id.action_friendslist

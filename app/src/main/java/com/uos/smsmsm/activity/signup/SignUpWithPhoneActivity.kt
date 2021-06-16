@@ -28,8 +28,10 @@ import com.uos.smsmsm.databinding.ActivitySignUpWithPhoneBinding
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.time.TimeUtil
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 // SignUpActivity랑 무슨 차이인지 모르겠어서 일단 원본 유지
 class SignUpWithPhoneActivity : BaseActivity<ActivitySignUpWithPhoneBinding>(R.layout.activity_sign_up_with_phone) {
 

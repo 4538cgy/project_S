@@ -26,8 +26,10 @@ import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.extensions.toast
 import com.uos.smsmsm.util.time.TimeUtil
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
+@AndroidEntryPoint
 class SignUpActivity : BaseActivity<ActivitySignUpBinding>(R.layout.activity_sign_up) {
     // Make private [mAuth, imageUri]
     private var mAuth: FirebaseAuth? = null

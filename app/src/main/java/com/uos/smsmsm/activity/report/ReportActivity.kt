@@ -14,7 +14,9 @@ import com.uos.smsmsm.data.ReportDTO
 import com.uos.smsmsm.databinding.ActivityReportBinding
 import com.uos.smsmsm.viewmodel.BasicUtilViewModel
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ReportActivity : BaseActivity<ActivityReportBinding>(R.layout.activity_report) {
 
     private val basicViewModel : BasicUtilViewModel by viewModels()

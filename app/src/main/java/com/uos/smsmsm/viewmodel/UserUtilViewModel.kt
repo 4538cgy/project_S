@@ -35,12 +35,14 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     }
     val jobList : ArrayList<Job>  = ArrayList<Job>()
     fun cancelAllJob(){
-        jobList.forEach {
-            if(!it.isCompleted){
-                it.cancel()
+        if(jobList.size > 0) {
+            jobList.forEach {
+                if (!it.isCompleted) {
+                    it.cancel()
+                }
             }
+            jobList.clear()
         }
-        jobList.clear()
     }
     fun checkFriend(destinationUid: String){
       val job =  viewModelScope.launch(Dispatchers.IO){
