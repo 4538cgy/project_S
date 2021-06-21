@@ -104,10 +104,20 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         })
         // 내 프로필 클릭 시 내 프로필 상세 노출
         binding.fragmentFriendsListMyProfileLayout.setOnClickListener {
+            /*
             Intent(binding.root.context, ProfileActivity::class.java).run {
                 putExtra("uid",auth.currentUser!!.uid)
                 binding.root.context.startActivity(this)
             }
+            프라그먼트 교체로 변경되었음
+             */
+
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_lobby_fragmelayout,FriendsListFragment().apply {
+                arguments = Bundle().apply {
+                    putString("uid",auth.currentUser!!.uid)
+                }
+            })
+                .commit()
         }
         initRecyclerViewAdapter()
         loadingDialog.dismiss()

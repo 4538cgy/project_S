@@ -22,6 +22,7 @@ import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.activity.timeline.TimeLineActivity
 import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.databinding.FragmentProfileBinding
+import com.uos.smsmsm.fragment.tabmenu.friendslist.FriendsListFragment
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
@@ -45,7 +46,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
             fragmentprofile = this@ProfileFragment
         }
         //액티비티로부터 destinationUid 가져오기
-        destinationUid = requireArguments().getString("destinationUid")
+        destinationUid = requireArguments().getString("uid")
 
         //유저 닉네임 가져오기
         userViewModel.getUserName(destinationUid.toString())
@@ -213,8 +214,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
     // 프로필 화면 닫기
     fun closeActivity(view: View) {
-        //finish()
+        //finish() 대신
         //이전 프라그먼트 보여주기
+        requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_lobby_fragmelayout,FriendsListFragment())
+            .addToBackStack(null)
+            .commit()
     }
 
     fun onClickUpdateProfile(view: View) {
