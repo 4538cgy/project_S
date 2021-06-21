@@ -51,7 +51,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         //유저 닉네임 가져오기
         userViewModel.getUserName(destinationUid.toString())
         userViewModel.userName.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            // binding.activityProfileTextviewNickname.text = it
+             binding.fragmentProfileTextviewNickname.text = it
         })
 
         //유저 프로필 사진 가져오기
