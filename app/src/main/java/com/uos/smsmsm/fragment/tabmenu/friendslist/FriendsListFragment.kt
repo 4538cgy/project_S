@@ -16,6 +16,8 @@ import com.uos.smsmsm.activity.search.SearchFriendActivity
 import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
+import com.uos.smsmsm.fragment.profile.ProfileFragment
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.recycleradapter.friends.list.FriendListAdapter
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogAddFriends
 import com.uos.smsmsm.util.Delegate
@@ -111,8 +113,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
             }
             프라그먼트 교체로 변경되었음
              */
-
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_lobby_fragmelayout,FriendsListFragment().apply {
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_lobby_fragmelayout,ProfileFragment().apply {
                 arguments = Bundle().apply {
                     putString("uid",auth.currentUser!!.uid)
                 }
