@@ -57,13 +57,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         userViewModel.getUserProfile(destinationUid.toString())
         userViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             destinationUserProfileUrl = it.toString()
-            /*
+
             Glide.with(rootContext)
                 .load(it.toString())
                 .circleCrop()
-                .into(binding.activityProfileImageviewProfile)
+                .into(binding.fragmentProfileImageviewProfile)
 
-             */
+
         })
 
 
@@ -95,17 +95,17 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         userViewModel.currentDestinationUser.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer {
-               // binding.activityProfileTextviewNickname.text = it.userName
+               binding.fragmentProfileTextviewNickname.text = it.userName
 
-                /*
+
                 Glide.with(rootContext)
                     .load("https://firebasestorage.googleapis.com/v0/b/project-s-8efd0.appspot.com/o/userProfileImages%2F3Mxl3osZxGW3eghWwy8FJFVEEPt2?alt=media&token=19080e5e-6cca-4f1e-a056-0e59740c3d43")
                     .apply(
                         RequestOptions().centerCrop().circleCrop()
                     )
-                    .into(binding.activityProfileImageviewProfile)
+                    .into(binding.fragmentProfileImageviewProfile)
 
-                 */
+
             }
         )
 
@@ -154,9 +154,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     private fun setFavoriteImg(isFavorite: Boolean) {
         this.isFavorite = isFavorite
         if (isFavorite) {
-            //binding.activityProfileImagebuttonFavorite.setImageResource(R.drawable.ic_baseline_star_rate_24)
+            binding.fragmentProfileImagebuttonFavorite.setImageResource(R.drawable.ic_baseline_star_rate_24)
         } else {
-            //binding.activityProfileImagebuttonFavorite.setImageResource(R.drawable.ic_baseline_star_outline_24)}
+            binding.fragmentProfileImagebuttonFavorite.setImageResource(R.drawable.ic_baseline_star_outline_24)
         }
     }
 
@@ -214,38 +214,39 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     // 프로필 화면 닫기
     fun closeActivity(view: View) {
         //finish()
+        //이전 프라그먼트 보여주기
     }
 
     fun onClickUpdateProfile(view: View) {
         if (!updateOnOff) {
-            /*
-        binding.activityProfileLine1.visibility = View.VISIBLE
-        binding.activityProfileLine2.visibility = View.VISIBLE
-        binding.activityProfileLine3.visibility = View.VISIBLE
-        binding.activityProfileImageviewProfileImageUpdate.visibility = View.VISIBLE
-        binding.activityProfileImageviewEdit1.visibility = View.VISIBLE
-        binding.activityProfileImageviewEdit2.visibility = View.VISIBLE
-        binding.activityProfileUpdateBack.visibility = View.VISIBLE
-        binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
-        binding.activityProfileImagebuttonFavorite.visibility = View.GONE
-        binding.activityProfileImagebuttonOption.visibility = View.GONE
-         */
+
+        binding.fragmentProfileLine1.visibility = View.VISIBLE
+        binding.fragmentProfileLine2.visibility = View.VISIBLE
+        binding.fragmentProfileLine3.visibility = View.VISIBLE
+        binding.fragmentProfileImageviewProfileImageUpdate.visibility = View.VISIBLE
+        binding.fragmentProfileImageviewEdit1.visibility = View.VISIBLE
+        binding.fragmentProfileImageviewEdit2.visibility = View.VISIBLE
+        binding.fragmentProfileUpdateBack.visibility = View.VISIBLE
+        binding.fragmentProfileConstBottomBarIsmeLayout.visibility = View.GONE
+        binding.fragmentProfileImagebuttonFavorite.visibility = View.GONE
+        binding.fragmentProfileImagebuttonOption.visibility = View.GONE
+
             updateOnOff = true
         } else {
 
-            /*
-        binding.activityProfileLine1.visibility = View.GONE
-        binding.activityProfileLine2.visibility = View.GONE
-        binding.activityProfileLine3.visibility = View.GONE
-        binding.activityProfileImageviewProfileImageUpdate.visibility = View.GONE
-        binding.activityProfileImageviewEdit1.visibility = View.GONE
-        binding.activityProfileImageviewEdit2.visibility = View.GONE
-        binding.activityProfileUpdateBack.visibility = View.GONE
-        binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
-        binding.activityProfileImagebuttonFavorite.visibility = View.VISIBLE
-        binding.activityProfileImagebuttonOption.visibility = View.VISIBLE
 
-         */
+        binding.fragmentProfileLine1.visibility = View.GONE
+        binding.fragmentProfileLine2.visibility = View.GONE
+        binding.fragmentProfileLine3.visibility = View.GONE
+        binding.fragmentProfileImageviewProfileImageUpdate.visibility = View.GONE
+        binding.fragmentProfileImageviewEdit1.visibility = View.GONE
+        binding.fragmentProfileImageviewEdit2.visibility = View.GONE
+        binding.fragmentProfileUpdateBack.visibility = View.GONE
+        binding.fragmentProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
+        binding.fragmentProfileImagebuttonFavorite.visibility = View.VISIBLE
+        binding.fragmentProfileImagebuttonOption.visibility = View.VISIBLE
+
+
             updateOnOff = false
         }
     }
@@ -270,17 +271,17 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
 
     fun isMe(uid: String) {
         if (uid == auth.currentUser?.uid) {
-            /*
 
-        binding.activityProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
-        binding.activityProfileImagebuttonQr.visibility = View.VISIBLE
-        binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
-        binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
-        binding.activityProfileImagebuttonFavorite.visibility = View.GONE
 
-         */
+        binding.fragmentProfileConstBottomBarIsmeLayout.visibility = View.VISIBLE
+        binding.fragmentProfileImagebuttonQr.visibility = View.VISIBLE
+        binding.fragmentProfileConstBottomBarIsfriendLayout.visibility = View.GONE
+        binding.fragmentProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+        binding.fragmentProfileImagebuttonFavorite.visibility = View.GONE
+
+
         } else {
-            // binding.activityProfileConstBottomBarIsmeLayout.visibility = View.GONE
+            binding.fragmentProfileConstBottomBarIsmeLayout.visibility = View.GONE
             //친구인지 아닌지 구분
             userViewModel.checkFriend(destinationUid.toString())
             userViewModel.checkFriends.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -292,14 +293,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
     fun isFriend(boolean: Boolean) {
 
         if (boolean) {
-            //binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.VISIBLE
-            //binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
+            binding.fragmentProfileConstBottomBarIsfriendLayout.visibility = View.VISIBLE
+            binding.fragmentProfileConstBottomBarIsnotfriendLayout.visibility = View.GONE
 
         } else {
             // 친구가 아닐 경우 즐겨찾기 아이콘 안나타나도록
-            //binding.activityProfileImagebuttonFavorite.visibility = View.GONE
-            //binding.activityProfileConstBottomBarIsfriendLayout.visibility = View.GONE
-            //binding.activityProfileConstBottomBarIsnotfriendLayout.visibility = View.VISIBLE
+            binding.fragmentProfileImagebuttonFavorite.visibility = View.GONE
+            binding.fragmentProfileConstBottomBarIsfriendLayout.visibility = View.GONE
+            binding.fragmentProfileConstBottomBarIsnotfriendLayout.visibility = View.VISIBLE
         }
     }
 
