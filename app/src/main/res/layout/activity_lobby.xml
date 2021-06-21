@@ -39,7 +39,10 @@
             app:itemIconTint="@color/colorNavIcon"
             app:itemBackground="@color/colorPrimary"
             android:background="@color/colorPrimary"
+            android:visibility="visible"
             />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

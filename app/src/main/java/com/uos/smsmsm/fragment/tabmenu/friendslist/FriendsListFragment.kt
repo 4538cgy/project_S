@@ -3,6 +3,9 @@ package com.uos.smsmsm.fragment.tabmenu.friendslist
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -11,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
+import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
 import com.uos.smsmsm.base.BaseFragment
@@ -119,6 +123,20 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
                 }
             })
                 .commit()
+            //(activity as LobbyActivity).binding.activityLobbyFragmelayout.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT)
+
+
+            var layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.MATCH_PARENT)
+            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+            layoutParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+            layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
+            (activity as LobbyActivity).binding.activityLobbyFragmelayout.layoutParams = layoutParams
+            (activity as LobbyActivity).binding.activityLobbyBottomNavigation.visibility = View.GONE
+
+
+
+
         }
         initRecyclerViewAdapter()
         loadingDialog.dismiss()

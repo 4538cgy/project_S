@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.chat.ChatActivity
 import com.uos.smsmsm.activity.friendfind.MyQrCodeActivity
+import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.report.ReportActivity
 import com.uos.smsmsm.activity.timeline.TimeLineActivity
 import com.uos.smsmsm.base.BaseFragment
@@ -219,6 +220,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(R.layout.fragment_p
         requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_lobby_fragmelayout,FriendsListFragment())
             .addToBackStack(null)
             .commit()
+        (activity as LobbyActivity).binding.activityLobbyBottomNavigation.visibility = View.VISIBLE
     }
 
     fun onClickUpdateProfile(view: View) {
