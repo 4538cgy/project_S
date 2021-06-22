@@ -3,6 +3,9 @@ package com.uos.smsmsm.fragment.tabmenu.friendslist
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -11,11 +14,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity
+import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.activity.search.SearchFriendActivity
 import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.databinding.FragmentFriendsListBinding
+import com.uos.smsmsm.fragment.profile.ProfileFragment
+import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.recycleradapter.friends.list.FriendListAdapter
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogAddFriends
 import com.uos.smsmsm.util.Delegate
@@ -104,10 +110,33 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         })
         // 내 프로필 클릭 시 내 프로필 상세 노출
         binding.fragmentFriendsListMyProfileLayout.setOnClickListener {
+            /*
             Intent(binding.root.context, ProfileActivity::class.java).run {
                 putExtra("uid",auth.currentUser!!.uid)
                 binding.root.context.startActivity(this)
             }
+            프라그먼트 교체로 변경되었음
+             */
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_lobby_fragmelayout,ProfileFragment().apply {
+                arguments = Bundle().apply {
+                    putString("uid",auth.currentUser!!.uid)
+                }
+            })
+                .commit()
+            //(activity as LobbyActivity).binding.activityLobbyFragmelayout.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT)
+
+
+            var layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.MATCH_PARENT)
+            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+            layoutParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+            layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
+            (activity as LobbyActivity).binding.activityLobbyFragmelayout.layoutParams = layoutParams
+            (activity as LobbyActivity).binding.activityLobbyBottomNavigation.visibility = View.GONE
+
+
+
+
         }
         initRecyclerViewAdapter()
         loadingDialog.dismiss()
