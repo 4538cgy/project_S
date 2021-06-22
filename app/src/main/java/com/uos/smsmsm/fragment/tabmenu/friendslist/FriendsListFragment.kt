@@ -80,7 +80,11 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         userViewModel.getUserName(auth.currentUser!!.uid.toString())
         userViewModel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentFriendsListMyProfileTitleContentTextviewTitle.text = it.toString()})
         //friends List의 상태 확인
-
+        userViewModel.isSuccessDeleteFriend.observe(viewLifecycleOwner, Observer {
+            if(it){
+                // 친구 삭제 성공 시 관련된 content 삭제 요청 화면
+            }
+        })
         snsViewModel.friendsListState.observe(viewLifecycleOwner, Observer {
             loadingDialog.show()
             when (it) {
