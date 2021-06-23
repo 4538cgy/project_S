@@ -140,7 +140,7 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
                 // 스캔된 QRCode --> result.getContents()
                 if(FirebaseAuth.getInstance().currentUser?.uid == result.contents){
                     Toast.makeText(this, getString(R.string.your_id_scan), Toast.LENGTH_LONG).show()
-                }else{
+                }else if(result.contents != null){
                     var isAlreadyFriend = false
                     for(i in SNSUtilViewModel.friendsList){
                         if (i.uid == result.contents) {
