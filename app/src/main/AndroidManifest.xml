@@ -43,7 +43,6 @@
         <activity android:name=".activity.report.ReportActivity" />
         <activity android:name=".ui.photo.PhotoViewActivity" />
         <activity android:name=".activity.profile.ProfileActivity" />
-        <activity android:name=".activity.friendfind.FriendFindByIdActivity" />
         <activity android:name=".activity.friendfind.MyQrCodeActivity" />
         <activity
             android:name=".activity.content.AddContentActivity"

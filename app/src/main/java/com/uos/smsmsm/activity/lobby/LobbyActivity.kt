@@ -5,30 +5,32 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.storage.FirebaseStorage
 import com.google.zxing.integration.android.IntentIntegrator
 import com.theartofdev.edmodo.cropper.CropImage
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.content.AddContentActivity
-import com.uos.smsmsm.activity.splash.SplashActivity
 import com.uos.smsmsm.base.BaseActivity
+import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.databinding.ActivityLobbyBinding
+import com.uos.smsmsm.fragment.profile.ProfileFragment
 import com.uos.smsmsm.fragment.tabmenu.chatroom.ChatRoomFragment
 import com.uos.smsmsm.fragment.tabmenu.friendslist.FriendsListFragment
 import com.uos.smsmsm.fragment.tabmenu.other.OtherMenuFragment
 import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.fragment.tabmenu.userfragment.UserFragment
-import com.uos.smsmsm.repository.UserRepository
 import com.uos.smsmsm.util.MediaType
-import com.uos.smsmsm.util.time.TimeUtil
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -180,5 +182,25 @@ class LobbyActivity : BaseActivity<ActivityLobbyBinding>(R.layout.activity_lobby
             ) { _, _ -> finishAffinity() } // Apply SAM
             setTitle("안내")
         }.show()
+    }
+
+
+    fun pushFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().add(R.id.activity_lobby_fragmelayout, fragment, fragment::class.java.name).commit()
+
+
+        var layoutParams = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.MATCH_PARENT,
+            ConstraintLayout.LayoutParams.MATCH_PARENT)
+        layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
+        layoutParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+        layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
+        binding.activityLobbyFragmelayout.layoutParams = layoutParams
+        binding.activityLobbyBottomNavigation.visibility = View.GONE
+    }
+    fun popFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction().remove(fragment).commit()
+       binding.activityLobbyBottomNavigation.visibility = View.VISIBLE
     }
 }

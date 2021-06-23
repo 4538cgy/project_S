@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.uos.smsmsm.util.EventLogUtil
 import com.uos.smsmsm.util.dialog.LoadingDialog
@@ -20,9 +21,9 @@ import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 
 abstract class BaseFragment<B : ViewDataBinding>(val layoutId : Int) : Fragment() {
-    val snsViewModel: SNSUtilViewModel by viewModels()
-    val userViewModel : UserUtilViewModel by viewModels()
-    val contentViewModel: ContentUtilViewModel by viewModels()
+    val snsViewModel: SNSUtilViewModel by activityViewModels()
+    val userViewModel : UserUtilViewModel by activityViewModels()
+    val contentViewModel: ContentUtilViewModel by activityViewModels()
     lateinit var binding: B
     lateinit var rootContext : Context
     lateinit var loadingDialog: LoadingDialog
@@ -70,9 +71,6 @@ abstract class BaseFragment<B : ViewDataBinding>(val layoutId : Int) : Fragment(
         if(loadingDialog.isShowing){
             loadingDialog.dismiss()
         }
-
-        userViewModel.cancelAllJob()
-        snsViewModel.cancelAlljob()
     }
 
     protected open fun init(){

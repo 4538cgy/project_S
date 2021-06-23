@@ -11,11 +11,9 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.zxing.integration.android.IntentIntegrator
 import com.uos.smsmsm.R
-import com.uos.smsmsm.activity.content.AddContentActivity
-import com.uos.smsmsm.activity.friendfind.FriendFindByIdActivity
-import com.uos.smsmsm.activity.friendfind.MyQrCodeActivity
+import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.databinding.BottomSheetDialogAddFriendsLayoutBinding
-import java.lang.ClassCastException
+import com.uos.smsmsm.fragment.findfriends.FriendFindByIdFragment
 
 class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
     lateinit var bottomSheetButtonClickListener : BottomSheetButtonClickListener
@@ -53,7 +51,7 @@ class BottomSheetDialogAddFriends : BottomSheetDialogFragment() {
             //id 로 추가
             binding.bottomSheetDialogAddFriendsLayoutButtonId.id ->{
                 println("click id")
-                startActivity(Intent(context, FriendFindByIdActivity::class.java))
+                (activity as LobbyActivity).pushFragment(FriendFindByIdFragment())
             }
             //추천 친구
             binding.bottomSheetDialogAddFriendsLayoutButtonRecommand.id ->{

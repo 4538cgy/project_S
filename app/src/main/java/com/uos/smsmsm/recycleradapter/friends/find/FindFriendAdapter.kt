@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ItemFindFriendAndAddFriendBinding
 import com.uos.smsmsm.repository.UserRepository
+import com.uos.smsmsm.util.Delegate
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 // 친구 검색 Adapter
-class FindFriendAdapter(val context: Context, val userUtilViewModel: UserUtilViewModel): RecyclerView.Adapter<FindFriendViewHolder>(){
+class FindFriendAdapter(val context: Context, val callback:Delegate.Action1<String>): RecyclerView.Adapter<FindFriendViewHolder>(){
     var findUserList = ArrayList<UserDTO>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FindFriendViewHolder = FindFriendViewHolder(
@@ -28,7 +29,7 @@ class FindFriendAdapter(val context: Context, val userUtilViewModel: UserUtilVie
 
     override fun onBindViewHolder(holder: FindFriendViewHolder, position: Int) {
         if(findUserList.isNotEmpty()) {
-            holder.bind(findUserList[position],userUtilViewModel )
+            holder.bind(findUserList[position],callback )
         }
     }
 
@@ -46,7 +47,7 @@ class FindFriendViewHolder(val binding: ItemFindFriendAndAddFriendBinding) : Rec
     val ioScope = CoroutineScope(Dispatchers.Main)
     private lateinit var item : UserDTO
     private var isAlreadyFriends : Boolean = false
-    fun bind(item: UserDTO, userUtilViewModel: UserUtilViewModel){
+    fun bind(item: UserDTO, callback: Delegate.Action1<String>){
         isAlreadyFriends = false
         //프로필 이미지 출력
         this.item = item
@@ -68,7 +69,7 @@ class FindFriendViewHolder(val binding: ItemFindFriendAndAddFriendBinding) : Rec
         binding.itemFindFriendAndAddFriendTextTitle.text = item.userName
         binding.itemFindFriendAndAddFriendAddImg.setOnClickListener{
             if(!isAlreadyFriends) {
-                userUtilViewModel.addFriend(item.uid!!)
+                callback.run(item.uid!!)
             }else{
                 Toast.makeText(binding.root.context, "이미 등록된 친구 입니다.", Toast.LENGTH_LONG).show()
             }

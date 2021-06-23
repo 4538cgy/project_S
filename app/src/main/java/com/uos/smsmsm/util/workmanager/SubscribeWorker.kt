@@ -1,6 +1,7 @@
 package com.uos.smsmsm.util.workmanager
 
 import android.content.Context
+import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.firebase.auth.FirebaseAuth
@@ -17,8 +18,8 @@ class SubscribeWorker(context: Context, worker : WorkerParameters) : Worker(cont
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     override fun doWork(): Result {
-
         val workState = inputData.getInt("WORK_STATE",1)
+        Log.d("SubscribeWorker", "doWork : $workState")
         val destinationUid = inputData.getString("WORK_DESTINATION_UID").toString()
 
 
@@ -60,7 +61,11 @@ class SubscribeWorker(context: Context, worker : WorkerParameters) : Worker(cont
                 }
             }
             SubscribeWorker.WORK_DELETE_CONTENTS ->{
-
+                mainScope.launch {
+                    repository.deleteUserContentsMyContainer(uid = destinationUid).collect {
+                        println("content 삭제 완료 $it")
+                    }
+                }
             }
         }
 

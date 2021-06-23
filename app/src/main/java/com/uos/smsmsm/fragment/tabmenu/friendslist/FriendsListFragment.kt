@@ -9,6 +9,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +29,7 @@ import com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment
 import com.uos.smsmsm.recycleradapter.friends.list.FriendListAdapter
 import com.uos.smsmsm.ui.bottomsheet.BottomSheetDialogAddFriends
 import com.uos.smsmsm.util.Delegate
+import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,12 +40,14 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
 
     private val auth = FirebaseAuth.getInstance()
     private var data = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
+    private var destinationUid : String? = null
     // 친구 리스트 adapter
     private val listAdapter : FriendListAdapter by lazy {
         FriendListAdapter(object : Delegate.Action1<RecyclerDefaultModel>{
             override fun run(item: RecyclerDefaultModel) {
                 // 친구 삭제 액
                 userViewModel.removeFriend(item.uid!!)
+                destinationUid = item.uid
             }
 
         })
@@ -51,6 +58,7 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
             override fun run(item: RecyclerDefaultModel) {
                 // 친구 삭제 액
                 userViewModel.removeFriend(item.uid!!)
+                destinationUid = item.uid
             }
 
         })
@@ -81,8 +89,13 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
         userViewModel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentFriendsListMyProfileTitleContentTextviewTitle.text = it.toString()})
         //friends List의 상태 확인
         userViewModel.isSuccessDeleteFriend.observe(viewLifecycleOwner, Observer {
-            if(it){
+            if (it) {
                 // 친구 삭제 성공 시 관련된 content 삭제 요청 화면
+                destinationUid?.let { it ->
+                    onDeleteSubscribeWorker(it)
+                }
+            } else {
+                destinationUid = null
             }
         })
         snsViewModel.friendsListState.observe(viewLifecycleOwner, Observer {
@@ -121,26 +134,11 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
             }
             프라그먼트 교체로 변경되었음
              */
-            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_lobby_fragmelayout,ProfileFragment().apply {
+            (activity as LobbyActivity).pushFragment(ProfileFragment().apply {
                 arguments = Bundle().apply {
                     putString("uid",auth.currentUser!!.uid)
                 }
             })
-                .commit()
-            //(activity as LobbyActivity).binding.activityLobbyFragmelayout.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT)
-
-
-            var layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.MATCH_PARENT)
-            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-            layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-            layoutParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
-            layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
-            (activity as LobbyActivity).binding.activityLobbyFragmelayout.layoutParams = layoutParams
-            (activity as LobbyActivity).binding.activityLobbyBottomNavigation.visibility = View.GONE
-
-
-
-
         }
         initRecyclerViewAdapter()
         loadingDialog.dismiss()
@@ -194,4 +192,17 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
             1
         )
     }
+    fun onDeleteSubscribeWorker(destinationUid : String){
+        println("백그라운드 실행")
+        val data : MutableMap<String,Any> = HashMap()
+
+        data["WORK_STATE"] = SubscribeWorker.WORK_DELETE_CONTENTS
+        data["WORK_DESTINATION_UID"] = destinationUid.toString()
+
+        val inputData = Data.Builder().putAll(data).build()
+
+        val uploadManager : WorkRequest = OneTimeWorkRequestBuilder<SubscribeWorker>().setInputData(inputData).build()
+        WorkManager.getInstance(rootContext).enqueue(uploadManager)
+    }
+
 }
