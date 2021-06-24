@@ -8,8 +8,8 @@
         <import type="androidx.databinding.ObservableArrayList" />
         <import type="com.uos.smsmsm.data.UserDTO" />
         <variable
-            name="activity"
-            type="com.uos.smsmsm.activity.friendfind.FriendFindByIdActivity" />
+            name="fragment"
+            type="com.uos.smsmsm.fragment.findfriends.FriendFindByIdFragment" />
         <variable
             name="friendlist"
             type="ObservableArrayList&lt;UserDTO&gt;" />
@@ -17,7 +17,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite">
 
         <!-- Header -->
 
@@ -31,7 +32,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:padding="8dp"
-                android:onClick="@{activity.close}"
+                android:onClick="@{fragment.close}"
                 android:src="@drawable/ic_baseline_close_24"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

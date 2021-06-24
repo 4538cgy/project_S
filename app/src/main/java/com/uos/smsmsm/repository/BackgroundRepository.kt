@@ -164,4 +164,44 @@ class BackgroundRepository {
         }
         awaitClose {  }
     }
+
+    @ExperimentalCoroutinesApi
+    fun deleteUserContentsMyContainer(uid : String) = callbackFlow<Boolean> {
+        val databaseReference = db.collection("User").document("UserData").collection("userInfo")
+            .whereEqualTo("uid",auth.currentUser!!.uid)
+        val eventListener = databaseReference.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                if (it.result != null) {
+                    it.result.documents.forEach { document ->
+                        if (document["uid"]!! == (auth.currentUser!!.uid)) {
+                            val tsDocSubscribing =
+                                db.collection("User").document("UserData").collection("userInfo")
+                                    .document(document.id).collection("MySubscribeContentUidList")
+                                    .document("list")
+                            db.runTransaction { transaction ->
+                                var thumbnail = transaction.get(tsDocSubscribing)
+                                    .toObject(ContentDTO.PostThumbnail::class.java)
+                                if (thumbnail == null) {
+                                    this@callbackFlow.sendBlocking(true)
+                                    return@runTransaction
+                                } else {
+                                    val dummy = ContentDTO.PostThumbnail()
+                                    for (i in thumbnail.thumbnailList) {
+                                        if (i.value.uid != uid) {
+                                            dummy.thumbnailList[i.key] = i.value
+                                        }
+                                    }
+                                    transaction.set(tsDocSubscribing, dummy)
+                                    this@callbackFlow.sendBlocking(true)
+                                    return@runTransaction
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose {  }
+    }
+
 }

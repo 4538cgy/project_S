@@ -25,6 +25,9 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     //친구 추가에 성공했는지 판단
     var isSuccessAddFirends : MutableLiveData<String> = MutableLiveData()
 
+    //친구 삭제에 성공했는지 판단
+    var isSuccessDeleteFriend : MutableLiveData<Boolean> = MutableLiveData()
+
     var checkFriends = MutableLiveData<Boolean>()
 
     val userRepository  = UserRepository()
@@ -71,10 +74,22 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
         val job = viewModelScope.launch(Dispatchers.IO){
             userRepository.removeFriend(uid).collect {
                 Log.d("TEST","result : $it")
+                for(i in SNSUtilViewModel.friendsList){
+                    if(i.uid == uid){
+                        SNSUtilViewModel.friendsList.remove(i)
+                        break
+                    }
+                }
+                if(it == "Success"){
+                    isSuccessDeleteFriend.postValue(true)
+                }else{
+                    isSuccessDeleteFriend.postValue(false)
+                }
             }
         }
         jobList.add(job)
     }
+
 
 
     fun getUserName(destinationUid: String){
