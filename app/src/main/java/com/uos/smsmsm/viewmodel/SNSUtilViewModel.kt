@@ -112,56 +112,11 @@ class SNSUtilViewModel @ViewModelInject constructor(
                     pagingcount = 0
                     getData()
                 }
-                /*
-                if (contentIdList != null){
-                    //#2 가져온 구독 게시글 리스트 대로 게시글 원본 가져오기
-                    contentIdList.forEach { contentId ->
-                        viewModelScope.launch {
-                            contentRepository.getContents(contentId).collect {
-                                contents.putAll(it)
-
-                                if (contentIdList.size == contents.size){
-                                    //#3 내 게시글 가져와서 contents에 넣고 timestamp를 기준으로 정렬하기
-                                    viewModelScope.launch {
-                                        contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
-                                            contents.putAll(it)
-
-                                            //#3-1 정렬
-                                            var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
-                                            //#4 완성된 게시글 원본 recyclerview에 연결하기
-                                            println("뀨")
-                                            timelineDataList.postValue(result)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }else{
-                    viewModelScope.launch {
-                        contentRepository.getUserPostContent(auth.currentUser!!.uid).collect {
-                            contents.putAll(it)
-                            //#3-1 정렬
-                            var result = contents.toList().sortedByDescending { (_,value) -> value.timestamp }.toMap()
-                            //#4 완성된 게시글 원본 recyclerview에 연결하기
-                            println("꺄")
-                            timelineDataList.postValue(result)
-                        }
-                    }
-                }
-
-                 */
+                
             }
         }
         joblist.add(job)
-        /*
-         다음과 같이 수정해야함.
-         #1. 리사이클러뷰에 꽂아넣어야할 list가 존재함.
-         #2. list에 구독하고 있는 PostId의 원본을 넣어줌.
-         #3. 원본을 넣어줬으면 내가 작성한 게시글을 넣어줌.
-         #4. 정렬 함.
-         */
+
     }
 
 
