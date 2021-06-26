@@ -107,7 +107,9 @@ class SNSUtilViewModel @ViewModelInject constructor(
                     list = contentIdList!!
                     contentIdList.forEach {
                         println("가져온 게시글 id  = ${it.toString()}")
+
                     }
+                    pagingcount = 0
                     getData()
                 }
                 /*

@@ -38,7 +38,12 @@ class BackgroundRepository {
     //글 작성할때 나를 구독하고 있는 유저들에게 postId 보내기
     @ExperimentalCoroutinesApi
     fun addContentInSubscribeUserContainer(postThumbnail: ContentDTO.PostThumbnail, subscribeUidList: ArrayList<String>) = callbackFlow<Boolean> {
-        subscribeUidList.add(auth.currentUser!!.uid)
+        if (subscribeUidList.contains(auth.currentUser!!.uid)){
+            println("포함되어 있음")
+        }else {
+            println("포함되어 있지않음")
+            subscribeUidList.add(auth.currentUser!!.uid)
+        }
         subscribeUidList.forEach {subscribeUid ->
             val databaseReference = db.collection("User").document("UserData").collection("userInfo")
                 .whereEqualTo("uid",subscribeUid)
