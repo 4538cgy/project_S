@@ -81,7 +81,7 @@ class BackgroundRepository {
 
 
     @ExperimentalCoroutinesApi
-    fun getSubscribeUserList(uid : String) = callbackFlow<ArrayList<String>> {
+    fun getSubscribeUserList(uid : String) = callbackFlow<ArrayList<String>?> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid",auth.currentUser!!.uid)
         val eventListener = databaseReference.get().addOnCompleteListener {
@@ -94,10 +94,11 @@ class BackgroundRepository {
                                 .document(document.id)
                                 .collection("Subscribe")
                                 .document("subscribe")
-                            val eventListener =  databaseReference2.get().addOnCompleteListener {
-                                if (it.isSuccessful){
-                                    if (it != null){
+                            val eventListener = databaseReference2.get().addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    if (it != null) {
                                         if (it.result.exists()) {
+
                                             var subscribeDTO = SubscribeDTO()
                                             subscribeDTO =
                                                 it.result.toObject(SubscribeDTO::class.java)!!
@@ -106,6 +107,8 @@ class BackgroundRepository {
                                                 subscribeUidList.add(it.key)
                                             }
                                             this@callbackFlow.sendBlocking(subscribeUidList)
+                                        }else{
+                                            this@callbackFlow.sendBlocking(null)
                                         }
                                     }
                                 }
