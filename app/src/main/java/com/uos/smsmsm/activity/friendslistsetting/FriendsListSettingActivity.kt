@@ -13,7 +13,6 @@ class FriendsListSettingActivity : BaseActivity<ActivityFriendsListSettingBindin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 타이틀바 없애기
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
         binding.apply {
             friendslistsetting = this@FriendsListSettingActivity
             activityFriendsListSettingButton.setOnClickListener {

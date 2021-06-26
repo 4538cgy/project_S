@@ -112,7 +112,7 @@ class SNSUtilViewModel @ViewModelInject constructor(
                     pagingcount = 0
                     getData()
                 }
-                
+
             }
         }
         joblist.add(job)
