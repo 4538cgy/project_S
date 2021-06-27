@@ -133,7 +133,7 @@ class UserRepository @Inject constructor() {
     }
     //유저의 프로필 이미지 url 가져오기
     @ExperimentalCoroutinesApi
-    fun getUserProfileImage(uid : String) = callbackFlow<String> {
+    fun getUserProfileImage(uid : String) = callbackFlow<String?> {
         val databaseReference = db.collection("profileImages").document(uid)
         val eventListener = databaseReference.get()
         eventListener.addOnCompleteListener {
@@ -142,6 +142,8 @@ class UserRepository @Inject constructor() {
                 var url : String = task.result!!["image"].toString()
                 this@callbackFlow.sendBlocking(url)
             }
+        }.addOnFailureListener {
+            this@callbackFlow.sendBlocking(null)
         }
         awaitClose { eventListener }
 
@@ -517,32 +519,23 @@ class UserRepository @Inject constructor() {
             if (it.isSuccessful){
                 if (it.result != null){
                     it.result.documents.forEach {
-                        if(it["uid"]!!.equals(uid)){
+                        if(it["uid"]!! == uid){
                             val databaseReference2 = db.collection("User").document("UserData")
                                 .collection("userInfo")
                                 .document(it.id)
                                 .collection("Subscribe")
                                 .document("subscribe")
-
-
-                            val eventListener2 = databaseReference2.addSnapshotListener { value, error ->
-                                if (value != null){
-
-                                    if (value.exists()) {
-
-
-                                        var subscribeDTO = value.toObject(SubscribeDTO::class.java)
-                                        var arrayList = arrayListOf<SubscribeDTO.SubscribingDTO>()
-
-
-                                        subscribeDTO!!.subscribingList.forEach {
-                                            arrayList.add(it.value)
-                                        }
-
-
-                                        this@callbackFlow.sendBlocking(arrayList)
+                            db.runTransaction { transaction ->
+                                var friendsDTO = transaction.get(databaseReference2)
+                                    .toObject(SubscribeDTO::class.java)
+                                var arrayList = arrayListOf<SubscribeDTO.SubscribingDTO>()
+                                friendsDTO?.let{ subscribeDTO ->
+                                    subscribeDTO.subscribingList.forEach { subscribeDTOItem ->
+                                        arrayList.add(subscribeDTOItem.value)
                                     }
+
                                 }
+                                this@callbackFlow.sendBlocking(arrayList)
                             }
                         }
                     }

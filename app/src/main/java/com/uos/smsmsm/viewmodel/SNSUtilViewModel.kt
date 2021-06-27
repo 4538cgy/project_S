@@ -409,19 +409,16 @@ class SNSUtilViewModel @ViewModelInject constructor(
 
 
     //유저 정보 가져오기 // 리스트로 가져오면서 필요 없어졌는데 혹시 몰라 사용할 수 있어 그냥 둠
-    fun getUserData(uid : String){
-        friendsListState.postValue("getting")
-        val job = viewModelScope.launch(Dispatchers.IO){
+    fun getUserData(uid: String) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
             userRepository.getUser(uid).collect { userData ->
                 println("가져온 유저 정보 = ${userData}")
 
-                userRepository.getUserProfileImage(uid).collect{ userProfileImageUrl ->
+                userRepository.getUserProfileImage(uid).collect { userProfileImageUrl ->
                     println("가져온 유저 프로필 이미지 정보 = ${userProfileImageUrl}")
 
-                    var arrayList = arrayListOf<RecyclerDefaultModel>()
-
-                    if (userProfileImageUrl != null){
-                        arrayList.add(
+                    val recyclerDefaultModel: RecyclerDefaultModel =
+                        if (userProfileImageUrl != null) {
                             RecyclerDefaultModel(
                                 RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
                                 userProfileImageUrl,
@@ -430,9 +427,7 @@ class SNSUtilViewModel @ViewModelInject constructor(
                                 userData.userName.toString(),
                                 "임시 프로필 설명"
                             )
-                        )
-                    }else{
-                        arrayList.add(
+                        } else {
                             RecyclerDefaultModel(
                                 RecyclerDefaultModel.FRIENDS_LIST_TYPE_TITLE_CONTENT,
                                 "",
@@ -441,10 +436,9 @@ class SNSUtilViewModel @ViewModelInject constructor(
                                 userData.userName.toString(),
                                 "임시 프로필 설명"
                             )
-                        )
-                    }
-                    recyclerData.postValue(arrayList)
-                    friendsListState.postValue("complete")
+                        }
+                    friendsList.add(recyclerDefaultModel)
+                    initUserFriendsList(auth.currentUser!!.uid)
                 }
             }
         }

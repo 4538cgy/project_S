@@ -38,6 +38,7 @@ class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.l
         val intent = Intent(binding.root.context,InputPhoneNumberActivity::class.java)
         intent.apply {
             putExtra("photoUri",photoUri.toString())
+            // 이 부분에서 intent가 방금 생성된 위에 생성된 InputPhoneNumberActivity를 포함하는 intent라 항상 Null 입니당. 어떻게 수정해야할지가 필요해 보입니다.
             putExtra("signUpType",intent.getStringExtra("signUpType"))
             startActivity(intent)
             finish()
