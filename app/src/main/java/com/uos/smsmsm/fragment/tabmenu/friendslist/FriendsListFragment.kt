@@ -92,8 +92,10 @@ class FriendsListFragment : BaseFragment<FragmentFriendsListBinding>(R.layout.fr
             if (it) {
                 // 친구 삭제 성공 시 관련된 content 삭제 요청 화면
                 destinationUid?.let { it ->
+                    snsViewModel.initUserFriendsList(auth.currentUser!!.uid)
                     onDeleteSubscribeWorker(it)
                 }
+                destinationUid = null
             } else {
                 destinationUid = null
             }
