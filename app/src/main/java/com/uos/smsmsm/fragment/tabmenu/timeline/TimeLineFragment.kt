@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.theartofdev.edmodo.cropper.CropImage
@@ -81,8 +82,11 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        println("ㅇㅇㅇㅇ")
+
         binding.fragmenttimeline = this
         binding.lifecycleOwner = this
+
 
         snsViewModel.timelineDataList.observe(viewLifecycleOwner, Observer {
             println("옵저빙 중 ${it.toString()}")

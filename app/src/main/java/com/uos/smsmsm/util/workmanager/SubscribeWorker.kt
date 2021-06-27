@@ -5,10 +5,13 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.data.ContentDTO
+import com.uos.smsmsm.data.SubscribeDTO
 import com.uos.smsmsm.repository.BackgroundRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -38,13 +41,14 @@ class SubscribeWorker(context: Context, worker : WorkerParameters) : Worker(cont
             }
             SubscribeWorker.WORK_MYSUBSCRIBE_CONTAINER_UPDATE ->{
 
-
+                println("게시글 작성 완료 후 백그라운드에서 게시글 저장")
                 var postThumbnailId = inputData.getString("WORK_POST_UID")
                 var postThumbnailTimestamp = inputData.getString("WORK_POST_TIMESTAMP")!!.toLong()
                 mainScope.launch {
                     //해당 유저를 구독하고 있는 목록 가져오기
                     repository.getSubscribeUserList(uid = destinationUid).collect {
                         println("끄아아아아앜 ${it.toString()}")
+
                         if (it != null){
                             var thumbnail = ContentDTO.PostThumbnail()
                             var thumbnailList = ContentDTO.PostThumbnail.Thumbnail()
@@ -53,6 +57,45 @@ class SubscribeWorker(context: Context, worker : WorkerParameters) : Worker(cont
                             thumbnail.thumbnailList.put(postThumbnailId.toString(), thumbnailList)
                             println("끄아아아아아아아아앙아ㅏㅇ아앜 postThumbnailId $postThumbnailId postThumbnailTimestamp $postThumbnailTimestamp")
                             repository.addContentInSubscribeUserContainer(thumbnail,it).collect {
+                                println("끼에에에엙 $it")
+
+                            }
+                        }else {
+                            println("구독자 목록 만드셔서 데이터를 입력해주세요~~")
+
+                            val db = FirebaseFirestore.getInstance()
+
+                            val tsDocSubscribing = db.collection("User").document("UserData").collection("userInfo")
+                                .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                                .collection("Subscribe")
+                                .document("subscribe")
+                            db.runTransaction { transaction ->
+                                var friendsDTO = transaction.get(tsDocSubscribing)
+                                    .toObject(SubscribeDTO::class.java)
+                                //데이터가 없으면 데이터 생성
+                                if (friendsDTO == null) {
+                                    friendsDTO = SubscribeDTO()
+                                    var subscribingDTO = SubscribeDTO.SubscribingDTO()
+                                    subscribingDTO.uid = destinationUid
+                                    subscribingDTO.timestamp = System.currentTimeMillis()
+                                    friendsDTO.subscribingCount = 1
+                                    friendsDTO.subscribingList.put(destinationUid, subscribingDTO)
+
+                                    transaction.set(tsDocSubscribing, friendsDTO)
+                                    return@runTransaction
+                                }
+                            }
+
+
+
+                            var thumbnail = ContentDTO.PostThumbnail()
+                            var thumbnailList = ContentDTO.PostThumbnail.Thumbnail()
+                            var list = arrayListOf<String>(FirebaseAuth.getInstance().currentUser!!.uid)
+                            thumbnailList.uid = FirebaseAuth.getInstance().currentUser!!.uid
+                            thumbnailList.timestamp = postThumbnailTimestamp
+                            thumbnail.thumbnailList.put(postThumbnailId.toString(), thumbnailList)
+
+                            repository.addContentInSubscribeUserContainer(thumbnail,list).collect {
                                 println("끼에에에엙 $it")
 
                             }
