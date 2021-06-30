@@ -21,6 +21,7 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityInputPhoneNumberBinding
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.extensions.toast
+import com.uos.smsmsm.util.shareddate.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
@@ -52,7 +53,7 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
 
             }
             // 항상 null을 가져오기 때문에 우선 방어 코드로 null일 경우 phone으로 할 수 있도록 수정하였습니다.
-            signupType = intent.getStringExtra("signUpType")?: "phone"
+            signupType = PreferenceUtil(binding.root.context).getString("signUpType","null")
 
         }
 

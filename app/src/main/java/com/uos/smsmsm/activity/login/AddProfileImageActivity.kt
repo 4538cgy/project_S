@@ -13,6 +13,7 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.databinding.ActivityAddProfileImageBinding
 import com.uos.smsmsm.util.Config
+import com.uos.smsmsm.util.shareddate.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -39,7 +40,7 @@ class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.l
         intent.apply {
             putExtra("photoUri",photoUri.toString())
             // 이 부분에서 intent가 방금 생성된 위에 생성된 InputPhoneNumberActivity를 포함하는 intent라 항상 Null 입니당. 어떻게 수정해야할지가 필요해 보입니다.
-            putExtra("signUpType",intent.getStringExtra("signUpType"))
+            PreferenceUtil(binding.root.context).getString("signUpType","null")
             startActivity(intent)
             finish()
         }
