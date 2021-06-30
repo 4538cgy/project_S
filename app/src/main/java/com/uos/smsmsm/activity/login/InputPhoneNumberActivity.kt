@@ -21,6 +21,7 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityInputPhoneNumberBinding
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.extensions.toast
+import com.uos.smsmsm.util.shareddate.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 
@@ -52,7 +53,7 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
 
             }
 
-            signupType = intent.getStringExtra("signUpType")
+            signupType = PreferenceUtil(binding.root.context).getString("signUpType","null")
 
         }
 
