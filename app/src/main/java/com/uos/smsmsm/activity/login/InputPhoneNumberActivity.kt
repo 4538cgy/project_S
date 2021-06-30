@@ -51,8 +51,8 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
 
 
             }
-
-            signupType = intent.getStringExtra("signUpType")
+            // 항상 null을 가져오기 때문에 우선 방어 코드로 null일 경우 phone으로 할 수 있도록 수정하였습니다.
+            signupType = intent.getStringExtra("signUpType")?: "phone"
 
         }
 

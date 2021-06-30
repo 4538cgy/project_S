@@ -44,14 +44,14 @@ class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.la
         }
 
         snsViewModel.findUserByUserName.observe(viewLifecycleOwner, findUserByUserNameObserver)
-
         userViewModel.isSuccessAddFirends.observe(viewLifecycleOwner, Observer {
             Log.d("TEST","it: $it")
-            Log.d("TEST","it contains ${it.contains("SUBSCRIBE",true)}")
-            if(it.contains("SUBSCRIBE",true)){
+            Log.d("TEST","it contains ${it.contains("SUBSCRIBER",true)}")
+            if(it.contains("SUBSCRIBER",true)){
                 Toast.makeText(rootContext, "친구추가 성공",Toast.LENGTH_LONG).show()
                 userViewModel.isSuccessAddFirends.value = ""
                 onSubscribeWorker()
+                snsViewModel.getUserData(destinationUid!!)
                 (activity as LobbyActivity).popFragment(this)
             }
         })
