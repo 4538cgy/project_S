@@ -89,14 +89,16 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
 
         snsViewModel.timelineDataList.observe(viewLifecycleOwner, Observer {
-            println("옵저빙 중 ${it.toString()}")
-            it.forEach {
-                list.add(TimeLineDTO(it.value,it.key))
+            if (it != null) {
+                println("옵저빙 중 ${it.toString()}")
+                it.forEach {
+                    list.add(TimeLineDTO(it.value, it.key))
+                }
+                println("옵저빙 결과 ${list.toString()}")
+                adapter.submitList(list)
+                //최초 item insert
+                adapter.notifyItemInserted(list.lastIndex)
             }
-            println("옵저빙 결과 ${list.toString()}")
-            adapter.submitList(list)
-            //최초 item insert
-            adapter.notifyItemInserted(list.lastIndex)
         })
 
 
@@ -104,6 +106,11 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         contentViewModel.currentPhotoPath.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             this.currentPhotoPath = it
         })
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        snsViewModel.timeLineDataListClear()
     }
 
     fun uploadPhoto(view: View) {

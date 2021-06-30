@@ -50,11 +50,11 @@ class SNSUtilViewModel @ViewModelInject constructor(
 
     val auth = FirebaseAuth.getInstance()
 
-    var timelineDataList = MutableLiveData<Map<String,ContentDTO>>()
+    var timelineDataList = MutableLiveData<Map<String,ContentDTO>?>()
 
     val findUserByUserName : MutableLiveData<List<UserDTO?>> by lazy { MutableLiveData<List<UserDTO?>>() }
 
-    var pagingcount = 0
+    var pagingcount = 1
     var list : ArrayList<String> = arrayListOf()
 
     val joblist : ArrayList<Job> = ArrayList<Job>()
@@ -68,6 +68,13 @@ class SNSUtilViewModel @ViewModelInject constructor(
             joblist.clear()
         }
     }
+    fun timeLineDataListClear(){
+        println("으아아 ${timelineDataList.value.toString()}")
+        timelineDataList.value = null
+
+        println("으아아2 ${timelineDataList.value.toString()}")
+    }
+
     fun getData(){
 
             println("으아아 페이징 카운터 $pagingcount")
