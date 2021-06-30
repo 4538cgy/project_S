@@ -20,6 +20,7 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.signup.SignUpActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityFirstTimeBinding
+import com.uos.smsmsm.util.shareddate.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -59,7 +60,7 @@ class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activi
     fun onSignPhoneNumber(view : View){
         var intent = Intent(this,AddProfileImageActivity::class.java)
         intent.apply {
-            putExtra("signUpType","phone")
+            PreferenceUtil(binding.root.context).setString("signUpType","phone")
             startActivity(intent)
         }
     }
@@ -80,7 +81,11 @@ class FirstTimeActivity : BaseActivity<ActivityFirstTimeBinding>(R.layout.activi
                         if (!documentSnapshot.isEmpty) { // Remove NonNull
                             startActivity(Intent(this, LobbyActivity::class.java))
                         } else {
-                            startActivity(Intent(this, AddProfileImageActivity::class.java))
+                            var intent = Intent(this,AddProfileImageActivity::class.java)
+                            intent.apply {
+                                PreferenceUtil(binding.root.context).setString("signUpType","phone")
+                                startActivity(intent)
+                            }
                         }
                         finish()
                     }
