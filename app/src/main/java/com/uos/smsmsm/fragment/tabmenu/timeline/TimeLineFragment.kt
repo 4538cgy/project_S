@@ -53,9 +53,9 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     private val list by lazy { ArrayList<TimeLineDTO>().apply {
     }}
 
-    override fun init() {
+    fun init() {
+        println("------------- init 호출됨 ----------------")
         snsViewModel.getTimeLineData()
-        super.init()
         initRecyclerView()
     }
 
@@ -84,11 +84,11 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        println("ㅇㅇㅇㅇ")
 
         binding.fragmenttimeline = this
         binding.lifecycleOwner = this
 
+        init()
 
         snsViewModel.timelineDataList.observe(viewLifecycleOwner, Observer {
             if (it != null) {

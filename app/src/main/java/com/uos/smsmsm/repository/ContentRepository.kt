@@ -157,6 +157,26 @@ class ContentRepository  @Inject constructor(){
                                 db.collection("User").document("UserData").collection("userInfo")
                                     .document(it.id).collection("MySubscribeContentUidList")
                                     .document("list")
+
+                            val eventListener2 = databaseReference2.get().addOnSuccessListener {
+                                if (it != null) {
+                                    if (it.exists()) {
+                                        var contentIdList = arrayListOf<String>()
+                                        var postThumbnail =
+                                            it.toObject(ContentDTO.PostThumbnail::class.java)
+
+                                        var result = postThumbnail!!.thumbnailList.toList().sortedByDescending { (_,value)-> value.timestamp }.toMap()
+
+                                        result.forEach {
+                                            contentIdList.add(it.key)
+                                        }
+                                        this@callbackFlow.sendBlocking(contentIdList)
+                                    } else {
+                                        this@callbackFlow.sendBlocking(null)
+                                    }
+                                }
+                            }
+                            /*
                             val eventListener2 =
                                 databaseReference2.addSnapshotListener { value, error ->
                                     if (value != null) {
@@ -176,6 +196,7 @@ class ContentRepository  @Inject constructor(){
                                         }
                                     }
                                 }
+                            */
                         }
                     }
                 }

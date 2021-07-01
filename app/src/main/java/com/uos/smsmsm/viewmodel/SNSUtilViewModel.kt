@@ -128,6 +128,8 @@ class SNSUtilViewModel @ViewModelInject constructor(
 
 
 
+
+
     //유저 검색 서치 뷰 리스너
     fun searchUserQueryTextListener() = object : SearchView.OnQueryTextListener{
         override fun onQueryTextSubmit(query: String?): Boolean {
