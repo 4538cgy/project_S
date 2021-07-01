@@ -44,6 +44,8 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     private var data = MutableLiveData<ArrayList<TimeLineDTO>>()
 
+    private var count = 0
+
     private val adapter by lazy { TimeLineAdapter(requireActivity().supportFragmentManager).apply {
         submitList(list)
     } }
@@ -97,7 +99,8 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
                 println("옵저빙 결과 ${list.toString()}")
                 adapter.submitList(list)
                 //최초 item insert
-                adapter.notifyItemInserted(list.lastIndex)
+                    adapter.notifyItemInserted(list.lastIndex)
+
             }
         })
 
@@ -111,6 +114,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     override fun onDetach() {
         super.onDetach()
         snsViewModel.timeLineDataListClear()
+        snsViewModel.pagingcount = 0
     }
 
     fun uploadPhoto(view: View) {

@@ -72,7 +72,13 @@ class TimeLineAdapter(private var fragmentManager: FragmentManager) : BaseAdapte
 
     override fun getItemCount(): Int = currentList.size
 
+    override fun getItem(position: Int): TimeLineDTO {
+        return super.getItem(position)
+    }
 
+    override fun getCurrentList(): MutableList<TimeLineDTO> {
+        return super.getCurrentList()
+    }
 
 
     private class TimeLineDiffCallback : DiffUtil.ItemCallback<TimeLineDTO> () {

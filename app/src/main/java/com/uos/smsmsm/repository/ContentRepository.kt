@@ -351,6 +351,17 @@ class ContentRepository  @Inject constructor(){
 
         val databaseReference = db.collection("Contents").document(contentId)
 
+        val eventListener = databaseReference.get().addOnSuccessListener {
+            if (it != null){
+                if(it.exists()){
+                    var contentDTO = it.toObject(ContentDTO::class.java)
+                    var map : MutableMap<String,ContentDTO> = HashMap()
+                    map.put(it.id, contentDTO!!)
+                    this@callbackFlow.sendBlocking(map)
+                }
+            }
+        }
+        /*
         val eventListener = databaseReference.addSnapshotListener { value, error ->
             if (value != null) {
                 var contentDTO = value.toObject(ContentDTO::class.java)
@@ -360,6 +371,8 @@ class ContentRepository  @Inject constructor(){
                 this@callbackFlow.sendBlocking(map)
             }
         }
+
+         */
         awaitClose { }
     }
 
@@ -367,6 +380,20 @@ class ContentRepository  @Inject constructor(){
         val databaseReference = db.collection("Contents")
             .whereEqualTo("uid", uid)
 
+        val eventListener = databaseReference.get().addOnSuccessListener {
+            if (it != null){
+                if (!!it.isEmpty){
+                    var map : MutableMap<String,ContentDTO> = HashMap()
+                    it.forEach {
+                        map.put(it.id, it.toObject(ContentDTO::class.java!!))
+                    }
+                    this@callbackFlow.sendBlocking(map)
+                }
+            }
+        }
+
+
+        /*
         val eventListener = databaseReference.addSnapshotListener { value, error ->
             if (value != null) {
                 if (!value.isEmpty) {
@@ -379,6 +406,7 @@ class ContentRepository  @Inject constructor(){
                 }
             }
         }
+         */
         awaitClose { }
     }
 }

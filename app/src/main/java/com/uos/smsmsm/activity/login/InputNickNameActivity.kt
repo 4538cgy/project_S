@@ -16,6 +16,7 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivityInputNickNameBinding
+import com.uos.smsmsm.util.shareddate.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -94,6 +95,7 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
             .collection("userInfo").document().set(userDTO)
             .addOnSuccessListener {
                 startActivity(Intent(binding.root.context, LobbyActivity::class.java))
+                PreferenceUtil(binding.root.context).setString("signUpType","null")
                 finish()
             }
     }
