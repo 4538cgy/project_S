@@ -35,7 +35,7 @@ class SNSUtilViewModel @ViewModelInject constructor(
     var recyclerData : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var edittextText : MutableLiveData<String> = MutableLiveData()
     var chatRoomUid : MutableLiveData<String> = MutableLiveData()
-    var chatList : MutableLiveData<ArrayList<ChatDTO.Comment>> = MutableLiveData()
+    val chatList : MutableLiveData<ArrayList<ChatDTO.Comment>> by lazy{ MutableLiveData<ArrayList<ChatDTO.Comment>>() }
     var searchUserResult : MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
     var searchContentResult : MutableLiveData<ArrayList<RecyclerDefaultModel>> = MutableLiveData()
     var chatRoomList : MutableLiveData<ArrayList<ChatDTO>> = MutableLiveData()
@@ -290,11 +290,9 @@ class SNSUtilViewModel @ViewModelInject constructor(
     //채팅 보내기
     fun sendMessage(destinationUid: String){
 
-        if (chatList.value!!.isNotEmpty()){
-            chatList.value!!.clear()
-        }
+        chatList.value?.clear()
 
-        var chatDTOs = ChatDTO()
+        val chatDTOs = ChatDTO()
         chatDTOs.users[auth.currentUser?.uid!!] = true;
         chatDTOs.commentTimestamp = System.currentTimeMillis()
         chatDTOs.users[destinationUid!!] = true
