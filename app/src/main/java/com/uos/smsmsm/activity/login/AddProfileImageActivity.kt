@@ -13,6 +13,7 @@ import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityAddContentBinding
 import com.uos.smsmsm.databinding.ActivityAddProfileImageBinding
 import com.uos.smsmsm.util.Config
+import com.uos.smsmsm.util.OneClickListener
 import com.uos.smsmsm.util.shareddate.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,13 +28,16 @@ class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.l
             activityaddprofileimage = this@AddProfileImageActivity
             activityAddProfileImageButtonComplete.isEnabled = false
         }
+        binding.activityAddProfileImageImagebuttonProfile.setOnClickListener(object: OneClickListener(){
+            override fun onOneClick(v: View?) {
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = MediaStore.Images.Media.CONTENT_TYPE
+                startActivityForResult(intent, Config.FLAG_REQ_GALLERY)
+            }
+
+        })
     }
 
-    fun openGallery(view: View){
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = MediaStore.Images.Media.CONTENT_TYPE
-        startActivityForResult(intent, Config.FLAG_REQ_GALLERY)
-    }
 
     fun onComplete(view : View){
         val intent = Intent(binding.root.context,InputPhoneNumberActivity::class.java)
