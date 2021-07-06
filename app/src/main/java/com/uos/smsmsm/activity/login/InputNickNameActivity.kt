@@ -61,21 +61,21 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
             FirebaseStorage.getInstance().reference.child("userProfileImages")
                 .child(uid!!)
         storageRef.putFile(Uri.parse(photoUri))
-            .continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
-                return@continueWithTask storageRef.downloadUrl
-            }.addOnSuccessListener { uri ->
-                println("프로필 사진 업로드 성공")
-                var map = HashMap<String, Any>()
-                map["image"] = uri.toString()
-                FirebaseFirestore.getInstance().collection("profileImages")
-                    .document(uid).set(map)
+                .continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
+                    return@continueWithTask storageRef.downloadUrl
+                }.addOnSuccessListener { uri ->
+                    println("프로필 사진 업로드 성공")
+                    var map = HashMap<String, Any>()
+                    map["image"] = uri.toString()
+                    FirebaseFirestore.getInstance().collection("profileImages")
+                            .document(uid).set(map)
 
-                // 사진 저장 완료 후 DB에 유저 정보 저장
-                userDataSave()
-            }.addOnFailureListener {
+                    // 사진 저장 완료 후 DB에 유저 정보 저장
+                    userDataSave()
+                }.addOnFailureListener {
                     isUploadingPhoto = false
-                 Toast.makeText(this@InputNickNameActivity, "fail to regist nick name", Toast.LENGTH_LONG).show()
-            }
+                    Toast.makeText(this@InputNickNameActivity, "fail to regist nick name", Toast.LENGTH_LONG).show()
+                }
     }
 
     fun userDataSave() {
@@ -98,12 +98,12 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
         userDTO.policyAccept = true
 
         FirebaseFirestore.getInstance().collection("User").document("UserData")
-            .collection("userInfo").document().set(userDTO)
-            .addOnSuccessListener {
-                isUploadingPhoto = false
-                startActivity(Intent(binding.root.context, LobbyActivity::class.java))
-                finish()
-            }.addOnFailureListener {
+                .collection("userInfo").document().set(userDTO)
+                .addOnSuccessListener {
+                    startActivity(Intent(binding.root.context, LobbyActivity::class.java))
+                    finish()
+                    activityManager.removeAllBehindActivity()
+                }.addOnFailureListener {
                     isUploadingPhoto = false
                 }
     }

@@ -30,7 +30,7 @@ abstract class BaseActivity<B : ViewDataBinding>(val layoutId: Int) : AppCompatA
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        activityManager.addActivity(this)
+        activityManager.addActivity(this)
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.lifecycleOwner = this
 
@@ -63,7 +63,7 @@ abstract class BaseActivity<B : ViewDataBinding>(val layoutId: Int) : AppCompatA
 
     override fun onDestroy() {
         super.onDestroy()
-//        activityManager.removeActivity(this)
+        activityManager.removeActivity(this)
         if (loadingDialog.isShowing) {
             loadingDialog.dismiss()
         }
