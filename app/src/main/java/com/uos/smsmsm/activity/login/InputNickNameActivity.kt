@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -16,7 +17,6 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivityInputNickNameBinding
-import com.uos.smsmsm.util.OneClickListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,7 +24,7 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
 
     lateinit var phoneNumber : String
     lateinit var photoUri : String
-
+    private var isUploadingPhoto : Boolean  = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding.apply {
@@ -33,18 +33,10 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
             activityInputNickNameEdittext.addTextChangedListener {
                 textLenghtInteractive(it!!.length)
             }
-            activityInputNickNameButtonComplete.setOnClickListener(object: OneClickListener(){
-                override fun onOneClick(v: View?) {
-                    // 연타시 연속으로 동작하게 되어 원클릭으로 기능 변경
-                    uploadPhoto()
-                }
-
-            })
         }
 
         phoneNumber = intent.getStringExtra("phonenumber")
         photoUri = intent.getStringExtra("photoUri")
-
     }
 
     fun textLenghtInteractive(lenght : Int){
@@ -55,11 +47,14 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
     
     fun onComplete(view : View)
     {
-        uploadPhoto()
+        if(!isUploadingPhoto) {
+            uploadPhoto()
+        }
     }
 
     fun uploadPhoto() {
         println("프로필 사진 업로드 시작")
+        isUploadingPhoto = true
         // 사진 저장
         var uid = FirebaseAuth.getInstance().currentUser?.uid
         var storageRef =
@@ -77,6 +72,9 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
 
                 // 사진 저장 완료 후 DB에 유저 정보 저장
                 userDataSave()
+            }.addOnFailureListener {
+                    isUploadingPhoto = false
+                 Toast.makeText(this@InputNickNameActivity, "fail to regist nick name", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -102,8 +100,11 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
         FirebaseFirestore.getInstance().collection("User").document("UserData")
             .collection("userInfo").document().set(userDTO)
             .addOnSuccessListener {
+                isUploadingPhoto = false
                 startActivity(Intent(binding.root.context, LobbyActivity::class.java))
                 finish()
-            }
+            }.addOnFailureListener {
+                    isUploadingPhoto = false
+                }
     }
 }
