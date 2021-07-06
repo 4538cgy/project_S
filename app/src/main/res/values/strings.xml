@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">에세머앱</string>
-
+    <!-- common -->
+    <string name="next">다음</string>
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
+    <string name="complete">완료</string>
     <!-- Sign In -->
     <string name="email">핸드폰번호</string>
     <string name="password">비밀번호</string>
@@ -114,4 +118,10 @@
     <string name="already_add_friend">이미 등록된 친구입니다.</string>
 
     <string name="regist_your_profile_picture">본인의 프로필 사진을 등록해주세요.</string>
+    <string name="one_account_per_person_and_phone_auth">1인 1계정 원칙 준수를 위하여 핸드폰 번호 인증을 받고 있습니다.</string>
+    <string name="certification_in_progress">인증 진행</string>
+    <string name="please_enter_your_mobile_number">핸드폰 번호를 입력해주세요</string>
+    <string name="input_except_hyphen">\'-\' 를 제외하고 입력해주세요.</string>
+    <string name="input_nick_name">닉네임을 입력해주세요</string>
+    <string name="last_step">마지막 차례네요!</string>
 </resources>

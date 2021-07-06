@@ -36,18 +36,19 @@ class AddProfileImageActivity : BaseActivity<ActivityAddProfileImageBinding>(R.l
             }
 
         })
-    }
+        binding.activityAddProfileImageButtonComplete.setOnClickListener(object:OneClickListener(){
+            override fun onOneClick(v: View?) {
+                val intent = Intent(binding.root.context,InputPhoneNumberActivity::class.java)
+                intent.apply {
+                    putExtra("photoUri",photoUri.toString())
+                    // 이 부분에서 intent가 방금 생성된 위에 생성된 InputPhoneNumberActivity를 포함하는 intent라 항상 Null 입니당. 어떻게 수정해야할지가 필요해 보입니다.
+                    PreferenceUtil(binding.root.context).getString("signUpType","null")
+                    startActivity(intent)
+                    finish()
+                }
+            }
 
-
-    fun onComplete(view : View){
-        val intent = Intent(binding.root.context,InputPhoneNumberActivity::class.java)
-        intent.apply {
-            putExtra("photoUri",photoUri.toString())
-            // 이 부분에서 intent가 방금 생성된 위에 생성된 InputPhoneNumberActivity를 포함하는 intent라 항상 Null 입니당. 어떻게 수정해야할지가 필요해 보입니다.
-            PreferenceUtil(binding.root.context).getString("signUpType","null")
-            startActivity(intent)
-            finish()
-        }
+        })
     }
 
     fun interactiveUI(){

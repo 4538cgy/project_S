@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.uos.smsmsm.R
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityInputPhoneNumberBinding
+import com.uos.smsmsm.util.OneClickListener
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
 import com.uos.smsmsm.util.extensions.toast
 import com.uos.smsmsm.util.shareddate.PreferenceUtil
@@ -54,7 +55,23 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
             }
             // 항상 null을 가져오기 때문에 우선 방어 코드로 null일 경우 phone으로 할 수 있도록 수정하였습니다.
             signupType = PreferenceUtil(binding.root.context).getString("signUpType","null")
+            activityInputPhoneNumberButtonComplete.setOnClickListener(object:OneClickListener(){
+                override fun onOneClick(v: View?) {
+                    var intent = Intent(binding.root.context,InputNickNameActivity::class.java)
+                    intent.apply {
+                        putExtra("photoUri",photoUri)
+                        putExtra("phonenumber",binding.activityInputPhoneNumberEdittext.text.toString())
+                        startActivity(intent)
+                    }
+                }
 
+            })
+            activityInputPhoneNumberButtonVerify.setOnClickListener(object:OneClickListener(){
+                override fun onOneClick(v: View?) {
+                    signinPhone()
+                }
+
+            })
         }
 
         photoUri = intent.getStringExtra("photoUri").toString()
@@ -74,16 +91,7 @@ class InputPhoneNumberActivity : BaseActivity<ActivityInputPhoneNumberBinding>(R
         binding.activityInputPhoneNumberEdittext.isEnabled = false
     }
 
-    fun onComplete(view : View){
-        var intent = Intent(binding.root.context,InputNickNameActivity::class.java)
-        intent.apply {
-            putExtra("photoUri",photoUri)
-            putExtra("phonenumber",binding.activityInputPhoneNumberEdittext.text.toString())
-            startActivity(intent)
-        }
-    }
-
-    fun signinPhone(view : View) {
+    private fun signinPhone() {
             progressDialog.show()
             println("핸드폰 자동 인증 시작")
             val phoneNumber = "+82" + binding.activityInputPhoneNumberEdittext.text.toString()
