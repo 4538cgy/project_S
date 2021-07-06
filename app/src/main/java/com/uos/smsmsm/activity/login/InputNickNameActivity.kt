@@ -16,6 +16,7 @@ import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.databinding.ActivityInputNickNameBinding
+import com.uos.smsmsm.util.OneClickListener
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,10 +33,18 @@ class InputNickNameActivity : BaseActivity<ActivityInputNickNameBinding>(R.layou
             activityInputNickNameEdittext.addTextChangedListener {
                 textLenghtInteractive(it!!.length)
             }
+            activityInputNickNameButtonComplete.setOnClickListener(object: OneClickListener(){
+                override fun onOneClick(v: View?) {
+                    // 연타시 연속으로 동작하게 되어 원클릭으로 기능 변경
+                    uploadPhoto()
+                }
+
+            })
         }
 
         phoneNumber = intent.getStringExtra("phonenumber")
         photoUri = intent.getStringExtra("photoUri")
+
     }
 
     fun textLenghtInteractive(lenght : Int){
