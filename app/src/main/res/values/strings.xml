@@ -112,4 +112,6 @@
     <string name="only_smsmsm_app_scan_plz">오직 에세머 앱으로만 스캔해 주세요.</string>
     <string name="your_id_scan">본인 아이디를 스캔 하셨습니다.</string>
     <string name="already_add_friend">이미 등록된 친구입니다.</string>
+
+    <string name="regist_your_profile_picture">본인의 프로필 사진을 등록해주세요.</string>
 </resources>
