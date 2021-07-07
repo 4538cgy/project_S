@@ -44,12 +44,16 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     private var data = MutableLiveData<ArrayList<TimeLineDTO>>()
 
-    private val adapter by lazy { TimeLineAdapter(requireActivity().supportFragmentManager).apply {
-        submitList(list)
-    } }
+    private val adapter by lazy {
+        TimeLineAdapter(requireActivity().supportFragmentManager).apply {
+            submitList(list)
+        }
+    }
 
-    private val list by lazy { ArrayList<TimeLineDTO>().apply {
-    }}
+    private val list by lazy {
+        ArrayList<TimeLineDTO>().apply {
+        }
+    }
 
     override fun init() {
         snsViewModel.getTimeLineData()
@@ -57,19 +61,20 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         initRecyclerView()
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         binding.fragmentTimeLineRecycler.adapter = adapter
-        binding.fragmentTimeLineRecycler.addOnScrollListener(object  : RecyclerView.OnScrollListener(){
+        binding.fragmentTimeLineRecycler.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!binding.fragmentTimeLineRecycler.canScrollVertically(1))
-                {
+                if (!binding.fragmentTimeLineRecycler.canScrollVertically(1)) {
                     println("끝에 도달")
                     snsViewModel.getData()
                 }
             }
         })
-        binding.fragmentTimeLineRecycler.layoutManager = LinearLayoutManager(binding.root.context,LinearLayoutManager.VERTICAL,false)
+        binding.fragmentTimeLineRecycler.layoutManager =
+            LinearLayoutManager(binding.root.context, LinearLayoutManager.VERTICAL, false)
         binding.fragmentTimeLineRecycler.setHasFixedSize(true)
     }
 
@@ -121,7 +126,10 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     fun takePhotoCamera(view: View) {
         if (isPermitted(requireActivity(), Config.CAMERA_PERMISSION)) {
-            startActivityForResult(contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
+            startActivityForResult(
+                contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE),
+                REQUEST_IMAGE_CAPTURE
+            )
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(), Config.CAMERA_PERMISSION,
@@ -139,7 +147,10 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Config.FLAG_PERM_CAMERA) {
             if (isPermitted(requireContext(), Config.CAMERA_PERMISSION)) {
-                startActivityForResult(contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
+                startActivityForResult(
+                    contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_IMAGE_CAPTURE),
+                    REQUEST_IMAGE_CAPTURE
+                )
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -152,7 +163,10 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
     //fun takePhotoGallery(view: View) {activity?.startActivityForResult(viewModel.openGallery(),PICK_PROFILE_FROM_ALBUM)}
     fun takeVideo(view: View) {
-        startActivityForResult(contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_VIDEO_CAPTURE), REQUEST_VIDEO_CAPTURE)
+        startActivityForResult(
+            contentViewModel.dispatchTakePictureIntent(MediaStore.ACTION_VIDEO_CAPTURE),
+            REQUEST_VIDEO_CAPTURE
+        )
     }
 
     fun writeContent(view: View) {
@@ -201,8 +215,8 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == RESULT_OK){
-            when(requestCode){
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
                 REQUEST_IMAGE_CAPTURE -> {
                     val f = File(currentPhotoPath)
                     val uri = Uri.fromFile(f)
@@ -224,10 +238,14 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
                     val f = File(currentPhotoPath)
                     val uri = Uri.fromFile(f)
                     uri?.let { itUri ->
-                        startActivity(Intent(binding.root.context, AddContentActivity::class.java).apply {
-                            putExtra("uri", itUri)
-                            putExtra("mediaType", MediaType.Video)
-                        })
+                        startActivity(
+                            Intent(
+                                binding.root.context,
+                                AddContentActivity::class.java
+                            ).apply {
+                                putExtra("uri", itUri)
+                                putExtra("mediaType", MediaType.Video)
+                            })
                     } ?: {
                         Toast.makeText(context, "영상 촬영에 실패하였습니다.", Toast.LENGTH_LONG).show()
                     }()

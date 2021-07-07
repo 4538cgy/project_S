@@ -12,7 +12,7 @@ import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class ContentRepository  @Inject constructor(){
+class ContentRepository @Inject constructor() {
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -86,7 +86,7 @@ class ContentRepository  @Inject constructor(){
 
     //북마크
     @ExperimentalCoroutinesApi
-    fun addBookMark(uid : String , contentId : String) = callbackFlow<Boolean> {
+    fun addBookMark(uid: String, contentId: String) = callbackFlow<Boolean> {
         val databaseReference = db.collection("User").document("UserData").collection("userInfo")
             .whereEqualTo("uid", uid)
 
@@ -95,7 +95,7 @@ class ContentRepository  @Inject constructor(){
             if (it.isSuccessful) {
                 if (it.result != null) {
                     it.result.documents.forEach {
-                        if (it["uid"]!!.equals(uid)){
+                        if (it["uid"]!!.equals(uid)) {
                             println("북마크 트랜잭션 생성")
                             var addBookMarkReference =
                                 db.collection("User").document("UserData")
@@ -138,7 +138,7 @@ class ContentRepository  @Inject constructor(){
                 }
             }
         }
-        awaitClose {  }
+        awaitClose { }
     }
 
     //내 구독함과 내 컨텐츠 리스트 가져오기
@@ -157,25 +157,27 @@ class ContentRepository  @Inject constructor(){
                                 db.collection("User").document("UserData").collection("userInfo")
                                     .document(it.id).collection("MySubscribeContentUidList")
                                     .document("list")
-                            val eventListener2 =
-                                databaseReference2.addSnapshotListener { value, error ->
-                                    if (value != null) {
-                                        if (value.exists()) {
-                                            var contentIdList = arrayListOf<String>()
-                                            var postThumbnail =
-                                                value.toObject(ContentDTO.PostThumbnail::class.java)
 
-                                            var result = postThumbnail!!.thumbnailList.toList().sortedByDescending { (_,value)-> value.timestamp }.toMap()
+                            val eventListener2 = databaseReference2.get().addOnSuccessListener {
+                                if (it != null) {
+                                    if (it.exists()) {
+                                        var contentIdList = arrayListOf<String>()
+                                        var postThumbnail =
+                                            it.toObject(ContentDTO.PostThumbnail::class.java)
 
-                                            result.forEach {
-                                                contentIdList.add(it.key)
-                                            }
-                                            this@callbackFlow.sendBlocking(contentIdList)
-                                        } else {
-                                            this@callbackFlow.sendBlocking(null)
+                                        var result = postThumbnail!!.thumbnailList.toList()
+                                            .sortedByDescending { (_, value) -> value.timestamp }
+                                            .toMap()
+
+                                        result.forEach {
+                                            contentIdList.add(it.key)
                                         }
+                                        this@callbackFlow.sendBlocking(contentIdList)
+                                    } else {
+                                        this@callbackFlow.sendBlocking(null)
                                     }
                                 }
+                            }
                         }
                     }
                 }
@@ -336,27 +338,26 @@ class ContentRepository  @Inject constructor(){
     fun getFavoriteCountByContentId(contentId: String) = callbackFlow<Int> {
         val databaseReference = db.collection("Contents").document(contentId)
         val eventListener = databaseReference.addSnapshotListener { value, error ->
-            if (value != null){
-                if (value.exists()){
+            if (value != null) {
+                if (value.exists()) {
                     var content = value.toObject(ContentDTO::class.java)
                     this@callbackFlow.sendBlocking(content!!.favoriteCount!!)
                 }
             }
         }
-        awaitClose {  }
+        awaitClose { }
     }
 
     @ExperimentalCoroutinesApi
     fun getContents(contentId: String) = callbackFlow<Map<String, ContentDTO>> {
 
         val databaseReference = db.collection("Contents").document(contentId)
-
-        val eventListener = databaseReference.addSnapshotListener { value, error ->
-            if (value != null) {
-                var contentDTO = value.toObject(ContentDTO::class.java)
+        val eventListener = databaseReference.get().addOnSuccessListener {
+            if (it != null) {
+                var contentDTO = it.toObject(ContentDTO::class.java)
                 var map: MutableMap<String, ContentDTO> = HashMap()
 
-                map.put(value.id, contentDTO!!)
+                map.put(it.id, contentDTO!!)
                 this@callbackFlow.sendBlocking(map)
             }
         }
