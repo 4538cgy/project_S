@@ -11,6 +11,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
+import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.R
 import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.base.BaseFragment
@@ -20,6 +21,7 @@ import com.uos.smsmsm.recycleradapter.friends.find.FindFriendAdapter
 import com.uos.smsmsm.util.Delegate
 import com.uos.smsmsm.util.workmanager.SubscribeWorker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.layout.fragment_find_friends_by_id){
@@ -48,7 +50,7 @@ class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.la
             Log.d("TEST","it: $it")
             Log.d("TEST","it contains ${it.contains("SUBSCRIBER",true)}")
             if(it.contains("SUBSCRIBER",true)){
-                Toast.makeText(rootContext, "친구추가 성공",Toast.LENGTH_LONG).show()
+                Toast.makeText(rootContext, getString(R.string.success_add_friend),Toast.LENGTH_LONG).show()
                 userViewModel.isSuccessAddFirends.value = ""
                 onSubscribeWorker()
                 snsViewModel.getUserData(destinationUid!!)
@@ -73,6 +75,18 @@ class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.la
             if (list.isNotEmpty()) {
                 findFriendsList.clear()
                 findFriendsList.addAll(list)
+                for(i in findFriendsList){
+                    if(i.uid == FirebaseAuth.getInstance().currentUser?.uid){
+                        findFriendsList.remove(i)
+                        Toast.makeText(activity, getString(R.string.no_search_yourself),Toast.LENGTH_LONG).show()
+                        break
+                    }
+                }
+                if(findFriendsList.size > 0){
+                    binding.textFindFriendByIdSearchNoFriend.visibility = View.GONE
+                }else{
+                    binding.textFindFriendByIdSearchNoFriend.visibility = View.VISIBLE
+                }
                 snsViewModel.findUserByUserName.value = null
             }
         }
@@ -83,6 +97,7 @@ class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.la
         super.onDestroyView()
     }
 
+    @ExperimentalCoroutinesApi
     private fun searchUserByUserName(){
         snsViewModel.getUserByUserName(binding.editFindFriendById.text.toString())
     }
@@ -90,13 +105,13 @@ class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.la
     fun close(v: View){
         (activity as LobbyActivity).popFragment(this)
     }
-    fun onSubscribeWorker() {
+    private fun onSubscribeWorker() {
         if(destinationUid != null) {
             println("백그라운드 실행")
-            var data: MutableMap<String, Any> = HashMap()
+            val data: MutableMap<String, Any> = HashMap()
 
-            data.put("WORK_STATE", SubscribeWorker.WORK_COPY_PASTE_CONTENTS)
-            data.put("WORK_DESTINATION_UID", destinationUid.toString())
+            data["WORK_STATE"] = SubscribeWorker.WORK_COPY_PASTE_CONTENTS
+            data["WORK_DESTINATION_UID"] = destinationUid.toString()
 
             val inputData = Data.Builder().putAll(data).build()
 

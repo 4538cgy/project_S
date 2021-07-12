@@ -124,4 +124,8 @@
     <string name="input_except_hyphen">\'-\' 를 제외하고 입력해주세요.</string>
     <string name="input_nick_name">닉네임을 입력해주세요</string>
     <string name="last_step">마지막 차례네요!</string>
+
+    <string name="no_search_friends">검색된 친구가 없습니다.</string>
+    <string name="no_search_yourself">본인은 검색 할 수 없습니다.</string>
+    <string name="success_add_friend">친구추가 성공</string>
 </resources>
