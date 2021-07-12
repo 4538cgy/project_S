@@ -62,6 +62,11 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
     }
 
     private fun initRecyclerView() {
+        binding.fragmentTimeLineSwipeRefreshTimeLineLayout.setOnRefreshListener {
+            snsViewModel.getTimeLineData()
+            binding.fragmentTimeLineSwipeRefreshTimeLineLayout.isRefreshing = false
+        }
+
         binding.fragmentTimeLineRecycler.adapter = adapter
         binding.fragmentTimeLineRecycler.addOnScrollListener(object :
             RecyclerView.OnScrollListener() {
