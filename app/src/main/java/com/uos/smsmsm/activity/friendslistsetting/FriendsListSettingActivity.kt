@@ -15,10 +15,7 @@ class FriendsListSettingActivity : BaseActivity<ActivityFriendsListSettingBindin
         // 타이틀바 없애기
         binding.apply {
             friendslistsetting = this@FriendsListSettingActivity
-            activityFriendsListSettingButton.setOnClickListener {
 
-
-            }
         }
     }
 }
