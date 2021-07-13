@@ -196,6 +196,8 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
             binding.fragmentTimeLineTextviewWritePost.visibility = View.VISIBLE
             binding.fragmentTimeLineTextviewVideo.visibility = View.VISIBLE
             binding.fragmentTimeLineTextviewCamera.visibility = View.VISIBLE
+
+            binding.fragmentTimeLineConstBackground.setBackgroundResource(R.color.transparent80black)
             true
         } else {
             ObjectAnimator.ofFloat(binding.fragmentTimeLineFabVideo, "translationY", -0f)
@@ -214,6 +216,7 @@ class TimeLineFragment : BaseFragment<FragmentTimeLineBinding>(R.layout.fragment
             binding.fragmentTimeLineTextviewWritePost.visibility = View.INVISIBLE
             binding.fragmentTimeLineTextviewVideo.visibility = View.INVISIBLE
             binding.fragmentTimeLineTextviewCamera.visibility = View.INVISIBLE
+            binding.fragmentTimeLineConstBackground.setBackgroundResource(R.color.zxing_transparent)
             false
         }
     }
