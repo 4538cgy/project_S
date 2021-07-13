@@ -27,10 +27,11 @@
         android:roundIcon="@drawable/ic_rope"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.login.RenewLoginActivity"></activity>
+        <activity android:name=".activity.setting.NoticeActivity"></activity>
+        <activity android:name=".activity.login.RenewLoginActivity" />
         <activity android:name=".activity.login.FirstTimeActivity" />
         <activity android:name=".activity.login.InputNickNameActivity" />
-        <activity android:name=".activity.login.InputPhoneNumberActivity"></activity>
+        <activity android:name=".activity.login.InputPhoneNumberActivity" />
         <activity android:name=".activity.login.LoginPolicyActivity" />
         <activity android:name=".activity.login.AddProfileImageActivity" />
         <activity android:name=".activity.comment.CommentActivity" />
