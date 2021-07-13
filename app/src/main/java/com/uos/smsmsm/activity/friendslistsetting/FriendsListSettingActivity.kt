@@ -1,8 +1,10 @@
 package com.uos.smsmsm.activity.friendslistsetting
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.setting.SettingActivity
 import com.uos.smsmsm.base.BaseActivity
 import com.uos.smsmsm.databinding.ActivityFriendsListSettingBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +18,16 @@ class FriendsListSettingActivity : BaseActivity<ActivityFriendsListSettingBindin
         binding.apply {
             friendslistsetting = this@FriendsListSettingActivity
 
+            
+            //전체 설정 버튼
+            activityFriendsListSettingButtonAllSetting.setOnClickListener {
+                startActivity(Intent(root.context,SettingActivity::class.java))
+            }
+            
+            //닫기 버튼
+            activityFriendsListSettingImagebuttonClose.setOnClickListener { 
+                finish()
+            }
         }
     }
 }
