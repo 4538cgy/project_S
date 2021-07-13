@@ -61,12 +61,12 @@ class SearchFriendActivity : BaseActivity<ActivitySearchFriendBinding>( R.layout
                             friendlist = findList
                         }
                     }
-                }?:{
+                }?:run{
                     binding.run {
                         activitySearchFriendNoFriendText.visibility = View.VISIBLE
                         activitySearchFriendRecycler.visibility = View.GONE
                     }
-                }()
+                }
 
                 return false
             }
@@ -80,18 +80,6 @@ class SearchFriendActivity : BaseActivity<ActivitySearchFriendBinding>( R.layout
 
         })
     }
-
-//    private fun initRecyclerView(){
-//        val list = MutableLiveData<ArrayList<RecyclerDefaultModel>>()
-//
-//        val recyclerObserver : Observer<ArrayList<RecyclerDefaultModel>>
-//                = Observer { data ->
-//
-//            list.value = data
-//
-//        }
-//        viewModel.recyclerData.observe(this,recyclerObserver)
-//    }
 
     //뒤로가기
     fun onBack(view: View){

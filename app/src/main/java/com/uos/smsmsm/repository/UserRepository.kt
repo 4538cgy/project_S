@@ -86,10 +86,10 @@ class UserRepository @Inject constructor() {
             value?.let {
                 val user: List<UserDTO?> = value.toObjects(UserDTO::class.java)
                 this@callbackFlow.sendBlocking(user)
-            }?:{
+            }?:run{
                 val user: List<UserDTO?> = mutableListOf<UserDTO?>()
                 this@callbackFlow.sendBlocking(user)
-            }()
+            }
         }
 
         awaitClose { eventListener }
