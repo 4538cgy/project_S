@@ -1,113 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:context=".fragment.tabmenu.timeline.TimeLineFragment">
 
-   <data>
-       <variable
-           name="fragmenttimeline"
-           type="com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment" />
-   </data>
+    <data>
+
+        <variable
+            name="fragmenttimeline"
+            type="com.uos.smsmsm.fragment.tabmenu.timeline.TimeLineFragment" />
+    </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
+        android:layout_height="match_parent">
 
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
+
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/AppTheme"
-                app:layout_scrollFlags="scroll|enterAlways"
-                >
+                app:layout_scrollFlags="scroll|enterAlways">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="타임라인"
-                    />
+                    android:text="타임라인" />
 
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/fragment_time_line_swipe_refresh_time_line_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/fragment_time_line_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fragment_time_line_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
 
             <TextView
                 android:id="@+id/fragment_time_line_textview_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_video"
-                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_video"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_video"
                 android:layout_marginRight="8dp"
                 android:text="동영상찍어서 올리기"
+                android:textColor="@color/colorGoogleSignIn"
                 android:visibility="invisible"
-                />
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_video"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_video"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_video" />
 
             <TextView
                 android:id="@+id/fragment_time_line_textview_write_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_write_post"
-                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_write_post"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_write_post"
                 android:layout_marginRight="8dp"
                 android:text="글쓰기"
+                android:textColor="@color/colorGoogleSignIn"
                 android:visibility="invisible"
-                />
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_write_post"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_write_post"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_write_post" />
 
             <TextView
                 android:id="@+id/fragment_time_line_textview_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_camera"
-                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_camera"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_camera"
                 android:layout_marginRight="8dp"
                 android:text="카메라로 사진찍기"
+                android:textColor="@color/colorGoogleSignIn"
                 android:visibility="invisible"
-                />
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_camera"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_time_line_fab_camera"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_camera" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fragment_time_line_fab_write_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintRight_toRightOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintLeft_toLeftOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_main"
                 android:backgroundTint="@color/colorWhite"
-                app:borderWidth="0dp"
-                android:src="@drawable/ic_baseline_post_add_24"
-                app:fabSize="mini"
                 android:onClick="@{fragmenttimeline.writeContent}"
+                android:src="@drawable/ic_baseline_post_add_24"
+                app:borderWidth="0dp"
+                app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_main"
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_time_line_fab_main"
+                app:layout_constraintRight_toRightOf="@+id/fragment_time_line_fab_main"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_main"
 
                 />
 
@@ -115,50 +113,52 @@
                 android:id="@+id/fragment_time_line_fab_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintRight_toRightOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintLeft_toLeftOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_main"
                 android:backgroundTint="@color/colorWhite"
-                app:borderWidth="0dp"
-
-                android:src="@drawable/ic_baseline_photo_camera_24"
-                app:fabSize="mini"
                 android:onClick="@{fragmenttimeline.takePhotoCamera}"
-                />
+                android:src="@drawable/ic_baseline_photo_camera_24"
+                app:borderWidth="0dp"
+                app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_main"
+
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_time_line_fab_main"
+                app:layout_constraintRight_toRightOf="@+id/fragment_time_line_fab_main"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_main" />
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fragment_time_line_fab_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintRight_toRightOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintLeft_toLeftOf="@+id/fragment_time_line_fab_main"
-                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_main"
                 android:backgroundTint="@color/colorWhite"
-                app:borderWidth="0dp"
-
-                android:src="@drawable/ic_baseline_video_call_24"
-                app:fabSize="mini"
                 android:onClick="@{fragmenttimeline.takeVideo}"
-                />
+                android:src="@drawable/ic_baseline_video_call_24"
+                app:borderWidth="0dp"
+                app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_time_line_fab_main"
+
+                app:layout_constraintLeft_toLeftOf="@+id/fragment_time_line_fab_main"
+                app:layout_constraintRight_toRightOf="@+id/fragment_time_line_fab_main"
+                app:layout_constraintTop_toTopOf="@+id/fragment_time_line_fab_main" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fragment_time_line_fab_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginRight="12dp"
                 android:layout_marginBottom="12dp"
+                android:onClick="@{fragmenttimeline::clickFab}"
                 android:src="@drawable/ic_baseline_reorder_24"
                 app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="parent"
 
-                android:onClick="@{fragmenttimeline::clickFab}"
-                />
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/fragment_time_line_const_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

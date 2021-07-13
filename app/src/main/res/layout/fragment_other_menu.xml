@@ -74,7 +74,6 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:background="@color/colorLightGray"
                     android:onClick="@{fragmentothermenu.onClickProfileBar}"
                     >
 
@@ -100,24 +99,13 @@
                         android:layout_marginLeft="12dp"
                         >
 
-                        <TextView
-                            android:id="@+id/fragment_other_menu_textview_profile_id"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            android:text="id 입니다."
-                            android:gravity="left"
-                            android:layout_marginBottom="2dp"
-                            />
+
 
                         <TextView
                             android:layout_marginTop="2dp"
                             android:id="@+id/fragment_other_menu_textview_profile_nickname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:layout_constraintTop_toBottomOf="@+id/fragment_other_menu_textview_profile_id"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -188,8 +176,16 @@
                             android:layout_height="50dp"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:drawableTop="@drawable/ic_baseline_groups_24"
-                            android:text="업적"
+                            android:drawableTop="@drawable/ic_baseline_store_mall_directory_24"
+                            android:text="쇼핑몰"
+                            />
+                        <Button
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:drawableTop="@drawable/ic_baseline_book_24"
+                            android:text="웹 툽/소설"
                             />
                         <Button
                             android:layout_width="50dp"
@@ -197,27 +193,19 @@
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:drawableTop="@drawable/ic_baseline_groups_24"
-                            android:text="캘린더"
+                            android:text="매칭"
                             />
                         <Button
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:drawableTop="@drawable/ic_baseline_groups_24"
-                            android:text="서랍"
-                            />
-                        <Button
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawableTop="@drawable/ic_baseline_groups_24"
-                            android:text="카카오콘"
+                            android:drawableTop="@drawable/ic_baseline_roofing_24"
+                            android:text="장소"
                             />
 
                     </LinearLayout>
-
+                    <!-- 차후 추가
                     <LinearLayout
                         android:layout_margin="12dp"
                         android:layout_width="match_parent"
@@ -258,17 +246,48 @@
                             />
 
                     </LinearLayout>
-
-                    <TextView
+                    -->
+                    <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:text="광고란임 ㅇㅇ"
-                        android:background="@color/colorLightGray"
+                        android:src="@drawable/ad_test_image"
+                        android:layout_margin="18dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerInside"
                         />
 
                 </LinearLayout>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_other_menu_grid_layout"
+                    android:id="@+id/fragment_other_menu_container_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <TextView
+                        android:id="@+id/fragment_other_menu_textview_trend_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="트렌드"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="18dp"
+                        android:layout_margin="18dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+                    <ImageView
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/fragment_other_menu_textview_trend_title"
+                        android:scaleType="centerInside"
+                        android:layout_margin="24dp"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/trend_test2"
+                        />
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

@@ -49,10 +49,12 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(R.layout.activity_s
                     }
                 }
             }
+
+            activitySettingImagebuttonBack.setOnClickListener {
+                finish()
+            }
         }
     }
 
-    fun onBack(view: View) {
-        finish()
-    }
+
 }
