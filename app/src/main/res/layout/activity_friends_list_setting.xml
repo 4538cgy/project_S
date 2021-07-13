@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activity.friendslistsetting.FriendsListSettingActivity">
 
     <data>
+
         <variable
             name="friendslistsetting"
             type="com.uos.smsmsm.activity.friendslistsetting.FriendsListSettingActivity" />
@@ -12,22 +13,56 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
+
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="설정"
-            />
-        <Button
-            android:id="@+id/activity_friends_list_setting_button"
+            android:id="@+id/activity_friends_list_setting_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="테스트"
-            />
+            android:layout_margin="24dp"
+            android:text="추천 친구"
+            android:textColor="@color/colorBlack"
+            android:textSize="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_friends_list_setting_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_friends_list_setting_textview" />
+
+
+        <Button
+            android:id="@+id/activity_friends_list_setting_button_friends"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:text="친구 관리"
+            android:background="@drawable/background_round_yellow_24dp"
+            android:drawableLeft="@drawable/drawable_left_friends_image_28dp"
+            android:paddingHorizontal="12dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/activity_friends_list_setting_button_all_setting"
+            app:layout_constraintTop_toBottomOf="@+id/activity_friends_list_setting_recycler" />
+
+        <Button
+            android:id="@+id/activity_friends_list_setting_button_all_setting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:text="전체 설정"
+            android:background="@drawable/background_round_yellow_24dp"
+            android:drawableLeft="@drawable/drawable_left_setting_image_28dp"
+            android:paddingHorizontal="12dp"
+            app:layout_constraintLeft_toRightOf="@+id/activity_friends_list_setting_button_friends"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_friends_list_setting_recycler" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-  </layout>
+</layout>
