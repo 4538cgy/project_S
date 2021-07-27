@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.repository.UserRepository
+import com.uos.smsmsm.util.SingleLiveEvent
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
@@ -23,10 +24,10 @@ class UserUtilViewModel @ViewModelInject constructor() : ViewModel(){
     //ProfileActivity - 유저 사진
     var profileImage : MutableLiveData<String> = MutableLiveData()
     //친구 추가에 성공했는지 판단
-    var isSuccessAddFirends : MutableLiveData<String> = MutableLiveData()
+    var isSuccessAddFirends : SingleLiveEvent<String> = SingleLiveEvent()
 
     //친구 삭제에 성공했는지 판단
-    var isSuccessDeleteFriend : MutableLiveData<Boolean> = MutableLiveData()
+    var isSuccessDeleteFriend : SingleLiveEvent<Boolean> = SingleLiveEvent()
 
     var checkFriends = MutableLiveData<Boolean>()
 
