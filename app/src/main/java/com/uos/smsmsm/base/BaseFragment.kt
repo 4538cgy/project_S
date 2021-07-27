@@ -16,6 +16,7 @@ import com.uos.smsmsm.util.EventLogUtil
 import com.uos.smsmsm.util.dialog.LoadingDialog
 import com.uos.smsmsm.util.dialog.LoadingDialogText
 import com.uos.smsmsm.util.dialog.ProgressDialogPhoneAuthLoading
+import com.uos.smsmsm.util.extensions.viewBinding
 import com.uos.smsmsm.viewmodel.ContentUtilViewModel
 import com.uos.smsmsm.viewmodel.SNSUtilViewModel
 import com.uos.smsmsm.viewmodel.UserUtilViewModel
@@ -24,7 +25,7 @@ abstract class BaseFragment<B : ViewDataBinding>(val layoutId : Int) : Fragment(
     val snsViewModel: SNSUtilViewModel by activityViewModels()
     val userViewModel : UserUtilViewModel by activityViewModels()
     val contentViewModel: ContentUtilViewModel by activityViewModels()
-    lateinit var binding: B
+    var binding: B by viewBinding<B>()
     lateinit var rootContext : Context
     lateinit var loadingDialog: LoadingDialog
     lateinit var loadingDialogText: LoadingDialogText

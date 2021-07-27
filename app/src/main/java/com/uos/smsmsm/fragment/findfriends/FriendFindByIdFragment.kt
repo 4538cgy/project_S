@@ -51,7 +51,7 @@ class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.la
             Log.d("TEST","it contains ${it.contains("SUBSCRIBER",true)}")
             if(it.contains("SUBSCRIBER",true)){
                 Toast.makeText(rootContext, getString(R.string.success_add_friend),Toast.LENGTH_LONG).show()
-                userViewModel.isSuccessAddFirends.value = ""
+//                userViewModel.isSuccessAddFirends.value = ""
                 onSubscribeWorker()
                 snsViewModel.getUserData(destinationUid!!)
                 (activity as LobbyActivity).popFragment(this)
@@ -87,7 +87,7 @@ class FriendFindByIdFragment : BaseFragment<FragmentFindFriendsByIdBinding>(R.la
                 }else{
                     binding.textFindFriendByIdSearchNoFriend.visibility = View.VISIBLE
                 }
-                snsViewModel.findUserByUserName.value = null
+//                snsViewModel.findUserByUserName.value = null
             }
         }
     }

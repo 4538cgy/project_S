@@ -14,6 +14,7 @@ import com.uos.smsmsm.data.*
 import com.uos.smsmsm.repository.ChatRepository
 import com.uos.smsmsm.repository.ContentRepository
 import com.uos.smsmsm.repository.UserRepository
+import com.uos.smsmsm.util.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -48,13 +49,13 @@ class SNSUtilViewModel @ViewModelInject constructor(
     var userList: MutableLiveData<ArrayList<UserDTO>> = MutableLiveData()
 
     //친구 목록 리스트의 상태
-    var friendsListState: MutableLiveData<String> = MutableLiveData()
+    var friendsListState: SingleLiveEvent<String> = SingleLiveEvent()
 
     val auth = FirebaseAuth.getInstance()
 
-    var timelineDataList = MutableLiveData<Map<String, ContentDTO>?>()
+    var timelineDataList = SingleLiveEvent<Map<String, ContentDTO>?>()
 
-    val findUserByUserName: MutableLiveData<List<UserDTO?>> by lazy { MutableLiveData<List<UserDTO?>>() }
+    val findUserByUserName: SingleLiveEvent<List<UserDTO?>> by lazy { SingleLiveEvent<List<UserDTO?>>() }
 
     var pagingcount = 1
     var list: ArrayList<String> = arrayListOf()
@@ -73,7 +74,7 @@ class SNSUtilViewModel @ViewModelInject constructor(
 
     fun timeLineDataListClear() {
         println("으아아 ${timelineDataList.value.toString()}")
-        timelineDataList.value = null
+//        timelineDataList.value = null
 
         println("으아아2 ${timelineDataList.value.toString()}")
     }
