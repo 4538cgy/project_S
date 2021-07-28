@@ -56,6 +56,17 @@ class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragme
         userViewModel.userName.observe(viewLifecycleOwner, Observer { binding.fragmentOtherMenuTextviewProfileNickname.text = it.toString()
         loadingDialog.dismiss()})
 
+
+        //회원 등급 버튼 클릭
+        binding.fragmentOtherMenuButtonRating.setOnClickListener {
+
+        }
+
+        //포인트 버튼 클릭
+        binding.fragmentOtherMenuButtonPoint.setOnClickListener {
+
+        }
+
     }
 
     fun openManagePage(view: View){
