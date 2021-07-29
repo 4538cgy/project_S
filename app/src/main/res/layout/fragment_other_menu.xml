@@ -200,8 +200,9 @@
                             android:layout_height="50dp"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:drawableTop="@drawable/ic_baseline_roofing_24"
-                            android:text="장소"
+                            android:drawableTop="@drawable/ic_baseline_help_outline_24"
+                            android:text="FAQ"
+                            android:onClick="@{fragmentothermenu::openFaq}"
                             />
 
                     </LinearLayout>
