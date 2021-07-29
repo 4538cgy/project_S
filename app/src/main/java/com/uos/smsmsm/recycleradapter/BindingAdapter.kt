@@ -7,11 +7,14 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.uos.smsmsm.data.FaqDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.recycleradapter.friends.find.FindFriendAdapter
 import com.uos.smsmsm.data.UserDTO
+import com.uos.smsmsm.recycleradapter.customersupport.FaqAdapter
 import com.uos.smsmsm.recycleradapter.friends.find.FriendListSearchAdapter
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 //Adapter들 관련
@@ -38,6 +41,13 @@ object BindingAdapter  {
     @BindingAdapter("bind:findfriendlist")
     fun bindFriendList(recyclerView: RecyclerView, list: ArrayList<RecyclerDefaultModel>) {
         val adapter: FriendListSearchAdapter = recyclerView.adapter as FriendListSearchAdapter
+        adapter.setItem(list)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bind:faqlist")
+    fun bindFAQList(recyclerView: RecyclerView, list : ArrayList<FaqDTO>){
+        val adapter: FaqAdapter = recyclerView.adapter as FaqAdapter
         adapter.setItem(list)
     }
 

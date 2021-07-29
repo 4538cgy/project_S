@@ -128,4 +128,6 @@
     <string name="no_search_friends">검색된 친구가 없습니다.</string>
     <string name="no_search_yourself">본인은 검색 할 수 없습니다.</string>
     <string name="success_add_friend">친구추가 성공</string>
+
+    <string name="more_question_send_mail">궁금증이 해결되지 않으셨다면 메일 주소 "abcd@gmail.com"로 문의사항을 전달해 주세요.</string>
 </resources>

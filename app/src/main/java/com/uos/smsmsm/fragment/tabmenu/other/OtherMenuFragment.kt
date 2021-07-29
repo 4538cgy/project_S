@@ -14,10 +14,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.uos.smsmsm.R
+import com.uos.smsmsm.activity.lobby.LobbyActivity
 import com.uos.smsmsm.activity.profile.ProfileActivity
 import com.uos.smsmsm.activity.setting.SettingActivity
 import com.uos.smsmsm.base.BaseFragment
 import com.uos.smsmsm.databinding.FragmentOtherMenuBinding
+import com.uos.smsmsm.fragment.customersupport.FAQFragment
+import com.uos.smsmsm.fragment.findfriends.FriendFindByIdFragment
 import com.uos.smsmsm.ui.photo.PhotoViewActivity
 import com.uos.smsmsm.util.dialog.LoadingDialog
 
@@ -67,6 +70,9 @@ class OtherMenuFragment : BaseFragment<FragmentOtherMenuBinding>(R.layout.fragme
 
         }
 
+    }
+    fun openFaq(view: View){
+        (activity as LobbyActivity).pushFragment(FAQFragment(null))
     }
 
     fun openManagePage(view: View){
