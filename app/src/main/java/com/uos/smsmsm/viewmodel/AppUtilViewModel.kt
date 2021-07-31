@@ -22,6 +22,10 @@ class AppUtilViewModel @ViewModelInject constructor() : ViewModel(){
     private lateinit var mFirebaseRemoteConfig: FirebaseRemoteConfig
 
     val faqListLiveData : SingleLiveEvent<ArrayList<FaqDTO>> by lazy { SingleLiveEvent<ArrayList<FaqDTO>>() }
+    val propensityAnalysisScore : SingleLiveEvent<Int> by lazy { SingleLiveEvent<Int>() }
+
+    private lateinit var analysisScoreList: Array<Int>
+  
     fun requestGetFaq(type : String?){
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance().apply {
             val configSettings = FirebaseRemoteConfigSettings.Builder()
@@ -63,4 +67,27 @@ class AppUtilViewModel @ViewModelInject constructor() : ViewModel(){
         }
     }
 
+    fun setScoreList(size : Int){
+        analysisScoreList = Array(size) { -1 }
+    }
+    fun applyNumber(position : Int , score : Int){
+        analysisScoreList[position] = score
+        checkScoreList()
+    }
+    fun checkScoreList(){
+        var isAllClear = true
+        analysisScoreList.forEach {
+            if(it < 0){
+                isAllClear = false
+                return@forEach
+            }
+        }
+        if(isAllClear){
+            var total : Int= 0
+            for(i in analysisScoreList){
+                total += i
+            }
+            propensityAnalysisScore.postValue(total)
+        }
+    }
 }

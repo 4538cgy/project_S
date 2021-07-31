@@ -8,10 +8,12 @@ import androidx.databinding.ObservableArrayList
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.uos.smsmsm.data.FaqDTO
+import com.uos.smsmsm.data.PropensityAnalysisDTO
 import com.uos.smsmsm.data.RecyclerDefaultModel
 import com.uos.smsmsm.recycleradapter.friends.find.FindFriendAdapter
 import com.uos.smsmsm.data.UserDTO
 import com.uos.smsmsm.recycleradapter.customersupport.FaqAdapter
+import com.uos.smsmsm.recycleradapter.customersupport.PropensityAnalysisAdapter
 import com.uos.smsmsm.recycleradapter.friends.find.FriendListSearchAdapter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -51,4 +53,10 @@ object BindingAdapter  {
         adapter.setItem(list)
     }
 
+    @JvmStatic
+    @BindingAdapter("bind:propensityanalysislist")
+    fun bindPropensityAnalysisList(recyclerView: RecyclerView, list : ArrayList<PropensityAnalysisDTO>){
+        val adapter: PropensityAnalysisAdapter = recyclerView.adapter as PropensityAnalysisAdapter
+        adapter.setItem(list)
+    }
 }

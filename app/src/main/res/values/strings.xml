@@ -130,4 +130,5 @@
     <string name="success_add_friend">친구추가 성공</string>
 
     <string name="more_question_send_mail">궁금증이 해결되지 않으셨다면 메일 주소 "abcd@gmail.com"로 문의사항을 전달해 주세요.</string>
+    <string name="propensity_analysis_title">성향분석 서베이</string>
 </resources>
