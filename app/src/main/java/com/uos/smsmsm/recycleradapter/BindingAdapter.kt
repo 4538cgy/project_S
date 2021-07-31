@@ -52,6 +52,7 @@ object BindingAdapter  {
         val adapter: FaqAdapter = recyclerView.adapter as FaqAdapter
         adapter.setItem(list)
     }
+
     @JvmStatic
     @BindingAdapter("bind:propensityanalysislist")
     fun bindPropensityAnalysisList(recyclerView: RecyclerView, list : ArrayList<PropensityAnalysisDTO>){
